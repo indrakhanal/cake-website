@@ -1,0 +1,40 @@
+$('.slider').owlCarousel({
+    loop:true,
+    margin:5,
+    nav:true,
+    responsive:{
+        0:{
+            items:3
+        },
+        600:{
+            items:4
+        },
+        1000:{
+            items:4
+        }
+    }
+  })
+
+$('.shop-carousel').owlCarousel({
+    loop:true,
+    margin:20,
+    autoPlay:true,
+    nav:true,
+    merge:true,
+    center:false,
+    rewindNav:false,
+    responsive:{
+        0:{
+            items:2
+        },
+        600:{
+            items:2
+        },
+        1000:{
+            items:4
+        },
+        2500:{
+            items:7
+        }
+        }
+})

@@ -1,0 +1,233 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+
+
+{%block title%}
+<title>Track Order</title>
+{%endblock%}
+
+{%block page_content%}
+
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+ <main>
+     <section class="user__detail">
+       {%include 'client/user_profile_and_orders/partials/sidebar.html'%}
+
+   <div class="user__detail-status tracking-status">
+      <h4>Track Order</h4>
+      <form class="track-my-order-form" method="get" action="{%url 'client:track-order'%}">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Order Number" name="order_number" {%if order%}value="{{order.order_number}}"{%endif%} required>
+        {%if error%}
+        <span style="color:#ff0000;">{{error}}</span><br>
+        {%endif%}
+        </div>
+
+        <button class="btn track-button" type="submit">Track</button>
+      </form>
+      <hr>
+      {%if order%}
+      <div class="track-my-order-detail">
+        <div class="track-my-order-left">
+          <h5>Order no.{{order.order_number}}</h5>
+          <div class="track-my-order-left-head">
+              <p>Date:<span> {{order.placed_on}}</span></p>
+              <span>Total: {{currency}}. {{order.total}}</span> 
+          </div>
+          <hr>
+          <div class="tracking-customer-detail">
+            <div class="tracking-number-details">
+              <p>Name: <span>{{order.delivery_address.sender_fullname}}</span></p>
+              <p>Email: <span>{{order.delivery_address.sender_email}}</span></p>
+              <p>Phone number: <span>{{order.delivery_address.contact_number}}</span></p>
+              <p>Payment Status: <span>{{order.payment_status}}</span></p>
+              <p>Delivery Address<br>
+                <span>{{order.delivery_address.receiver_delivery_address}}
+                </span>
+              </p>
+              <!-- <p>Billing Address<br>
+                <span>{{order.delivery_address.delivery_address}}
+                </span>
+              </p> -->
+              <!-- {%if order.order_notes%}
+              <p class="order-note track-order">Order Note:<br>
+                <span>
+                 {{order.customer_notes}}
+                </span>         
+              </p>
+              {%endif%} -->
+              {%if order.order_status == 'Cancelled'%}
+              <button type="button" class="btn btn-secondary" disabled> Canceled</button>
+              {%else%}
+              <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#cancelOrder-{{order.id}}" id="cancelled-{{order.id}}">Cancel Order</button>
+              {%endif%}
+              <hr class="mob-separation">
+            </div>
+          </div>
+        </div>
+        
+        
+
+        <div class="track-my-order-right">
+          <div class="track-my-order-right-head">
+            <h5>Order Status: <span>{{order.order_status}}</span></h5>
+            <!-- <span style="font-size: 14px; line-height: 1.2!important;">Estimated Delivery 24-09-2020 | 3:45 PM</span> -->
+          </div>
+          <section class="tracking-steps">
+            <div class="row orderstatus-container">
+              <div class="medium-12 columns">
+                
+                
+                
+
+                  
+                  
+
+                    <div class="orderstatus done">
+                      <div class="orderstatus-check"><span class="orderstatus-number"><i class="fas fa-check"></i></span></div>
+                      <div class="orderstatus-text">
+                        <p>Order Placed</p>
+                        <time>{{order.created_on|date}} | {{order.created_on|time}}</time>
+                      </div>
+                    </div>
+                    
+                  
+                    
+                  
+                
+              
+                <div {% if "Confirmed" in order.get_order_status_array %} class="orderstatus done"{% else %} class="orderstatus" {% endif %}>
+                  <div class="orderstatus-check"><span class="orderstatus-number"><i {% if "Confirmed" in order.get_order_status_array %} class="fas fa-check" {%else%}class="fas fa-clock"{%endif%}></i></span></div>
+                  <div class="orderstatus-text">
+                    <p>Order Accepted</p>
+                    <time>{{order.accepted_on|date}}  {{order.accepted_on|time}}</time>
+                  </div>
+                </div>
+                <div {% if "Processing" in order.get_order_status_array %} class="orderstatus done"{% else %} class="orderstatus" {% endif %}>
+                  <div class="orderstatus-check"><span class="orderstatus-number"><i {% if "Processing" in order.get_order_status_array %} class="fas fa-check"{% else %} class="fas fa-clock" {% endif %}></i></span></div>
+                  <div class="orderstatus-text">
+                    <p>Order Processed</p>
+                    <time>{{order.processed_on|date}}  {{order.processed_on|time}}</time>
+                  </div>
+                </div>
+                <div {% if "Complete" in order.get_order_status_array %} class="orderstatus done"{% else %} class="orderstatus" {% endif %}>
+                  <div class="orderstatus-check"><span class="orderstatus-number"><i {% if "Complete" in order.get_order_status_array %} class="fas fa-check"{% else %} class="fas fa-clock" {% endif %}></i></span></div>
+                  <div class="orderstatus-text">
+                    <p>Completed</p>
+                    <time>{{i.completed_on|date}}  {{i.completed_on|time}}</time>
+                  </div>
+                </div>
+                  
+                
+                  
+                
+                  
+                
+              </div>
+            </div>
+          </section>     
+        </div>
+          
+        
+          
+       
+        {%if order.order_status == 'Cancelled'%}
+        <button type="button" class="btn btn-secondary-mob">Cancelled</button>
+        {%else%}
+        <button type="button" class="btn btn-secondary-mob" data-toggle="modal" data-target="#cancelOrder-{{order.id}}" id="cancelled-{{order.id}}">Cancel Order</button>
+        {%endif%}
+      </div>
+      {%endif%}
+
+  </section>
+    </main>
+  
+
+
+{%include 'client/cake-977/partials/newsletter.html'%}
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+<div class="modal fade" id="cancelOrder-{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          
+          <div class="modal-dialog" role="document">
+             
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cancel Order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+             
+              <div class="modal-body" style="margin: 15px;">
+           
+                  <h6>Are you sure? Do you want to cancel your order?</h6>
+              
+              </div>
+             
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" onclick="cancelOrder('{{order.id}}')" class="btn btn-danger">Cancel Order</button>
+              </div>
+            </div>
+           
+          </div>
+        
+        </div>
+{%endblock%}
+
+{%block js%}
+
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+
+<script type="text/javascript">
+
+  function cancelOrder(n){
+  
+   $.ajax({
+            type:'POST',
+            url: '{%url 'client:cancel-order'%}',
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}','id':n},
+            success: function (data) {
+                if (data['status'] === 'success') {
+                  
+
+                    var order_status='order-status-'+n;
+                    
+                    $(`#cancelOrder-${n}`).modal('hide');
+                    
+                    location.reload();
+                }
+                if(data['error']){
+                  alert(data['error'])
+                }
+                
+            }
+            }); 
+  }
+
+  
+</script>
+
+
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="{%static 'cake-977/js/owl.carousel.min.js'%}"></script>
+        <script src="{%static 'cake-977/js/carousel.js'%}"></script>
+        <script src="{%static 'cake-977/js/dropdown-hover.js'%}"></script>
+        <script src="{%static 'cake-977/js/tab-carousel.js'%}"></script>
+
+{%endblock%}

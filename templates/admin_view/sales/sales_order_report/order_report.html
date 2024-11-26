@@ -1,0 +1,369 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% load humanize %}
+{% load custom_tag %}
+{% block title %}Orders Report| Admin{% endblock title %}
+
+{% block extra_css %}
+
+<!-- Footable css -->
+<link href="{% static 'admin_view/assets/libs/footable/footable.core.min.css' %}" rel="stylesheet" type="text/css" />
+
+
+
+<!-- Plugins css -->
+<link href="{% static 'admin_view/assets/libs/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css' %}" rel="stylesheet"
+    type="text/css" />
+<link href="{% static 'admin_view/assets/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+
+<link href="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+
+
+
+<link href="{% static 'admin_view/assets/libs/footable/footable.core.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Custom box css -->
+<link href="{% static 'admin_view/assets/libs/custombox/custombox.min.css' %}" rel="stylesheet">
+<link href="{% static 'admin_view/assets/libs/dropify/dropify.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- App css -->
+<link href="{%static 'admin_view/assets/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/icons.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/app.min.css'%}" rel="stylesheet" type="text/css" />
+
+
+{% endblock %}
+
+
+{% block page_content %}
+    <div id="wrapper">
+        {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+        {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+        <div class="content-page">
+            <div class="content">
+            
+
+                <!-- Start Content-->
+                <div class="container-fluid">
+
+
+
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                                        <li class="breadcrumb-item active">Order Report</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">Order Report</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+                    <div class="row">
+                        
+
+                        <div class="col-12">
+                            {% include 'admin_view/partials/_alerts.html' %}
+                            <div class="card-box" >
+                                            
+                                    <form method="get">
+                                        <div class="row">
+                                        
+                                            <div class="col-lg-2" >
+                                                <select title="Select to search" name="order_status" id="order_status" class="selectpicker"  data-style="btn-light">
+                                                        <option value="">Select</option>
+                                                        <optgroup>
+                                                            <option value="today" {%if context.order_status == 'today'%} selected {%endif%}>Today</option>
+                                                            <option value="yesterday" {%if context.order_status == 'yesterday'%} selected {%endif%}>Yesterday</option>
+                                                            <option value="week" {%if context.order_status == 'week'%} selected {%endif%}>Week</option>
+                                                            <option value="month" {%if context.order_status == 'month'%} selected {%endif%}>Month</option>
+                                                            <option value="year" {%if context.order_status == 'year'%} selected {%endif%}>Year</option>
+                                                        </optgroup>
+                                                       
+                                                </select>
+                                            </div>
+
+                                            <div class="col-lg-2">
+                                                <input 
+                                                {% if context.date_range %}
+                                                    value = {{context.date_range}}
+                                                {% endif %}
+                                                    type="date" id="range-datepicker" class="form-control"
+                                                    placeholder="DATE RANGE" name='date_range' required>
+                                        </div>
+                                              
+                                        <div class="col-lg-2" >
+                                            <select title="Select to search" name="time_range" id="time_range" size="5" class="selectpicker"  data-style="btn-light">
+                                                <option value="">Select</option>
+                                                <!-- <optgroup> -->
+                                                    <option value="daily" {%if context.time_range == 'daily'%} selected {%endif%}>Daily</option>
+                                                    <option value="weekly" {%if context.time_range == 'weekly'%} selected {%endif%}>Weekly</option>
+                                                    <option value="monthly" {%if context.time_range == 'monthly'%} selected {%endif%}>Monthly</option>
+                                                    <option value="yearly" {%if context.time_range == 'yearly'%} selected {%endif%}>Yearly</option>
+                                                <!-- </optgroup>  -->
+                                            </select>
+                                        </div>
+
+                                        <!-- <div class="col-lg-2" >
+                                            <select title="Select Month" name="month" class="selectpicker"  data-style="btn-light">
+                                                <option value="">Select</option>
+                                                <optgroup>
+                                                    <option value=1 {%if context.month == "1"%} selected {%endif%}>JAN</option>
+                                                    <option value=2 {%if context.month == "2"%} selected {%endif%}>FEB</option>
+                                                    <option value=3 {%if context.month == "3"%} selected {%endif%}>MARCH</option>
+                                                    <option value=4 {%if context.month == "4"%} selected {%endif%}>APRIL</option>
+                                                    <option value=5 {%if context.month == "5"%} selected {%endif%}>MAY</option>
+                                                    <option value=6 {%if context.month == "6"%} selected {%endif%}>JUNE</option>
+                                                    <option value=7 {%if context.month == "7"%} selected {%endif%}>JULY</option>
+                                                    <option value=8 {%if context.month == "8"%} selected {%endif%}>AUG</option>
+                                                    <option value=9 {%if context.month == "9"%} selected {%endif%}>SEP</option>
+                                                    <option value=10 {%if context.month == "10"%} selected {%endif%}>OCT</option>
+                                                    <option value=11 {%if context.month == "11"%} selected {%endif%}>NOV</option>
+                                                    <option value=12 {%if context.month == "12"%} selected {%endif%}>DEC</option>
+                                                </optgroup>
+                                            </select>
+                                        </div> -->
+
+
+                                        <!-- <div class="col-lg-2" >
+                                            <select title="Select Year" name="year" class="selectpicker"  data-style="btn-light">
+                                                <option value="">Select</option>
+                                                <optgroup>
+                                                    <option value=2021 {%if context.year == '2021'%} selected {%endif%}>2021</option>
+                                                    <option value=2022 {%if context.year == '2022'%} selected {%endif%}>2022</option>
+                                                    <option value=2023 {%if context.year == '2023'%} selected {%endif%}>2023</option>
+                                                    <option value=2024 {%if context.year == '2024'%} selected {%endif%}>2024</option>
+                                                    <option value=2025 {%if context.year == '2025'%} selected {%endif%}>2025</option>
+                                                    <option value=2026 {%if context.year == '2026'%} selected {%endif%}>2026</option>
+                                                </optgroup>
+                                             
+                                            </select>
+                                        </div> -->
+
+                                        <div class="col-lg-2">
+                                            <button type="submit"
+                                            class="btn btn-dark waves-effect waves-light ml-2">Search
+                                        </button>
+                                        </div>
+
+                                    </form>
+
+                                <!-- <div class="card-box"> -->
+                                <div class="table-responsive" style="margin-top: 15px;overflow-x: unset!important;">
+
+                                    {%if context.order_status is None and context.date_range is None and context.time_range is None%}
+                                    <form method="get" action="{% url 'sales:export-csv-order-report' %}" style="float: right">
+                                       <input type="submit" class="btn btn-dark" value="Export CSV">
+                                    </form>
+                                    {%else%}
+                                     <form method="post" action="{% url 'sales:export-csv-order-report' %}" style="float: right">
+                                       <input type="hidden" value="{{context.order_status}}" name="status">
+                                        <input type="hidden" value="{{context.date_range}}" name="date_range"> 
+                                        <input type="hidden" value="{{context.time_range}}" name="time_range"> 
+                                        <input type="submit" class="btn btn-dark" value="Export CSV">
+                                        {% csrf_token %}
+                                     </form>
+                                     {%endif%}
+
+
+                                    <table id="demo-foo-filtering" class="table toggle-circle mb-0"
+                                        data-page-size="50" style=" table-layout: fixed; word-wrap: break-word;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Order ID</th>
+                                                <th class="text-center" style="width:120px;">Placed On</th>
+                                                <th class="text-center">Total</th>
+                                                <th class="text-center">Sub Total</th>
+                                                <th class="text-center">Discount</th>
+                                                <th class="text-center">Shipping</th>
+                                                <th class="text-center">Order Status</th>
+                                                <th class="text-center">Payment Status</th>
+                                                <th class="text-center">Net Sells</th>
+                                             </tr>
+                                        </thead>
+                                        
+                                        {% if error_message %}
+                                        <div class="alert alert-danger">
+                                           <strong>{{ error_message|escape }}</strong>
+                                       </div>
+                                        {%endif%}
+
+                                        <tbody>
+                                            {%if page_obj%}
+                                            {% for order in page_obj %}
+                                            <tr>
+                                               <td class="text-center">
+                                                  {%if perms.sales.change_order%} 
+                                                  <a href="{%url 'sales:order-update' order.id%}">
+                                                     {{ order.order_number }}
+                                                  </a>
+                                                  {%else%}
+                                                  {{ order.order_number }}
+                                                  {%endif%}
+                                               </td>
+                   
+                                               <td class="text-center">{{order.created_on}}</td>
+                   
+                                             
+                                               <td class="text-center"> {{ request.user|currency_symbol }}. {{ order.total }}<br>
+                                               </td>
+                                               <!-- items -->
+                                               <td class="text-center">{{ request.user|currency_symbol }}. {{ order.sub_total_order }}<br>
+                                                 {% if order.discount  %}
+                                                 <strike>{{ request.user|currency_symbol }}. {{order.total | add:order.discount}}</strike>
+                                                 {% endif %}</td>
+                   
+                   
+                                               <td class="text-center">{{ request.user|currency_symbol }}. {{ order.discount }}</td>
+                                               <td class="text-center">{{ request.user|currency_symbol }}. {{ order.shipping_cost }}</td>
+                                               <td class="text-center">{{ order.order_status }}</td>
+                                               <td class="text-center">{{ order.payment_status }}</td>
+                   
+                                               <td class="text-center">{{ request.user|currency_symbol }}. {{ order.total}}</td>
+                                              
+                                            </tr>
+                                            {% endfor %}
+                                            {%endif%}
+                                        </tbody>
+                                            
+                                      
+                                    </table>
+                                    <!-- <tfoot>
+                                        <tr class="active">
+                                            <td colspan="11">
+                                                <div class="text-right">
+                                                    <ul
+                                                        class="pagination pagination-rounded justify-content-end footable-pagination m-t-10 mb-0">
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot> -->
+
+                                    <div class="paginations d-flex justify-content-end">
+                                        <ul>
+                                            {%if page_obj.number == 1 %}
+                                            <li class="paginationbtn btn-prev"><i class="fa fa-angle-left"></i></li>
+                                            <li class="numb" {%if page_number == page_obj.number %}style="background-color:#FFA500;"{%endif%} ><a style="color:white;" href="?page=1{%if order_status%}&order_status={{order_status}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}{%if time_range%}&time_range={{time_range}}{%endif%}{%if month%}&month={{month}}{%endif%}{%if year%}&year={{year}}{%endif%}">1</a></li>
+                                            {% if page_obj.has_next %}
+                                            <li class="numb"><a href="?page=2{%if order_status%}&order_status={{order_status}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}{%if time_range%}&time_range={{time_range}}{%endif%}{%if month%}&month={{month}}{%endif%}{%if year%}&year={{year}}{%endif%}">2</a></li>
+                                            {%endif%}
+                                        
+                                            {% elif page_obj.has_previous %}
+                                            <li class="paginationbtn btn-prev"><a href="?page={{ page_obj.previous_page_number }}{%if order_status%}&order_status={{order_status}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}{%if time_range%}&time_range={{time_range}}{%endif%}{%if month%}&month={{month}}{%endif%}{%if year%}&year={{year}}{%endif%}"><i class="fa fa-angle-left"></i></a></li>
+                                            <li class="numb"><a href="?page=1{%if order_status%}&order_status={{order_status}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}{%if time_range%}&time_range={{time_range}}{%endif%}{%if month%}&month={{month}}{%endif%}{%if year%}&year={{year}}{%endif%}">1</a></li>
+                                            {%if page_obj.number > 2 %}
+                                            <li class="dots">...</li>
+                                            {%endif%}
+                                            <li class="numb" {%if page_number == page_obj.number %}style="background-color:#FFA500;"{%endif%}><a style="color:white;" href="?page={{page_obj.number}}{%if order_status%}&order_status={{order_status}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}{%if time_range%}&time_range={{time_range}}{%endif%}{%if month%}&month={{month}}{%endif%}{%if year%}&year={{year}}{%endif%}">{{page_obj.number}}</a></li>
+                                            {%if page_obj.number != page_obj.paginator.num_pages%}
+                                            <li class="numb" ><a  href="?page={{page_obj.number |add:1 }}{%if order_status%}&order_status={{order_status}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}{%if time_range%}&time_range={{time_range}}{%endif%}{%if month%}&month={{month}}{%endif%}{%if year%}&year={{year}}{%endif%}">{{page_obj.number| add:1 }}</a></li>
+                                            {%endif%}
+                                            {% endif %}
+                                        
+                                            <li class="dots">...</li>
+                                            {%if page_obj.number == page_obj.paginator.num_pages%}
+                                            <li class="numb" ><a  href="?page={{ page_obj.paginator.num_pages }}{%if order_status%}&order_status={{order_status}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}{%if time_range%}&time_range={{time_range}}{%endif%}{%if month%}&month={{month}}{%endif%}{%if year%}&year={{year}}{%endif%}">{{ page_obj.paginator.num_pages }}</a></li>
+                                            <li class="paginationbtn btn-next"><i class="fa fa-angle-right"></i></li>
+                                            
+                                            {% elif page_obj.has_next %}
+                                            <li class="numb"><a href="?page={{ page_obj.paginator.num_pages }}{%if order_status%}&order_status={{order_status}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}{%if time_range%}&time_range={{time_range}}{%endif%}{%if month%}&month={{month}}{%endif%}{%if year%}&year={{year}}{%endif%}">{{ page_obj.paginator.num_pages }}</a></li>
+                                            <li class="paginationbtn btn-next"><a style="color:white;" href="?page={{ page_obj.next_page_number }}{%if order_status%}&order_status={{order_status}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}{%if time_range%}&time_range={{time_range}}{%endif%}{%if month%}&month={{month}}{%endif%}{%if year%}&year={{year}}{%endif%}"> <i class="fa fa-angle-right"></i></a></li>
+                                            {% endif %}
+    
+                                        </ul>
+                                    </div>
+                                </div> <!-- end .table -->
+                                
+                             
+                            </div> <!-- end card-box -->
+                            
+                        </div> <!-- end col -->
+                        
+                    </div>
+                    <!-- end row -->
+
+
+
+                </div> <!-- container -->
+
+            </div> <!-- content -->
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+        </div>
+    </div>
+
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+
+
+
+<!-- Plugins js-->
+<script src="{% static 'admin_view/assets/libs/flatpickr/flatpickr.min.js' %}"></script>
+<script src="{% static 'admin_view/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+
+
+<script src="{% static 'admin_view/assets/js/pages/form-pickers.init.js' %}"></script>
+
+
+
+<script src="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.js' %}"></script>
+
+<!-- <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>     -->
+
+<script src="   https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script>
+
+
+<script src="{% static 'admin_view/assets/libs/footable/footable.all.min.js' %}"></script>
+
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/foo-tables.init.js' %}"></script>
+
+
+ <!-- Tost-->
+ <script src="{% static 'admin_view/assets/libs/jquery-toast/jquery.toast.min.js' %}"></script>
+  <!-- toastr init js-->
+<script src="{% static 'admin_view/assets/js/pages/toastr.init.js' %}"></script>
+
+
+<script>
+$("#order_status").change(function(){
+        select = document.getElementById('order_status')
+        var value = select.options[select.selectedIndex].value;
+        if (value==='today' || value==='yesterday'){
+            $("#time_range").prop('disabled', true);
+        }
+        if (value === 'week'){
+            $("#time_range").prop('disabled', false);
+        }
+
+});
+
+// $("#time_range").prop('disabled', true);
+// $("#order_status").change(function(){
+// // $('#mySelect').append("<option>BMW</option>")        
+//         select = document.getElementById('order_status')
+//         var value = select.options[select.selectedIndex].value;
+//         if (value==='month' || value === 'year' || value==='week'){
+//             $("#time_range").prop('disabled', false);
+
+//         }
+// });
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,24 @@
+
+    {%if i.photo_cake_image%}
+    <a href="{{i.photo_cake_image.url}}" target="_blank"><img style="width: 120px; height: 120px; margin-bottom: 4px;" src="{% if i.photo_cake_image %} {{i.photo_cake_image.url}} {%endif%}" alt="Product Image"></a>
+    {%endif%}
+    {%if i.photo_cake_image1%}
+    <a href="{{i.photo_cake_image1.url}}" target="_blank"><img style="width: 120px; height: 120px; margin-bottom: 4px;" src="{% if i.photo_cake_image1 %} {{i.photo_cake_image1.url}} {%endif%}" alt="Product Image"></a>
+        {%endif%}
+
+    {%if i.photo_cake_image2%}
+    <a href="{{i.photo_cake_image2.url}}" target="_blank"><img style="width: 120px; height: 120px;" src="{% if i.photo_cake_image2 %} {{i.photo_cake_image2.url}} {%endif%}" alt="Product Image"></a>
+        {%endif%}
+
+    {%if i.photo_cake_image3%}
+    <a href="{{i.photo_cake_image3.url}}" target="_blank"><img style="width: 120px; height: 120px;" src="{% if i.photo_cake_image3 %} {{i.photo_cake_image3.url}} {%endif%}" alt="Product Image"></a>
+        {%endif%}
+
+
+    {%if not i.photo_cake_image and not i.photo_cake_image1 and not i.photo_cake_image2 and not i.photo_cake_image3%}
+    {%if i.product.product.image%}
+    <a href="{{i.product.product.image.url}}" target="_blank"><img style="width: 120px; height: 120px;" src="{% if i.product.product.image %} {{i.product.product.image.url}} {% endif %}" alt="Product Image"></a>
+    {%else%}
+    <p>No any image</p>
+    {%endif%}
+    {%endif%}

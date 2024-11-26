@@ -1,0 +1,148 @@
+{%load static%}
+ <nav class="navbar sticky-top navbar-expand-lg navbar-light ">
+      <a class="navbar-brand" href="{%url 'client:catalog'%}">
+        {%if settings.outlet_logo%}
+        <div class="logo">
+          <a href="{%url 'client:catalog'%}"><img src="{{settings.outlet_logo.url}}"></a>
+        </div>
+        {%endif%}
+      </a>
+   
+  
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="#" id="navbarDropdown" role="button">
+              Cakes
+              <!-- <span class="cake-chevron"><i class="fas fa-chevron-down"></i></span> -->
+            </a>
+            <div class="dropdown-menu cake-dropdown" aria-labelledby="navbarDropdown">
+              <ul class="sub-menus-cake">
+                <!-- <li>
+                  <span class="category-title">
+                    <a href="#">By Price</a>
+                  </span>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=0&max_price=977">Under 977</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=0&max_price=500">Under 500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=978&max_price=1500">978 - 1500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=1500&max_price=2500">1500 - 2500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=2500&max_price=3500">2500 - 3500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=3500&max_price=4500">3500 - 4500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=4500&max_price=45000">Above 4500</a>
+                </li> -->
+                <li>
+                  {%if flavour%}
+                  <span class="category-title">
+                    <a href="#">By Flavour</a>
+                  </span>
+                  {%for i in flavour%}
+                  <a class="dropdown-item" href="{{i.get_absolute_url}}">{{i.name|title}}</a>
+                  {%endfor%}
+                  {%endif%}
+                </li>
+                {%for i in category%}
+                <li>
+                  <span class="category-title">
+                    <a href="{{i.get_absolute_url}}">{{i.name|title}}</a>
+                  </span>
+                  {%if i.get_childrens%}
+                  {%for a in i.get_childrens%}
+                  {%if a.is_available%}
+                  <a class="dropdown-item" href="{{a.get_absolute_url}}">{{a.name|title}}</a>
+                  {%endif%}
+                  {%endfor%}
+                  {%endif%}
+                  
+                </li>
+                {%endfor%}
+               
+
+              </ul>
+            </div>
+          </li>
+          {%if occasion%}
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="#" id="navbarDropdown" role="button">
+              Occasions
+              <!-- <span class="cake-chevron"><i class="fas fa-chevron-down"></i></span> -->
+            </a>
+            <div class="dropdown-menu cake-dropdown-new" aria-labelledby="navbarDropdown">
+              <ul class="sub-menus">
+
+                {%for i in occasion.get_childrens%}
+                {%if i.is_available%}
+                 
+                <li>
+                  <span class="category-title">
+                    <a href="{{i.get_absolute_url}}">{{i.name|title}}</a>
+                  </span>
+                  
+                   {%if i.get_childrens%}
+                   <a class="dropdown-item" href="{{i.get_absolute_url}}">All {{i.name}}</a>
+                   {%for a in i.get_childrens%}
+                   {%if a.is_available%}
+                  <a class="dropdown-item" href="{{a.get_absolute_url}}">{{a.name|title}}</a>
+                  {%endif%}
+                  {%endfor%}
+                 {%endif%}
+                </li>
+                
+                {%endif%}
+                {%endfor%}
+               
+              </ul>
+            </div>
+                </li>
+                {%endif%}
+
+             <!--  <li class="nav-item">
+            <a class="nav-link" href="http://cake977blog.com/" role="button">
+              Blog
+            </a>
+</li> -->
+
+
+          <li>
+            
+           <!--  <a class="nav-link" href="
+           #">
+              Bakeries
+            </a> -->
+          </li>
+        </ul>
+        <div class="right_head">          
+          <ul class="rightmost">
+            <li>
+              <div class="shop-cart">
+                <a href="{%url 'client:client-cart'%}"><span><i class="fas fa-shopping-cart"></i>&nbsp;&nbsp;</span><span>Cart</span></a>
+                <span class="badge badge-warning" id="cart_count_desktop">{{cart_count}}</span>
+              </div>     
+            </li>
+            {%if user.is_authenticated%}
+            <li>
+              <div class="login">
+                <a href="{%url 'client:client-profile'%}"><span><i class="fas fa-user"></i>&nbsp;&nbsp;</span><span>MY PROFILE</span></a>
+              </div>
+            </li>  
+            <li>
+              <form id="logout" action="{% url 'account_logout' %}" method="post">
+                   {% csrf_token %}
+             <div class="login">
+               <a href="javascript:{};" onclick="document.getElementById('logout').submit();">
+                   <span class="mr-2"><i class="fas fa-sign-out-alt"></i></span>Logout
+               </a>
+             </div>
+               <input type="hidden" name="next" value="/login/" /> 
+           </form>
+           </li> 
+          
+            {%else%}
+            <li>
+              <div class="login">
+                <a href="{%url 'accounts:login'%}"><span><i class="fas fa-user"></i>&nbsp;&nbsp;</span><span>Login / Sign Up</span></a>
+              </div>
+            </li>  
+            {%endif%}                  
+          </ul>
+        </div>
+    </nav>

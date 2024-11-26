@@ -1,0 +1,23 @@
+<div class="user__detail-list">
+      <ul>
+        <li><a href="{%url 'client:client-profile'%}" {%if 'client/profile' in request.path or 'accounts/password/change' in request.path or 'accounts/password/set' in request.path%}class="active"{%endif%}><span><i class="fas fa-cog"></i></span> My Account</a></li>
+        <!-- <li><a href="{% url 'account_change_password' %}" {%if 'accounts/password/change' in request.path%}class="active"{%endif%}><span><i class="fas fa-key"></i></span>Change Password</a></li> -->
+        <li><a href="{%url 'client:client-orders'%}"  {%if 'client/orders' in request.path%}class="active"{%endif%}><span><i class="fas fa-box"></i></span>My Orders</a></li>
+        <li><a href="{%url 'client:track-order'%}" {%if 'track/order' in request.path%}class="active"{%endif%}><span><i class="fas fa-truck"></i></span>Track Order</a></li>
+        
+
+{%if user.is_authenticated%}
+        <form id="logout" action="{% url 'account_logout' %}" method="post">
+                    {% csrf_token %}
+                    <li>
+                <a href="javascript:{};" onclick="document.getElementById('logout').submit();">
+                    <span class="mr-2"><i class="fas fa-sign-out-alt"></i></span>Logout
+                </a>
+                </li>
+                 <input type="hidden" name="next" value="/login/" />
+                </form>
+
+
+            {%endif%}
+      </ul>
+    </div>

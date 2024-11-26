@@ -1,0 +1,24 @@
+
+    {%if i.photo_cake_image%}
+   <img style="width: 100%; height: 300px; object-fit: contain;" src="{% if i.photo_cake_image %} {{i.photo_cake_image.url}} {%endif%}" alt="Product Image">
+    {%endif%}
+    {%if i.photo_cake_image1%}
+    <img style="width: 100%; height: 300px; object-fit: contain;" src="{% if i.photo_cake_image1 %} {{i.photo_cake_image1.url}} {%endif%}" alt="Product Image">
+        {%endif%}
+
+    {%if i.photo_cake_image2%}
+    <img style="width: 100%; height: 300px; object-fit: contain;" src="{% if i.photo_cake_image2 %} {{i.photo_cake_image2.url}} {%endif%}" alt="Product Image">
+        {%endif%}
+
+    {%if i.photo_cake_image3%}
+    <img style="width: 100%;  height: 300px; object-fit: contain;" src="{% if i.photo_cake_image3 %} {{i.photo_cake_image3.url}} {%endif%}" alt="Product Image">
+        {%endif%}
+
+
+    {%if not i.photo_cake_image and not i.photo_cake_image1 and not i.photo_cake_image2 and not i.photo_cake_image3%}
+    {%if i.product.product.image%}
+    <img style="width: 100%; height: 300px; object-fit: contain;" src="{% if i.product.product.image %} {{i.product.product.image.url}} {% endif %}" alt="Product Image">
+    {%else%}
+    <p>No any image</p>
+    {%endif%}
+    {%endif%}

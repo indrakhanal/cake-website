@@ -1,0 +1,513 @@
+{%load static%}
+<section class="product-detail">
+  <div id="content-wrapper">
+    {%for i in product.images.images_1292X920%}
+    <div class="mySlides">
+      <div class="numbertext">{{forloop.counter}} / 4</div>
+      <img src="{{i}}" style="width:100%">
+    </div>
+    {%empty%}
+
+    <div class="mySlides">
+      <div class="numbertext"></div>
+      <img src="{%static 'cake-977/def_img/Cake977-646X460px-03.png'%}" style="width:100%">
+    </div>
+
+    {%endfor%}
+
+    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+    <div id="slide-wrapper">
+      <div class="smallerImages">
+
+        {%for i in product.images.images_324X280%}
+        <div class="column">
+          <img class="demo cursor" src="{{i}}" style="width:100%" onclick="currentSlide({{forloop.counter}})"
+            alt="{{product.name}}">
+        </div>
+        {%empty%}
+        <div class="column">
+          <img class="demo cursor" src="{%static 'cake-977/def_img/Cake977-287x191px-06.png'%}" style="width:100%"
+            onclick="currentSlide(0)" alt="{{product.name}}">
+        </div>
+        {%endfor%}
+
+
+      </div>
+    </div>
+    <p class="small">Note: Design and icing of cake may vary from the image shown here since each chef has his/her own
+      way of baking and designing a cake.</p>
+  </div>
+
+
+
+  <!-- Cake Description -->
+  <form class="cake-description" id="add-to-cart" enctype="multipart/form-data">
+    {%csrf_token%}
+    <input type="hidden" name="product" value="{{product.id}}">
+    <input type="hidden" name="varient" id="varient-id" value="{{product.product.all.0.id}}">
+    <input type="hidden" name="quantity" value="1">
+    <input type="hidden" name="redirect_to_checkout" id="redirect_to_checkout">
+    <input type="hidden" name="time" id="time-id">
+    <input type="hidden" name="shipping_method_id" id="shipping_method_id">
+
+   
+
+    <div class="cake-desc-section">
+      <div class="cake-desc-left">
+        <div class="cake-detail-title">
+          <h4>{{product.name|title}}</h4>
+          <div class="product-rating">
+            <div class="rating-badge">
+              <p>{{product.avg_review}} <span><i {% if product.avg_review == 5.0 %}class="fas fa-star"{% else %}class="fas fa-star-half-alt"{% endif %}></i></span></p>
+            </div>
+            <div class="total-reviews">
+              <span><a href="#review-product">{{product.product_review.all.count}} reviews</a></span>
+            </div>
+          </div>
+
+        </div>
+        <div class="cake-prod-price">
+          <span class="rupee-product">{{currency}}.</span>
+          {%if product.first_varient_attributes.value%}
+          <b id="selling-price"></b>
+          {%else%}
+          <b>{{product.product.all.0.selling_price}}</b>
+          {%endif%}
+          <span class="prod-dec-price">
+            <del id="old-price"></del>
+            <span id="discount-text"></span>
+          </span>
+        </div>
+        <p class="small">Inclusive of all taxes</p>
+        <a href="#test" class="view-more">View more info&nbsp;&nbsp;<i class="fas fa-angle-down"></i></a>
+      </div>
+      <div class="cake-desc-right">
+        <!-- <img id="safe-pic" src="{%static 'cake-977/img/safe-secure.png'%}" width="170px"> -->
+        <div class="preparation-time-hr">
+              <div class="preparation-time">
+                {{product.min_order_time}}hrs
+              </div>
+              <span>Preparation<br>Time</span>
+          </div>
+      </div>
+    </div>
+    {% if product.first_varient_attributes.value %}
+    <div class="cake_size">
+      <p>Choose {{product.get_first_varient_attribute_name}} {% if not product.is_cake_props %}(in pounds){% endif %}</p>
+      <input type="hidden" id="cake-weight" name="pound">
+      <ul id="weight_attribute">
+        {% for item in product.first_varient_attributes.value %}
+        <li {% if forloop.counter == 1 %} class="weight active" {% else %}class="weight" {% endif %}
+          onclick="onclickFirstAttr({{forloop.counter}});" value="{{item}}" style="cursor: pointer;">{{item}}</li>
+ 
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    
+
+    {%if product.first_varient_attributes.value%}
+      <div class="cake_type">
+        {%if product.show_eggless or product.show_sugarless%}
+        <p>Special Request</p>
+        {%endif%}
+        
+        <div class="special-request-form">
+          {%if product.show_eggless%}
+          <div class="custom-controls-stacked d-block">
+            <label class="custom-control material-checkbox">
+              <input onchange="is_eggless_click();" type="checkbox" id="is_eggless_id" class="material-control-input" name="is_eggless" value="yes">
+              <span class="material-control-indicator" style="cursor: pointer;"></span>
+              <span class="material-control-description">Eggless
+
+                
+                {% if product.store.flat_eggless %}
+                  <span class="small">&nbsp;[ +{{currency}}.{{product.store.eggless_price}} ]</span>
+                {% else %}
+                  <span class="small">&nbsp;[ +{{currency}}.{{product.store.eggless_price}}/ lb ]</span>
+                {% endif %}
+                  
+                
+              </span>
+            </label>
+          </div>
+          {%endif%}
+          {%if product.show_sugarless%}
+          <div class="custom-controls-stacked d-block">
+            <label class="custom-control material-checkbox">
+              <input onchange="is_sugarless_click();" type="checkbox" id="is_sugarless_id" class="material-control-input" name="is_sugarless" value="yes">
+              <span class="material-control-indicator" style="cursor: pointer;"></span>
+              <span class="material-control-description">Sugarless<span class="small">&nbsp;[ +{{currency}}.{{product.store.sugar_less_price}} ]</span></span>
+            </label>
+          </div>
+          {%endif%}
+        </div>
+        
+      </div>
+      {% if product.second_varient_attributes.value %}
+      <div id="flavour-form">
+        <label for="sel1">Select {{product.get_second_varient_attribute_name}}</label>
+        <select class="form-control" id="sel1" name="flavour" onchange="submit_attr2();">
+         
+        </select>
+      </div>
+      {% endif %}
+
+    {%endif%}
+    <p class="timetypesection">Select Delivery Date and Time</p>
+
+
+    <div class="date-time-section">
+      <!--Modal-Stepper-DatePicker-->
+      <div class="md-form" id="date-not-select-parent">
+        <input id="datepicker-input"  type="text" data-toggle="modal"
+          data-target="#exampleModal" placeholder="&#xf073;&nbsp;&nbsp;Select delivery date" name="delivery_date" readonly autocomplete="off" style="cursor: pointer;" required>
+        <span id="date-not-select" style="display: none;"><i class="fas fa-exclamation-circle"></i> Please choose date.</span>
+        <span id="date-not-select1" style="display: none;"><i class="fas fa-exclamation-circle"></i> <span>Please choose date first</span></span>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel1">Select Date</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="date-selection">
+              <div class="modal-body" id="date-selector">
+                <div id="datepicker" class="calendar"></div>
+              </div>
+              <div class="modal-footer" id="modal-footer-buttons">
+                <div class="footer-buttons">
+                  <div style="float:right; overflow:auto;">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Continue</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Modal-Stepper-DatePicker-->
+      <!--select time and delivery type-->
+      <div class="md-form" id="time-not-select-parent">
+        <input style="cursor: pointer;" id="typetime-input" value="" placeholder="&#xf017;&nbsp;&nbsp;Select delivery time" type="text" onclick="validateTime();" autocomplete="off" readonly required>
+        <span id="time-not-select" style="display: none;"><i class="fas fa-exclamation-circle"></i> Please choose time.</span>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="TimeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel1">Select Delivery Time</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div id="time-selection">
+              <div class="modal-body" id="">
+                <div class="time-radio-buttons">
+                  <div id="accordion" class="shipping-methods-data">
+             
+                    
+                  
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer" id="modal-footer-buttons">
+                <div class="footer-buttons">
+                  <div style="float:right; overflow:auto;">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Continue</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--select time and delivery type-->
+    </div>
+    {%if product.checkPhotoCakeStatus%}
+  
+    <div id="photocake-form">
+          <p>Upload Your photo</p>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="customFile" name='photo_for_photo_cake' required oninvalid="this.setCustomValidity('Please upload your photo')"
+            oninput="this.setCustomValidity('')">
+            <label class="custom-file-label" for="customFile">Choose file</label>
+          </div>
+        </div>
+    {%endif%}
+
+    <div class="cake_message">
+      <p>Message</p>
+      <div>
+        <!-- remember to markup your forms properly using labels! -->
+        <textarea id="textareaChars" maxlength="40" rows="1" placeholder="What would you like to write on the cake?"
+           name="message"></textarea>
+        <p class="characters-remaining"><span id="chars">40</span>/40
+        </p>
+      </div>
+    </div>
+
+    
+    {% if product.note %}
+    <p class="small caution"> {{product.note}}</p>
+    {% endif %}
+      
+    
+    <div class="add-cart">
+    <!-- {{product.in_stock}} jjj -->
+
+      <!-- Button trigger modal -->
+    {%if not product.first_varient_attributes.value%}
+    {%if product.in_stock == True%}
+
+      {%if product.addons.all.count >= 1%}
+            <button type="button" class="btn-cart" data-toggle="modal"
+        onclick="showAddToCartBtn()">Add to cart
+      </button>
+      {%else%}
+      
+       <button class="btn-cart" type="button" onclick="go_to_checkout('no')">Add to cart
+      </button>
+      {%endif%}
+      {%else%}
+      <button class="btn-cart" type="button">Out of Stock
+      </button>
+      {%endif%}
+
+      {%comment%}
+      {%if product.first_varient_attributes.value%}
+      {%endcomment%}
+      {%if product.in_stock == True%}
+
+      <!-- Button trigger modal -->
+      {%if product.addons.all.count >= 1%}
+      
+      <button type="button" class="btn-buy" data-toggle="modal"
+        onclick="removeAddToCartBtn()">Buy now
+      </button>
+      {%else%}
+     
+      <button class="btn-buy" type="button" onclick="go_to_checkout('yes')">Buy now </button>
+      {%endif%}
+
+      {%endif%}
+
+      {%else%}
+      {%if product.first_varient_attributes.value%}
+
+      {%if product.addons.all.count >= 1%}
+            <button type="button" class="btn-cart" data-toggle="modal"
+        onclick="showAddToCartBtn()">Add to cart
+      </button>
+      {%else%}
+      
+       <button class="btn-cart" type="button" onclick="go_to_checkout('no')">Add to cart
+      </button>
+      {%endif%}
+      {%else%}
+      <button class="btn-cart" type="button">Out of Stock
+      </button>
+      {%endif%}
+    
+      {%if product.first_varient_attributes.value%}
+      <!-- Button trigger modal -->
+      {%if product.addons.all.count >= 1%}
+      
+      <button type="button" class="btn-buy" data-toggle="modal"
+        onclick="removeAddToCartBtn()">Buy now
+      </button>
+      {%else%}
+     
+      <button class="btn-buy" type="button" onclick="go_to_checkout('yes')">Buy now </button>
+      {%endif%}
+
+      {%endif%}
+
+      {%endif%}
+
+    </div>
+    <!-- <a href="./checkout.html"><button type="button" class="btn-cart">Add to cart</button></a>
+        <a href="./checkout.html"><button type="button" class="btn-buy">Buy Now</button></a> -->
+  </form>
+  
+</section>
+{%include 'client/cake-977/partials/detail/addon_model.html'%}
+
+
+
+
+
+
+<script type="text/javascript">
+
+  function checkDeliveryDateAndTime(){
+    var delivery_date = $("#datepicker-input").val()
+    var delivery_time = $("#typetime-input").val()
+    if(delivery_date === "" || delivery_time === ""){
+      if(delivery_date === ""){
+        $("#date-not-select-parent").attr('class','md-form for-error-message-new')
+        $('#date-not-select').show();
+     $('#date-not-select1').hide();
+      }
+      if(delivery_time === ""){
+        $("#time-not-select-parent").attr('class','md-form for-error-message-new')
+        $('#time-not-select').show();
+     $('#date-not-select1').hide();
+      }
+      
+      
+     
+
+      // showMessage("Please select valid delivery date and time.")
+      return false
+    }else{
+      return true
+      }
+}
+ 
+
+  function removeAddToCartBtn() {
+    var valid_date_time = checkDeliveryDateAndTime();
+    
+    if(valid_date_time){
+      $('#add-to-cart-btn').hide()
+      $('#add-to-cart-btn-buy').show()
+      $(".bd-example-modal-xl").modal()
+    }else{
+      // showMessage("Please select valid delivery date and time.")
+     //  $("#date-not-select-parent").attr('class','md-form for-error-message')
+     //  $("#time-not-select-parent").attr('class','md-form for-error-message')
+     // $('#date-not-select').show();
+     // $('#date-not-select1').hide();
+    }
+    
+  }
+
+  function go_to_checkout(redirect){
+    if(redirect==="yes"){
+     $("#redirect_to_checkout").val("yes")
+   }else{
+     $("#redirect_to_checkout").val("no")
+   }
+   submit_product_form();
+  }
+
+  function showAddToCartBtn() {
+    var valid_date_time = checkDeliveryDateAndTime();
+    if(valid_date_time){
+      $('#add-to-cart-btn').show()
+      $('#add-to-cart-btn-buy').hide()
+      $(".bd-example-modal-xl").modal()
+    }else{
+      // showMessage("Please select valid delivery date and time.")
+     //  $("#date-not-select-parent").attr('class','md-form for-error-message')
+     //  $("#time-not-select-parent").attr('class','md-form for-error-message')
+     // $('#date-not-select').show();
+     // $('#date-not-select1').hide();
+    }
+  }
+
+</script>
+
+<script>
+  var addon_total=0
+  var addon_count=0
+  
+  function calculateAddonTotalPlus(quantity,price){
+    addon_total=addon_total+parseFloat(price);
+    addon_count=addon_count+1;
+    updateAddonModalText(addon_count,addon_total)
+
+  }
+  function calculateAddonTotalMinus(quantity,price){
+    addon_total=addon_total-parseFloat(price);
+    addon_count=addon_count-1;
+    updateAddonModalText(addon_count,addon_total)
+  }
+
+  function updateAddonModalText(addons_count,addons_total){
+    grand_total = total_sum + addons_total;
+    
+    $('#addon_count').text(`${addons_count} Add-ons`);
+    $('#addon_total_price').text(`{{currency}}.${addons_total}`);
+    $('#grand_total_price').text(`{{currency}}.${grand_total}`);
+  }
+
+  function setQtyAddonMinus(n, p,price) {
+
+    var varient_id = n;
+    var quantity = parseInt(document.getElementById("quantity--" + n).value) - 1;
+    if (quantity >= 1) {
+
+      calculateAddonTotalMinus(quantity,price)
+      $(`#add-on-items-qty${n}${p}`).val(quantity)
+      $(`#add-on-items${n}${p}`).val(n)
+
+    } else {
+      calculateAddonTotalMinus(quantity,price)
+      $(`#add-on-items-qty${n}${p}`).removeAttr('value');
+      $(`#add-on-items${n}${p}`).removeAttr('value');
+    }
+
+  }
+
+  function setQtyAddon(n, p,price) {
+
+    var varient_id = n;
+    var quantity = document.getElementById("quantity--" + n).value;
+    
+
+    if (quantity >= 1) {
+      calculateAddonTotal(quantity,price)
+      $(`#add-on-items-qty${n}${p}`).val(quantity)
+      $(`#add-on-items${n}${p}`).val(n)
+
+    } else {
+      $(`#add-on-items-qty${n}${p}`).removeAttr('value');
+      $(`#add-on-items${n}${p}`).removeAttr('value');
+    }
+
+
+  }
+
+  function setQtyAddonPlus(n, p,price) {
+
+    var addon_id = n;
+    var quantity = parseInt(document.getElementById("quantity--" + n).value) + 1;
+    quantity = parseInt(quantity)
+
+    if (quantity >= 1) {
+      calculateAddonTotalPlus(quantity,price)
+      $(`#add-on-items-qty${n}${p}`).val(quantity)
+      $(`#add-on-items${n}${p}`).val(n)
+
+    } else {
+      $(`#add-on-items-qty${n}${p}`).removeAttr('value');
+      $(`#add-on-items${n}${p}`).removeAttr('value');
+    }
+  }
+
+ function validateTime(){
+   if($("#datepicker-input").val()===""){
+     // showMessage("Please select delivery date first")
+     $("#date-not-select-parent").attr('class','md-form for-error-message-new')
+     $('#date-not-select1').show();
+     $('#date-not-select').hide();
+
+
+   }else{
+     $("#TimeModal").modal('show');
+   }
+ }
+</script>
+
+

@@ -1,0 +1,48 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+    <title>Order Success</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+{%include 'client/cake-977/partials/badge_menu.html'%}
+<!--Order Successful-->
+    <div class="main_success">
+        <div class="order_successful" id="order_successful">
+        <h1>Order Successful</h1>
+        <p class="small">Your order has successfully been placed.</p> 
+            <i class="far fa-check-circle"></i> <br>
+        <h1>Order Number: {%for i in order%}{{i.order_number}}{% if not forloop.last %} , {% endif %}{%endfor%}</h1>
+        {%if order.0.delivery_address.email%}
+        <p class="small">Details of your order has been sent to your email address.</p>
+        <span class="user-email">{{order.0.delivery_address.email}}</span>
+        {%endif%}
+        <p class="continue-link">
+            <a href="{%url 'client:catalog'%}">Continue Shopping</a>
+            {% if user.is_authenticated %}
+            <a href="{%url 'client:client-orders'%}" style="margin-left: 20px;">View My Orders</a>
+            {% endif %}
+        </p>
+       
+        </div>
+    </div>
+      {%include 'client/cake-977/partials/payment_partner.html'%}
+
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+
+
+{%endblock%}

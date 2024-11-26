@@ -1,0 +1,387 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block title %}Admin Users | Admin{% endblock title %}
+
+{% block extra_css %}
+<!-- Custom box css -->
+<link href="{% static 'admin_view/assets/libs/custombox/custombox.min.css' %}" rel="stylesheet">
+
+<!-- Bootstrap Tables css -->
+<link href="{% static 'admin_view/assets/libs/bootstrap-table/bootstrap-table.min.css' %}" rel="stylesheet"
+    type="text/css" />
+{% endblock %}
+
+
+{% block page_content %}
+<div id="wrapper">
+    {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+    {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start Content-->
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Admin Users</a></li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Admin Users</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        {% include 'admin_view/partials/_alerts.html' %}
+                        <div class="card-box">
+
+                            <div class="mb-3">
+                                <form method="get" action="{%url 'accounts:user-list'%}">
+                                <div class="row">
+                                    <div class="col-12 text-sm-center form-inline">
+                                       <!--  <a href="#" onclick="abc();" id="delete-bin" class="action-icon" style="margin-left: 10px; margin-right: 10px;"> <i
+                                            class="mdi mdi-delete" title="Delete All"></i></a> -->
+                                            <a style="margin-left: 10px;margin-right: 10px;" href="#con-close-modal" id="delete-bin" data-toggle="modal"
+                                               data-target="#con-close-modal-md" 
+                                               class="action-icon"> <i
+                                                class="mdi mdi-delete" title="Delete All"></i></a>
+                                        <div class="form-group mr-2">
+                                            <input name="user_keywords" type="text" placeholder="Keyword (username,email, etc)"
+                                                class="form-control" autocomplete="on" {%if user_keywords%}{{user_keywords}}{%endif%}>
+                                        </div>
+
+                                        <div >
+                                            <button type="submit"
+                                            class="btn btn-dark waves-effect waves-light">Search
+                                        </button>
+                                        </div>
+
+                                        </form>
+
+                                        <form style="margin-left: 15px;">
+                                        <div  class=" ml-auto mr-2">
+
+                                        <select class="form-control" name="user_type" onchange="this.form.submit()">
+                                          <option value="all" {%if user_type == 'all'%}selected{%endif%}>All users</option>
+                                          <option value="admin"{%if user_type == 'admin'%}selected{%endif%}>Admin</option>
+                                          <option value="delivery-boy"{%if user_type == 'delivery-boy'%}selected{%endif%}>Delivery Boy</option>
+                                          <option value="vendor"{%if user_type == 'vendor'%}selected{%endif%}>Vendor</option>
+                                          <option value="dispatcher"{%if user_type == 'dispatcher'%}selected{%endif%}>Dispatcher</option>
+                                          <option value="production"{%if user_type == 'production'%}selected{%endif%}>Production Manager</option>
+
+                                        </select>
+                                      </div>
+                                      <!-- <input type="hidden" name="page" value="{{page}}"> -->
+                                      </form>
+                                       
+<!--                                         <div style="float:right;" class="ml-auto mr-2">
+                                            <a  href="#custom-modal" class="btn btn-danger waves-effect waves-light"
+                                            data-animation="fadein" data-plugin="custommodal" data-overlaycolor="#38414a"><i
+                                                class="mdi mdi-plus-circle mr-1"></i> Add Customer</a>
+                                        </div> -->
+
+
+                                        {%if perms.auth.add_user%}
+                                         <div style="float:right;" class="ml-auto mr-2">
+                                            <a  href="{%url 'accounts:create-users'%}" class="btn btn-danger waves-effect waves-light"><i
+                                                class="mdi mdi-plus-circle mr-1"></i> Add Customer</a>
+                                        </div>
+                                        {%endif%}
+
+
+                                     
+                                    
+                                     
+
+
+                                    </div>
+                                   
+                                    
+
+                                </div>
+                                
+
+                            </div>
+                            <!-- <div class="form-group mr-2" >
+                                <a href="#" onclick="abc();" id="delete-bin" class="action-icon" style="margin-left: 10px;"> <i
+                                    class="mdi mdi-delete" title="Delete All"></i></a>
+                            </div> -->
+
+                            <table id="demo-foo-filtering" class="table toggle-circle mb-0" data-page-size="25">
+                                <thead>
+                                    <tr>
+                                        <th data-sort-ignore="true" style="width: 40px;">
+                                                {%if perms.auth.delete_user%}
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="customCheck1" onClick="toggle(this)">
+                                                    <label class="custom-control-label" for="customCheck1">&nbsp;</label>
+                                                </div>
+                                                {%endif%}
+                                            </th>
+
+                                        <th data-field="name" data-sortable="true">Username</th>
+                                        <th data-field="email" data-sortable="true">Email</th>
+                                        <th>Type</th>
+                                        <th data-field="first-name" data-sortable="true">Full Name</th>
+                                        <th style="width: 110px;">Action</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                     <form id="dell" method="post" action="{%url 'accounts:user-bulk-delete'%}">
+                                    {%csrf_token%}
+                                    {% for i in user %}
+                                    <tr>
+                                        <td class="text-center">
+                                            {%if perms.auth.delete_user%}
+                                                <div class="custom-control custom-checkbox">
+                                                    <input name="foo" onclick="allCheckboxChecked();" type="checkbox" class="custom-control-input" id="customCheck-{{i.id}}" value="{{i.id}}" onchange="checkChanged(this);">
+                                                    <label class="custom-control-label" for="customCheck-{{i.id}}">&nbsp;</label>
+                                                </div>
+                                                {%endif%}
+                                            </td>
+
+                                        <td>{{ i.username }}</td>
+                                        <td>{{ i.email }}</td>
+                                        <td>{%if i.is_superuser or i.is_staff%}Admin{%endif%}{%if i.profile.is_delivery_person%}<br> Delivery Boy {%endif%}{%if i.profile.store%}<br>Vendor{%endif%}{%if i.profile.is_dispatcher%}<br>Dispatcher{%endif%}</td>
+                                        <td>{{ i.first_name }} {{i.last_name}}</td>
+                                        <td>
+
+                                            {%if perms.auth.change_user%}
+                                            <a  href="#custom-modal-change-{{i.id}}" class="action-icon" title="Change Password" 
+                                            data-animation="fadein" data-plugin="custommodal" data-overlaycolor="#38414a"><i
+                                                class="fa fa-lock"></i></a>
+
+
+                                            <a title="Edit" href="{%url 'accounts:update1-user' i.id%}" 
+                                            class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
+                                            {%endif%}
+                                            {%if perms.auth.delete_user%}
+                                            <a title="Delete" href="#con-close-modal" data-toggle="modal"
+                                                data-target="#con-close-modal-{{i.id}}" class="action-icon"> <i
+                                                    class="mdi mdi-delete"></i></a>
+                                            {%endif%}
+
+
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </form>
+
+                                </tbody>
+                            </table>
+                            {%include 'admin_view/account/pagination.html'%}
+                        </div> <!-- end card-box-->
+                    </div> <!-- end col-->
+                </div>
+                <!-- end row-->
+
+            </div> <!-- container -->
+
+        </div> <!-- content -->
+
+
+    </div>
+
+</div>
+
+
+{%for i in user%}
+<div id="con-close-modal-{{i.id}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete User ?</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body p-4">
+                Are you sure want to delete this user ?
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="{% url 'accounts:user-delete' i.id %}">
+                    {% csrf_token %}
+                    <!-- <input type="hidden" id="brand_id" name="brand_id"> -->
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{%endfor%}
+<div id="con-close-modal-md" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Users ?</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body p-4">
+                Are you sure want to delete selected users ?
+            </div>
+            <div class="modal-footer">
+                
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                    <button type="submit" onclick="abc();" class="btn btn-info waves-effect waves-light">Delete</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{%for i in user%}
+<div id="custom-modal-change-{{i.id}}" class="modal-demo">
+    <button type="button" class="close" onclick="Custombox.modal.close();">
+        <span>&times;</span><span class="sr-only">Close</span>
+    </button>
+    <h4 class="custom-modal-title">Change user password</h4>
+    <div class="custom-modal-text text-left">
+        <form method="post" action="{% url 'accounts:change-password' i.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="password">New Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password"
+                    required="required">
+            </div>
+            <div class="form-group">
+                <label for="password2">Confirm Password (Again)</label>
+                <input type="password" class="form-control" id="password2" name="password2"
+                    placeholder="Enter password again" required="required">
+            </div>
+
+            <div class="text-right">
+                <button type="submit" class="btn btn-success waves-effect waves-light">Save</button>
+
+            </div>
+        </form>
+    </div>
+</div>
+{%endfor%}
+<!-- /.modal -->
+
+<!-- END wrapper -->
+
+
+
+
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %}
+{% endblock %}
+
+{% block extra_javascript %}
+<script type="text/javascript">
+    function abc(){
+        
+       document.getElementById('dell').submit();
+
+    }
+
+
+</script>
+
+
+
+    <script>
+    function toggle(source) {
+    checkboxes = document.getElementsByName('foo');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+    }
+
+    var checkBox = 'input[name="foo"]';
+    if ($(checkBox+':checked').length == 0) {
+        $("#delete-bin").hide();
+    }else if($(checkBox+':checked').length == $(checkBox).length){
+        $("#delete-bin").show();
+    }
+}
+
+function allCheckboxChecked(){
+    $("#delete-bin").show();
+   
+    var checkBox = 'input[name="foo"]';
+    if ($(checkBox+':checked').length == 0) {
+        $("#delete-bin").hide();
+        $('#customCheck1').prop('checked', false);
+    }else if($(checkBox+':checked').length == $(checkBox).length){
+        $('#customCheck1').prop('checked', true);
+
+    }
+   
+}
+$("#delete-bin").hide();
+
+    
+    </script>
+
+
+<script type="text/javascript">
+
+    $(function () {
+        var frm = $('#user-create');
+        frm.submit(function (ev) {
+            $.ajax({
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                data: frm.serialize(),
+                success: function (data) {
+                    if (data['status'] === 'success') {
+                        location.reload();
+                    }
+                    else {
+
+                        alert(Object.values(data['errors']))
+                    }
+                }
+            });
+            ev.preventDefault();
+        });
+    });
+
+</script>
+
+
+<script type="text/javascript">
+    function submitUserCreate(){
+        var frm = $('#user-create');
+
+        $.ajax({
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                data: frm.serialize(),
+                success: function (data) {
+                    if (data['status'] === 'success') {
+                        location.reload();
+                    }
+                    else {
+
+                        alert(Object.values(data['errors']))
+                    }
+                }
+            });
+    }
+</script>
+
+<script src="{% static 'admin_view/assets/libs/bootstrap-table/bootstrap-table.min.js' %}"></script>
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/bootstrap-tables.init.js' %}"></script>
+
+<!-- Modal-Effect -->
+<script src="{% static 'admin_view/assets/libs/custombox/custombox.min.js' %}"></script>
+
+<script src="{% static 'admin_view/custom.js' %}"></script>
+{% endblock %}

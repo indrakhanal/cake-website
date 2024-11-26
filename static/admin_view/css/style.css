@@ -1,0 +1,87 @@
+@charset "UTF-8";
+/*
+Template Name: Ubold - Responsive Bootstrap 4 Admin Dashboard
+Version: 4.0.0
+*/
+
+
+.left-align {
+	text-align: left;
+}
+
+/* select option[value]:checked {
+	border-color: blue!important;
+} */
+
+.product-box, .addon-box {
+	width: 100%;
+	padding: 1.25rem!important;
+	border: 2px dashed #ced4da!important;
+}
+
+.product-box .product-price-tag, .addon-box .product-price-tag {
+	line-height: 1.5!important;
+	height: 28px!important;
+	font-size: 18px!important;
+	background-color: #fff!important;
+}
+
+.card-box {
+	box-shadow: 0 0.75rem 2rem rgb(56 65 74 / 6%)!important;
+} 
+
+.dropzone .dz-message {
+	margin: 0rem!important;
+}
+
+.special-request-form {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.custom-control.material-checkbox {
+	--color: #14a76c;
+	--font-weight: 500;
+  }
+  .custom-control.material-checkbox .material-control-input {
+	display: none;
+  }
+  .custom-control.material-checkbox .material-control-input:checked ~ .material-control-indicator {
+	border-color: var(--color);
+	-webkit-transform: rotateZ(45deg) translate(1px, -5px);
+			transform: rotateZ(45deg) translate(1px, -5px);
+	width: 10px;
+	border-top: 0px solid #fff;
+	border-left: 0px solid #fff;
+	border-bottom: 2px solid var(--color);
+	border-right: 2px solid var(--color);
+  }
+  .custom-control.material-checkbox .material-control-indicator {
+	display: inline-block;
+	position: absolute;
+	top: 2px;
+	left: 0;
+	width: 16px;
+	height: 16px;
+	border: 1px solid #aaa;
+	-webkit-transition: .3s;
+	transition: .3s;
+  }
+
+  .qtySelector {
+	width: 300px;
+	display: flex;
+  }
+   
+  .qtyValue {
+	border: 1px solid #ddd;
+	margin: 0px;
+	width: 45px;
+	height: 25px;
+	font-size: 12px;
+	font-weight: 500;
+  }
+
+	
+	

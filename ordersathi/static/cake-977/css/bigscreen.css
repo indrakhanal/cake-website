@@ -1,0 +1,67 @@
+@media screen and (min-width: 1500px) {
+  .hero-image-one picture img {
+    width: 100%;
+  }
+
+  .first-row picture, .second-row picture {
+    flex: 0 1 49.25%;
+    width: 50%;
+  }
+
+  .first-row picture {
+    height: 96%;
+  }
+
+  .second-row picture {
+    height: auto;
+  }
+
+  .hero-image-one {
+    flex: 0 1 49.25%;
+  }
+
+  .big-banner {
+    justify-content: space-between;
+  }
+
+  .first-row, .second-row {
+    align-items: unset;
+  }
+  .slider-text {
+	top: 13%;
+	left: 40%;
+  }
+  .most-popular-flavours-subtitle {
+    left: 46.5%;
+  }
+  .brand-subtitle {
+    left: 46.5%;
+  }
+
+  .review .box .chart {
+    width: 100%;
+  }
+
+  .review .box {
+    text-align: center;
+  }
+
+  .review-body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .review-body .sortby {
+    width: 100%;
+  }
+
+  .allreview-log {
+    width: 49%;
+  }
+
+  .cake-categories{
+    justify-content: space-evenly;
+  }
+}

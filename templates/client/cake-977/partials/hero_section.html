@@ -1,0 +1,108 @@
+{%load static%}
+
+
+        <div class="banner-row">
+          {% if section_one.image_1 %}
+          <div class="hero-image-one">
+            <a href="{{section_one.redirect_url_1}}">
+            <figure class="effect-honey">
+              <img src="{{section_one.image_1_thumbnail.url}}">
+              <figcaption>
+                <h2><i><span>Order</span> Now</i></h2>
+            </figcaption>
+            </figure>
+            </a>
+          </div>
+          {%endif%}
+          <div class="banner-image">
+            {% if section_one.image_2 %}
+            <div class="hero-image-two">
+              <a href="{{section_one.redirect_url_2}}">
+              <figure class="effect-honey-two">
+              <img src="{{section_one.image_2_thumbnail.url}}">
+              <figcaption>
+                <h2><i><span>View</span> More</i></h2>
+            </figcaption>
+            </figure>
+            </a>
+              <!-- <div class="overlay-two">
+                <p><a href="#">All I need is you. But this cake would be great for me.</a>
+                </p>
+              </div> -->
+            </div>
+            {%endif%}
+            {% if section_one.image_3 %}
+            <div class="hero-image-three">
+              <a href="{{section_one.redirect_url_3}}">
+              <figure class="effect-honey-three">
+              <img src="{{section_one.image_3_thumbnail.url}}">
+              <figcaption>
+                <h2><i><span>View</span> More</i></h2>
+            </figcaption>
+            </figure>
+            </a>
+              <!-- <div class="overlay-three">
+                <p><a href="#">I eat cake because it's somebody's birthday somewhere.</a>
+                </p>
+              </div> -->
+            </div>
+            {%endif%}
+          </div>  
+          <div class="banner-image">
+            {% if section_one.image_4 %}
+            <div class="hero-image-four">
+              <a href="{{section_one.redirect_url_4}}">
+              <figure class="effect-honey-four">
+              <img src="{{section_one.image_4_thumbnail.url}}">
+              <figcaption>
+                <h2><i><span>View</span> More</i></h2>
+            </figcaption>
+            </figure>
+            </a>
+              <!-- <div class="overlay-four">
+                <p><a href="#">A day without cake......is a day wasted.</a>
+                </p>
+              </div> -->
+            </div>
+            {%endif%}
+            {% if section_one.image_5 %}
+            <div class="hero-image-five">
+              <a href="{{section_one.redirect_url_5}}">
+              <figure class="effect-honey-five">
+              <img src="{{section_one.image_5_thumbnail.url}}">
+              <figcaption>
+                <h2><i><span>View</span> More</i></h2>
+            </figcaption>
+            </figure>
+            </a>
+              <!-- <div class="overlay-five">
+                <p><a href="#">All we need is Love. But a cupcake would also be nice.</a>
+                </p>
+              </div> -->
+            </div>
+            {%endif%}
+          </div>
+        </div>
+
+
+  {%if landing_categories%}
+  <h2 class="categories-title">Some of Our</h2>
+  <h4 class="best-seller-subtitle">Categories</h4>
+  <div class="cake-categories">
+    {%for i in landing_categories%}
+    <a href="{{i.category.get_absolute_url}}">
+      <div class="card">
+        <div class="spin circle">
+          <img {%if i.image%}src="{{i.image.url}}"{%else%}src="{%static 'cake-977/def_img/Cake977-255X255px-02.png'%}"{%endif%} alt="{{i.category.name|title}}">
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{i.category.name|title}}</h5>
+        </div>
+    </div>
+    </a>
+    {%endfor%}
+  
+  </div>
+
+  {%endif%}
+</section>

@@ -1,0 +1,31 @@
+<!-- description section -->
+    <span class="anchor" id="test"></span>
+        <div class="product-desc" id="prod-desc">
+          <h2>Product Description</h2>
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" data-toggle="tab" href="#prod-tab">Product Details</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#deliv-tab">Delivery Information</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#instr-tab">Instructions</a>
+            </li>
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div class="tab-pane active" id="prod-tab">
+              
+              <p>{{product.long_description|safe}}</p>
+           
+            </div>
+            <div class="tab-pane fade" id="deliv-tab">
+             <p>{{product.delivery_information|safe}}</p>
+            </div>
+            <div class="tab-pane fade" id="instr-tab">
+             <p>{{product.instruction|safe}}</p>
+            </div>
+          </div>
+        </div>

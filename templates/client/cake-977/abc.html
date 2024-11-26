@@ -1,0 +1,11 @@
+<h1>Payment</h1>
+
+<form method="{{form.method}}" action="{{form.action}}">
+   
+   {% for item in form.children  %}
+   {{item.name}}
+   <input type="text" name="{{item.name}}" value="{{item.value}}" style="width:70%"><br><br>
+   {% endfor %}
+   <br>
+      <button>Submit Form</button>
+</form>

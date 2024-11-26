@@ -1,0 +1,113 @@
+{%load static%}
+  <!-- Modal -->
+   <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" id="addon-model">
+    <form id="addon-form">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content add-on-content">
+                <div class="modal-header add-on-header">
+                  <h3>Add some more fun to your celebration</h3>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                <div class="modal-body add-on-pop-up">
+                  <ul class="nav nav-tabs" id="myTab" role="tablist">
+		          	{%for i in product.addonListTypes%}
+
+		            <li class="nav-item">
+                      <a {%if forloop.counter == 1 %}class="nav-link active"{%else%}class="nav-link"{%endif%}  id="id-{{i.type|slugify}}" data-toggle="tab" href="#{{i.type|slugify}}" role="tab" aria-controls="{{i.type|slugify}}" aria-selected="false">
+                        {{i.type}}
+                      </a>
+                    </li>
+		           
+		            {%endfor%}
+
+		            
+		          </ul>
+                  <div class="tab-content" id="myTabContent">
+                  	{%for i in product.addonListTypes%}
+                  	<div {%if forloop.counter == 1%} class="tab-pane fade show active"{%else%}class="tab-pane fade"{%endif%} id="{{i.type|slugify}}" role="tabpanel" aria-labelledby="id-{{i.type|slugify}}">
+
+              		<div class="add-on-items-normal">
+              			
+              		{%for addon in i.addons %}
+					       <div class="add-on-items-cards-normal">
+                  <div class="card"  >
+                    <picture>
+                     {%if addon.addon_image%}
+                    <img class="card-img-top" src="{{addon.addon_image_350X350.url}}" alt="{{addon.name|title}}">
+                    {%else%}
+                    <img class="card-img-top" src="{%static 'cake-977/def_img/Cake977-255X255px-02.png'%}" alt="{{i.name|title}}">
+                    {%endif%}
+                  </picture>
+                    <div class="card-body add-on-body-normal">
+                      <div class="addon-text">
+                        <h5 class="card-title">{{addon.name|title}}</h5>
+                        <p class="card-text">{{currency}}.{{addon.price}}</p>
+                      </div>
+
+
+
+                      <input type="hidden" name="addons_quantity" id="add-on-items-qty{{addon.id}}{{product.id}}">
+                <input type="hidden" name="addons" id="add-on-items{{addon.id}}{{product.id}}">
+                      <div class="addon-qtyselect">                                
+                          <div class="qty-input">
+                            <button class="qty-count qty-count--minus" data-action="minus" type="button" disabled
+                      onclick="setQtyAddonMinus('{{addon.id}}','{{product.id}}','{{addon.price}}')">-</button>
+                    <input class="product-qty" type="number" min="1" max="10" value="0"
+                      onchange="setQtyAddon('{{addon.id}}','{{product.id}}','{{addon.price}}')" id="quantity--{{addon.id}}" disabled>
+                    <button class="qty-count qty-count--add" data-action="add" type="button"
+                      onclick="setQtyAddonPlus('{{addon.id}}','{{product.id}}','{{addon.price}}')">+</button>
+                          </div>                           
+                        </div>
+                    </div>
+                  </div>
+                </div> 
+                        {%endfor%}
+                		
+                    </div>
+                  </div>
+                  {%endfor%}
+                  </div>
+                </div>
+
+       <div class="modal-footer addon-buy-btn">
+          <div class="left-addon-foot-cart">
+          <div class="price-detail-cart">
+            <h6>Price Details</h6>
+          </div>
+          <div class="item-detail-cart">
+            <p>1 Base item</p>
+            <span id="base-item-total">{{currency}}.0</span>
+          </div>
+          <div class="sum-cart">
+            <span><i class="fas fa-plus"></i></span>
+          </div>
+          <div class="add-on-price-cart">
+            <p id="addon_count">0 Add-ons</p>
+            <span id="addon_total_price">{{currency}}.0</span>
+          </div>
+          <div class="equals-cart">
+            <span><i class="fas fa-equals"></i></span>
+          </div>
+          <div class="total-price-cart">
+            <p>Total</p>
+            <span id="grand_total_price">{{currency}}.0</span>
+          </div>
+        </div>
+        <div class="right-addon-foot-cart">
+          <div class="addon-button-cart" id="add-to-cart-btn">
+            <button onclick="go_to_checkout('no')" type="button" class="btn btn-success">Continue Shopping</button><br>
+          <button onclick="go_to_checkout('yes')" type="button" class="btn btn-success">Go to Checkout</button>
+          </div>
+          <div class="addon-button" id="add-to-cart-btn-buy">
+           
+          <button onclick="go_to_checkout('yes')" type="button" class="btn btn-success buy-btn" >Continue to checkout</button>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>

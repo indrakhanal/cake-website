@@ -1,0 +1,46 @@
+{%load static%}
+<!-- Get Offer Section -->
+      
+      {% if landing_banner %}
+      
+      <section class="get-offer">
+        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <a href="{{landing_banner.0.redirect_url}}">
+                
+              <img class="d-block w-100" src="{{landing_banner.0.image_thumbnail.url}}" alt="{{landing_banner.0.image.name}}">
+              </a>
+              
+            </div>
+            {%for i in landing_banner|slice:"1:"%}
+            <div class="carousel-item">
+              <a href="{{i.redirect_url}}">
+                {%if i.image%}
+              <img class="d-block w-100" src="{{i.image_thumbnail.url}}" alt="{{i.image.name}}">
+              {%endif%}
+              </a>
+              <!-- <div class="slider-text">
+                <img src="{%static 'cake-977/img/Logo.png'%}">
+                <h5>Buy<span>10</span> Cupcakes and Get <span>2</span> free</h5>
+                <button class="btn btn-get-offer">Get Offer</button>
+              </div> -->
+            </div>
+            {%endfor%}
+          </div>
+          <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+
+        <!-- <img src="img/Logo.png">
+        <h5>Buy <span>10</span> Cupcakes and Get <span>2</span> free</h5>
+        <button class="btn btn-get-offer">Get Offer</button> -->
+      </section>
+
+      {% endif %}

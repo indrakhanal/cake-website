@@ -1,0 +1,75 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+    <title>{{page_title}}</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+ 
+<main>
+      <!--Login Section-->
+    <div class="account-login" id="account-login">
+        <div class="form-container sign-up-container">
+            <form method="post" action="{% url 'accounts:signup' %}">
+                {%csrf_token%}
+                <h1>Create a new account</h1>
+                <p class="small">Create your account to easily place orders and keep track of them.</p>
+                 {%if form.errors %} 
+                  {% for field in form %} 
+                  {% for error in field.errors %}
+                  <div class="alert alert-danger">
+                      <strong>{{ error|escape }}</strong>
+                  </div>
+                  {% endfor %} 
+                  {% endfor %} 
+                  {% for error in form.non_field_errors %}
+                  <div class="alert alert-danger">
+                      <strong>{{ error|escape }}</strong>
+                  </div>
+                  {% endfor %} 
+                  {% endif %}
+                <label>Full Name</label><br>
+                <div class="row">
+                    <div class="col Fname">
+                        {{form.first_name}}
+                    </div>
+                    <div class="col Lname">
+                        {{form.last_name}}                    
+                    </div>
+                </div>
+                <label>Email Address</label>
+                {{form.email}}
+                <label>Phone Number</label>
+                {{form.phone_number}}
+                <label>Password</label>
+                {{form.password1}}
+                <label>Confirm Password</label>
+                {{form.password2}}
+                <button class="btn btn-primary" type="submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    </main>
+
+
+{%include 'client/cake-977/partials/newsletter.html'%}
+
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+
+
+{%endblock%}

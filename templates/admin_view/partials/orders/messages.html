@@ -1,0 +1,16 @@
+
+{%for i in order.items.all%}
+   
+
+{% if i.special_instruction %}
+
+<div class="form-group mb-3">
+   <label for="example-textarea">{{i.product|title}}</label>
+   <textarea class="form-control" id="example-textarea" rows="5" readonly>{{i.special_instruction}}</textarea>
+</div>
+   
+{% endif %}
+         
+
+
+{% endfor %}

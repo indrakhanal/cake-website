@@ -1,0 +1,19 @@
+ 
+{%if flavour_quick%}
+ <!-- Top content for mobile-view -->
+        <div class="product_categories_mob">
+          <h6>Flavours:&nbsp;&nbsp;</h6>
+          <div class="owl-carousel slider">
+
+          	 {%for i in flavour_quick%}
+            <a href="{% url 'client:price-range-product-lists'%}?page={{page}}&min_price={{min_price}}&max_price={{max_price}}&flavour_quick={{i.slug}}">
+              <div class="box product_one">
+                <div class="product_name">
+                  <h4 class="card-title">{{i.name|title}}</h4>
+                </div>
+              </div>
+            </a>
+            {%endfor%}
+          </div>
+        </div>
+{%endif%}

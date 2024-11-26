@@ -1,0 +1,53 @@
+{%load static%}
+{%if related_product%}
+<div class="recommend-section">
+        <h2 class="title">Recommended Products</h2>
+        <div class="recommend">
+          {%for i in related_product%}
+            <div class="product-section">
+              <div class="img-recommend">
+                  {%if i.image%}
+                 <a href="{{i.get_absolute_url}}"> <img class="card-img-top" src="{{i.recomendation_thumbnail.url}}" alt="{{i.name}}"></a>
+                  {%else%}
+                  <a href="{{i.get_absolute_url}}"><img class="card-img-top" src="{%static 'cake-977/def_img/Cake977-287x191px-06.png'%}" alt="default image"></a>
+                  {%endif%} 
+              </div>                
+              <h5 class="card-title"><a href="{{i.get_absolute_url}}">{{i.name|title}}</a></h5>
+                 <p class="cake-price">{{currency}}. {{i.product.all.0.selling_price}}<span>{%if i.product.all.0.price %}<del>{{currency}}. {{i.product.all.0.old_price}}</del></span>
+                    <span class="cake-offer">{{i.product.all.0.discount}}% off</span>{%endif%}
+                  </p>
+              <div class="card-details">
+                <div class="card-left">
+                  <p class="cake-delv-info">Earliest Delivery: <span>Today</span></p>
+                </div>
+                <div class="card-right">
+                  <div class="rating-badge">
+                    <p>{{i.avg_review}} <span><i {% if i.avg_review == 5.0 %}class="fas fa-star"{% else %}class="fas fa-star-half-alt"{% endif %}></i></span></p>
+                  </div>
+                </div>
+              </div>
+              <div class="card-details">
+                <div class="card-left">
+                  {%if i.store%}
+                  <a class="card-text" href="{%url 'client:store-product-list' i.store.slug%}"> By {{i.store.name|title}}, {{i.store.store_location1|title}}
+                        </a> 
+                        {%endif%}
+                </div>
+                <div class="card-right">
+                  <div class="total-reviews">
+                    <span>{{i.product_review.all.count}} reviews</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%endfor%}
+           
+        </div>
+
+</div>
+{%endif%}
+
+
+
+
+

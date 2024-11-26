@@ -1,0 +1,641 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+    <title>Cart</title>
+{%endblock%}
+{%block extra_css%}
+    <link rel="stylesheet" href="{%static 'cake-977/css/bootstrap.min.css'%}" type="text/css">
+    <link href="{%static 'cake-977/css/buy-stepper.css'%}" rel="stylesheet" type="text/css">
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+     <section class="main-cart-section">
+    <!-- Cart when it is full -->
+    <div class="cart full" id="cart-full-part">
+      <div class="cart__body">
+          <h3 class="cart__title">Shopping Cart</h3>
+      </div>
+
+      <div class="cart__summary-item">
+          <ul class="cart__summary-item-list">
+            {%for item in cart_list%}
+                {%for i in item.varient%}
+              <li>
+                  <div class="product-row">
+                      <div class="product-card">
+                          {%if i.product.image%}
+                            <div class="product-image"
+                style="background-image: url({{i.product.cart_thumbnail.url}});background-size: cover;background-repeat: no-repeat;background-position: center;">
+                     </div>
+                            {%else%}
+                            <div class="product-image"
+                style="background-image: url('{%static 'cake-977/def_img/Cake977-162x140px-04.png'%}');background-size: cover;background-repeat: no-repeat;background-position: center;">
+                     </div>
+                     {%endif%}
+                      </div>
+                      <div class="product-card-attribute">
+                        <span class="product-card-name" data-toggle="modal" data-target=".bd-example-modal-lg-cart"><a href="{{i.product.get_absolute_url}}" style="color:#333333; text-decoration: none; ">{{i.varient_name|title}}</a>
+
+                          <div class="row product-card-price">
+                            <div class="col">
+                              <ul>
+                                <li>{% if i.product.is_cake_props %} {{i.product.get_first_varient_attribute_name}} - {{item.pound}} {% else %}{{item.pound}} Pound {% endif %}</li>
+                                {%if item.eggless%}
+                                <li>Eggless</li>
+                                {%endif%}
+                                {%if item.sugarless%}
+                                <li>Sugarless</li>
+                                {%endif%}
+                                <li>Date</li>
+                                <li>Time</li>
+                                {%if item.message%}
+                                <li>Message</li>
+                                {%endif%}
+                                
+                                <li>Addon Total</li>
+                                <li>Subtotal</li>
+
+                              </ul>
+                            </div>
+                            <div class="col">
+                              <ul>
+                                <li>{{currency}}. {{item.display_price}}</li>
+                                {%if item.eggless%}
+                                <li>{{currency}}.{{item.eggless_price}}</li>
+                                {%endif%}
+                                {%if item.sugarless%}
+                                <li>{{currency}}.{{item.sugarless_price}}</li>
+                                {%endif%}
+                                <li>{{item.date}}</li>
+                                <li>{{item.delivery_time.time_from}}-{{item.delivery_time.time_to}}</li>
+                                {%if item.message%}
+                                <li>{{item.message}}</li>
+                                {%endif%}
+                                <li>{{currency}} {{item.addon_total_price}}</li>
+                                <li class="cart-sub-total">{{currency}}.{{item.display_price_with_egg_sugar_and_addon}}</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </span>                              
+                      </div>
+                      <div class="cart-manager">
+                        <form class="qtySelector">
+                          <div class="value-button decrease" value="Decrease Value" onclick="cartChangedMinus('{{i.id}}','{{item.date}}','{{item.time}}');">-</div>
+                          <input type="number" class="qtyValue"  id="item_quantity--{{i.id}}{{item.date}}{{item.time}}"
+                                    value="{{item.quantity}}" onchange="cartChanged('{{i.id}}','{{item.date}}','{{item.time}}');" name="varient-{{i.id}}"/>
+                          <div class="value-button increase" value="Increase Value" onclick="cartChangedPlus('{{i.id}}','{{item.date}}','{{item.time}}');">+</div>
+                        </form>
+                      </div>
+
+                      <div class="close-cart">
+                      <p data-toggle="modal" data-target="#deleteBtntwo-{{i.id}}{{item.date}}{{item.time}}"><i class="far fa-times-circle"></i></p>
+                      <!-- The Modal -->
+                      <div class="modal fade" id="deleteBtntwo-{{i.id}}{{item.date}}{{item.time}}">
+                        <div class="modal-dialog">
+                          <div class="modal-content">                            
+                           
+                            <!-- Modal body -->
+                            <div class="modal-body" style="padding: 20px;">
+                              Are you sure you want to delete this item?
+                            </div>
+                            
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="sendAjaxQuantityChangeRequest('{{i.id}}','0','{{item.date}}','{{item.time}}')">Delete</button>
+                              <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </li>
+            {%endfor%}
+            {%endfor%}
+
+          </ul>
+      </div>
+      <div id="myDIV">
+        
+         <form class="form-inline promo-form"  action="POST" id='promocode-form' onsubmit="applyCoupon();return false;">
+              {%csrf_token%}
+        
+              <div class="input-group mb-3">
+                  <input type="text" class="form-control" id="coupon-field" placeholder="Enter code" name="coupon" required="required" {%if coupon%}value="{{coupon}}"{%endif%} {% if coupon_code_req %} value = "{{coupon_code_req}}" {% endif %}>
+                  <div class="input-group-append">
+                      <button class="btn promo-btn" type="submit">Apply</button>
+                  </div>
+              </div>
+        </form>
+        
+      </div>
+      <span id="error_coupon"></span>
+      <div class="code-display" id="coupon-applied">
+
+          {%if coupon%}
+          <span style="width: 37%;" id="applied-code"> 
+          Code: {{coupon.coupon_number}}</span>
+          <span class="perct-code" id="discount-coupon">Discount:{%if coupon.coupon_type == 'Flat' %} {{currency}}.{{coupon.value}} off {%else%} {{coupon.value}}% off{%endif%}</span>
+          {% else %}
+          <span style="width: 37%;" id="applied-code"> </span>
+          <span class="perct-code" id="discount-coupon"></span>
+         
+          {%endif%}
+      </div>
+      <div class="cart__summary" id="cart-summ">
+          <dl class="cart__summary__amount">
+              <dt class="cart__summary__amount-subtotal">Subtotal</dt>
+              {%if coupon%}
+              <dd class="cart__summary__amount-subtotal">{{currency}}. {{discounted_sub_total}}<strike>{{currency}}. {{total_without_shipping_cost}}</strike></dd>
+              {%else%}
+              <dd class="cart__summary__amount-subtotal">{{currency}}. {{discounted_sub_total}}</dd>
+              {%endif%}
+
+              <dt class="cart__summary__amount-delivery">Delivery Fee</dt>
+              <dd class="cart__summary__amount-delivery">{{currency}}. {{shipping_cost_total}}</dd>
+              <dt class="cart__summary_amount-payable">
+                  Payable
+                  <em>(Incl.tax)</em> 
+              </dt>
+              <dd class="cart__summary_amount-payable">{{currency}}. {{discounted_total}}</dd>
+          </dl>
+      </div>
+    </div> 
+    <div class="checkout-section">
+      
+      <div class="cart__body">
+        <h3 class="cart__title">Checkout</h3>
+        <p class="small checkout-instruct">Login to checkout or continue as a guest. The credentials will be used to send you the information of your orders</p>
+        <!-- <p>Minimum cart requirement is {{currency}}.{{settings.minimum_order_price}}</p> -->
+      </div> 
+      
+      <div>
+        <form class="checkout-first-form"> 
+         
+        {%if not user.is_authenticated%}       
+          <a class="btn btn-success checkout-login-btn" href="{%url 'accounts:login'%}" type="button">Login to checkout</a>
+
+          <a {% if cart_count <= 0 %} class="btn btn-success checkout-login-btn" onclick="showMessage('You Cart is empty. Please add item to proceed to order');" {%else%}class="btn btn-success checkout-success-btn"{%endif%} href="#" type="button">Continue as guest</a>
+          {%else%}
+          <a {% if cart_count <= 0 %} class="btn btn-success" onclick="showMessage('You Cart is empty. Please add item to proceed to order');" {%else%}class="btn btn-success checkout-success-btn"{%endif%} style="color: white;"  type="button">Checkout to order</a>
+          {%endif%}
+          
+          
+        </form>
+        {%if not user.is_authenticated%}
+        <p class="small signup-text-check" style="font-weight: 600; text-align: center;">Don't have account yet?<span>&nbsp;<a
+          href="{%url 'accounts:signup'%}">create a new account</a></span></p>
+          {%endif%}
+      </div>      
+      
+      <div class="change_address">
+        <span class="tick-mark"><i class="far fa-check-circle"></i></span>
+          <div class="text-section-address">
+           <h6>Receipant's Detail</h6>
+          <span id="rec_name"></span><br>
+          <span id="rec_add"></span><br>
+          <span id="rec_phone"></span><br><br>
+
+          <h6>Sender's Detail</h6>
+          <span id="sen_name"></span><br>
+          <span id="sen_email"></span><br>
+          <span id="sen_phone"></span>&nbsp;&nbsp;
+          <button id="change-address-button">Change address</button>
+          </div>
+
+      </div>  
+      
+      <form method="post" action="{%url 'client:place-order'%}" id="placeorder">
+        {%csrf_token%}
+      <div class="shipping-delivery-section">
+        <div class="cart__body">
+          <h3 class="cart__title">Shipping & Delivery</h3>
+        </div>        
+        <div class="Receivers-detail">
+          <h6>Receiver's Detail</h6>
+          <div class="custom-control custom-checkbox self-receiver small">
+            <input type="checkbox" class="custom-control-input" id="customCheckself" name="i_am_receiver" value="yes">
+            <label class="custom-control-label" for="customCheckself">I am the receiver.</label>
+          </div>
+          <div id="receiver-form">
+            <div class="row">
+              <div class="col receivers-detail-label">
+                <label for="receiver_fullname">Recipient Name</label>
+                <input type="text" class="form-control" placeholder="*Recipient's Name" required="" name="receiver_fullname" id="rec__name">
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="receiver_email">Email</label>
+                <input type="email" class="form-control" placeholder="Recipient's Email(Optional)" name="receiver_email">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col receivers-detail-label">
+                <label for="receiver_address">Address</label>
+                <input type="text" class="form-control" placeholder="*Recipient's Address" required="" name="receiver_address" id="rec__address">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col receivers-detail-label">
+                <label for="landmark">Landmark</label>
+              <input type="text" class="form-control" placeholder="Landmark" name="landmark">
+              </div>
+              <div class="col">
+                <label class="receivers-detail-text">Address Type</label><br>
+                <label class="radio-inline"><input type="radio" name="address_type" value="Home" checked> Home</label> &nbsp
+                <label class="radio-inline"><input type="radio" name="address_type" value="Office"> Office</label>&nbsp
+                <label class="radio-inline"><input type="radio" name="address_type" value="Other"> Other</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col receivers-detail-label">
+                <label for="receiver_number1">Recipient's Mobile</label>
+                <input type="tel" id="rec__phone" name="receiver_number1" class="form-control" placeholder="*Recipient's Mobile" required="">
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="receiver_number2">Recipient's Alt Mobile</label>
+                <input type="tel" id="phone" name="receiver_number2" class="form-control" placeholder="Recipient's Alt Mobile">
+              </div>
+            </div>
+            <div class="occasion-section">
+                <label for="sel2">What Ocassion is the cake for?</label>
+                <select class="form-control" id="sel2" name="occasion">
+                  <option value="Birthday">Birthday</option>
+                  <option value="Anniversary">Anniversary</option>
+                  <option value="Baby Shower">Baby Shower</option>
+                  <option value="Weeding">Wedding</option>
+                </select>
+            </div>
+            <h6 class="sender-detail">Sender's Detail<span>&nbsp &nbsp<i class="fas fa-info-circle"></i> Order related communication will also be sent on these details.</span></h6>
+            <div class="row sender-form">
+              <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="Sender Name" required="" name="sender_full_name" id="sen__name">
+              </div>
+              <div class="col-md-4">
+                <input type="email" class="form-control" placeholder="Sender email" id="sen__email" name="sender_email">
+              </div>
+              <div class="col-md-3">
+                <input type="tel"  name="sender_phone_number" class="form-control" placeholder="Sender Phone Number" id="sen__phone">
+              </div>
+              <!-- <div class="col-md-1">
+                <button class="btn btn-edit">
+                  <span>Save</span>
+                </button>
+              </div> -->
+            </div>
+            <div class="custom-control custom-checkbox hide-info small">
+              <input type="checkbox" class="custom-control-input" id="customCheck" name="hide_info_from_receiver">
+              <label class="custom-control-label" for="customCheck">Hide the information from receipant for surprise.</label>
+            </div>
+            <a class="btn btn-success shipping-del-btn" href="#" type="submit">Continue</a>
+          </div>
+        </div>  
+      </div>
+      <div class="payment">
+        <div class="cart__body">
+          <h3 class="cart__title">Payment Information</h3>
+          <p id="error_display"></p>
+        </div>
+        <p class="small">Choose a way to payment method for your order:</p>
+
+        <!-- <form> -->
+          <div class="custom-control custom-radio">
+            <input type="radio" id="payment-one" name="payment_method" class="custom-control-input" value="cod" checked>
+            <label class="custom-control-label" for="payment-one">Cash on delivery</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" id="payment-five" name="customRadio" class="custom-control-input">
+            <label class="custom-control-label" for="payment-five">Khalti</label>
+          </div>
+         <!-- <div class="custom-control custom-radio">
+            <input type="radio" id="payment-two" name="customRadio" class="custom-control-input">
+            <label class="custom-control-label" for="payment-two">International Visa Card</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" id="payment-three" name="customRadio" class="custom-control-input">
+            <label class="custom-control-label" for="payment-three">eSewa</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" id="payment-four" name="customRadio" class="custom-control-input">
+            <label class="custom-control-label" for="payment-four">Fonepay</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" id="payment-five" name="customRadio" class="custom-control-input">
+            <label class="custom-control-label" for="payment-five">Khalti</label>
+          </div> -->
+      
+          <a class="btn btn-success checkout-success-btn" href="#" onclick="placeOrder('placeorder')">Continue</a>
+        <!-- </form> -->
+      </div>
+      </form>
+    </div> 
+    </section>
+  {%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+
+
+
+  <!-- Optional JavaScript -->
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.js"></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/sidemenu.js'%}"></script>
+    <script src="{%static 'cake-977/js/mob-bottom-menu.js'%}"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/checkout.js'%}"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/tabs.js'%}"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/qty-button.js'%}"></script>
+    <script src="{%static 'cake-977/js/horizontal-stepper.js'%}"></script>
+    
+    
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+    $(function() {
+        $( "#datepicker" ).datepicker({ firstDay: 1});
+        });     
+    </script>
+
+
+    <script>
+        function cartChangedPlus(n,date,time){
+           var varient_name=document.getElementsByName('varient-'+n)
+           console.log(varient_name)
+          var total_quantity_varient=0;
+          for(var i=0; i<varient_name.length; i++){
+            total_quantity_varient=total_quantity_varient+parseInt(varient_name[i].value)
+          }
+          total_quantity_varient=total_quantity_varient+1;
+            var varient_id=n;
+            var quantity=parseInt(document.getElementById("item_quantity--"+n+date+time).value)+1;
+            
+            if(quantity===0){
+
+              var delete_item='deleteBtntwo-'+n+date+time;
+              
+               $(`#${delete_item}`).modal('show');
+            }else{
+            sendAjaxQuantityChangeRequest(varient_id,quantity,date,time,total_quantity_varient);
+            }
+        }
+
+        function cartChangedMinus(n,date,time){
+
+
+          var varient_name=document.getElementsByName('varient-'+n)
+          var total_quantity_varient=0;
+          for(var i=0; i<varient_name.length; i++){
+            total_quantity_varient=total_quantity_varient+parseInt(varient_name[i].value)
+          }
+          total_quantity_varient=total_quantity_varient-1;
+
+            var varient_id=n;
+            var quantity=parseInt(document.getElementById("item_quantity--"+n+date+time).value) -1;
+          
+            
+            if(quantity===0){
+
+              
+              var delete_item='deleteBtntwo-'+n+date+time;
+              
+              
+               $(`#${delete_item}`).modal('show');
+            }else{
+            sendAjaxQuantityChangeRequest(varient_id,quantity,date,time,total_quantity_varient);
+            }
+            
+        }
+
+        function cartChanged(n,date,time){
+
+          var varient_name=document.getElementsByName('varient-'+n)
+
+          var total_quantity_varient=0;
+          for(var i=0; i<varient_name.length; i++){
+            total_quantity_varient=total_quantity_varient+parseInt(varient_name[i].value)
+          }
+          
+            var varient_id=n;
+            var quantity=document.getElementById("item_quantity--"+n+date+time).value;
+            quantity=parseInt(quantity)
+            if(quantity===0){
+            
+              
+              var delete_item='deleteBtntwo-'+n+date+time;
+              
+               $(`#${delete_item}`).modal('show');
+            }else{
+            sendAjaxQuantityChangeRequest(varient_id,quantity,date,time,total_quantity_varient);
+            }
+            
+        }
+    </script>
+ 
+  <script>
+        function sendAjaxQuantityChangeRequest(varient_id,quantity,date,time,total_quantity_varient){
+          
+          
+          
+            $.ajax({
+            type: "POST",
+            url: "{% url 'client:cart-update' %}",
+            data : { csrfmiddlewaretoken: '{{ csrf_token }}', 'varient' : varient_id, 'quantity' : quantity,'delivery_date':date,'time':time, 'total_quantity_varient':total_quantity_varient},
+            success: function (data) {
+              if(data['status']==='Success'){
+                
+                $("#cart_count_desktop").html(data['cart_count'])
+                $("#cart_count_mobile").html(data['cart_count'])
+                $("#cart-full-part").load(location.href+" #cart-full-part>*","");
+               
+                // location.reload()
+
+              
+              }
+              if(data['error']){{
+                showMessage(data['error'],'Error')
+              }}
+
+
+            }
+          });
+        
+        
+          }
+
+
+        </script>
+
+
+
+ <script>
+        function applyCoupon(){
+
+            var queryString = $('#promocode-form').serialize();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'client:apply-coupon' %}",
+                data: queryString,
+                success: function (data) {
+                  if(data['status']==='Success'){
+                    // $('#sub-total-price-cart').html(`<strike>{{currency}}.${data['previous_total']}</strike>&nbsp{{currency}}.${data['total']}`)
+                  
+
+                  $('#coupon-applied').empty()
+                  if(data['coupon']['coupon_type']==='Flat'){
+                    $('#coupon-applied').append(`
+                        <span style="width: 37%;" id="applied-code"> 
+                        Code: ${data['coupon']['coupon_number']}</span>
+                        <span class="perct-code" id="discount-coupon">Discount: {{currency}}.${data['coupon']['value']} off</span>
+                        `)
+
+                  }else{
+                  $('#coupon-applied').append(`
+                        <span style="width: 37%;" id="applied-code"> 
+                        Code: ${data['coupon']['coupon_number']}</span>
+                        <span class="perct-code" id="discount-coupon">Discount:${data['coupon']['value']}% off</span>
+                        `)
+                  }
+
+                  $("#cart-summ").load(location.href+" #cart-summ>*","");
+
+
+                  }
+                
+            if(data['error']){
+              
+              if(data['min_value'] && data['max_value']){
+                var msg='Code '+ '"'+data['coupon']+'"' +' is applied to cart total between '+data['min_value']+' and '+data['max_value']+' and valid till '+data['validity_date']+'.';
+                $('#error_coupon').notify(msg);
+                
+              }else{
+                $('#error_coupon').notify(data['error']);
+                
+             }
+            }
+                }
+            });
+            return false;
+
+        }
+</script>
+
+
+<!-- <script type="text/javascript">
+  $('#user_email').keyup(function (){
+   
+    $('#InputEmail').text($(this).val());
+    $('#sender_email').val($(this).val());
+     
+});
+  $('#sender_email').keyup(function (){
+   
+    $('#InputEmail').text($(this).val());
+    $('#user_email').val($(this).val());
+     
+});
+
+$('#user_phone').keyup(function (){
+    
+    $('#InputPhone').text($(this).val());
+     
+});
+
+
+
+
+</script> -->
+<script type="text/javascript">
+  $('#rec__address').keyup(function (){
+    
+    $('#rec_add').text($(this).val());
+     
+});
+  $('#rec__name').keyup(function (){
+    
+    $('#rec_name').text($(this).val());
+     
+});
+    $('#rec__phone').keyup(function (){
+    
+    $('#rec_phone').text($(this).val());
+     
+});
+
+    $('#sen__name').keyup(function (){
+    
+    $('#sen_name').text($(this).val());
+     
+});
+  $('#sen__phone').keyup(function (){
+    
+    $('#sen_phone').text($(this).val());
+     
+});
+    $('#sen__email').keyup(function (){
+    
+    $('#sen_email').text($(this).val());
+     
+});
+</script>
+
+
+
+<script type="text/javascript">
+  function send_email(order_number){
+    $.ajax({
+    type: "GET",
+    url: "{% url 'client:send-email' %}",
+    data: {'order_number':order_number},
+    success: function (data) {
+        
+    }
+    });
+}
+
+    function placeOrder(type_delivery){
+    var frm = $(`#${type_delivery}`)
+    
+     $.ajax({
+                type: "POST",
+                url: "{% url 'client:place-order' %}",
+                data: frm.serialize(),
+                success: function (data) {
+                    
+                    if(data['status']==='Success'){
+                      send_email(data['reference']);
+
+                      window.location.href = '/order/success/'+data['reference']; 
+                    }
+                    if(data['error']){
+                      
+                        $('#error_display').notify(data['error']);
+                    }
+                }
+            });
+  }
+  
+</script>
+
+
+
+{%endblock%}

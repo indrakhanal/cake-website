@@ -1,0 +1,426 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+
+{%block title%}
+<title>{{product.name|title}}</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/select_location_popup_detail.html'%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+<div class="main-body">
+
+    {%include 'client/cake-977/partials/detail/shop_header.html'%}
+    {%include 'client/cake-977/partials/detail/breadcrumbs.html'%}
+    <!-- Notification after adding a produc to cart -->
+    <div class="notification-viewcart" id="add-to-cart-success" style="display: none;">
+      <div class="notification-alert">
+        <span class="notification-message"><i class="fas fa-check-circle"></i></span>“{{product.name|title}}” has been added to your cart.
+      </div>
+      <div class="view-cart-button">
+        <a class="btn btn-primary" href="{%url 'client:client-cart'%}" type="button">
+            <input type="hidden" id="focus-here">
+        <span><i class="fas fa-shopping-cart"></i></span>view cart</a>
+
+      </div>
+    </div>
+    {%include 'client/cake-977/partials/detail/product_detail.html'%}
+    {%include 'client/cake-977/partials/detail/review.html'%}
+    {%include 'client/cake-977/partials/detail/recommend.html'%}
+    {%include 'client/cake-977/partials/detail/product_description.html'%}
+
+
+</div>
+  {%include 'client/cake-977/partials/payment_partner.html'%}
+
+{%include 'client/cake-977/partials/footer.html'%}
+
+{%endblock%}
+
+{%block js%}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<!--  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+<script type="text/javascript" src="{%static 'cake-977/js/owl.carousel.min.js'%}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="{%static 'cake-977/js/custom.js'%}"></script>
+<script type="text/javascript" src="{%static 'cake-977/js/qty-button.js'%}"></script>
+<script type="text/javascript" src="{%static 'cake-977/js/carousel.js'%}"></script>
+<script type="text/javascript" src="{%static 'cake-977/js/message_length.js'%}"></script>
+<script type="text/javascript" src="{%static 'cake-977/js/additional.js'%}"></script>
+<script src="{%static 'cake-977/js/upload-image.js'%}"></script>
+
+<script type="text/javascript" src="{%static 'cake-977/js/addon-qty-btn.js'%}"></script>
+<script type="text/javascript" src="{%static 'cake-977/js/review.js'%}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.6/jquery.easypiechart.min.js"></script>
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script id="1" language="JavaScript" type="text/javascript" src="https://cdn.esewa.com.np/ui/js/eSewa_logo/script.js" data-width="100px" data-elementId="eSewaLogoSection" data-type="DARK"></script>
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+    $(function () {
+        // var today_date = new Date()
+        // today_date = today_date.getFullYear()+"-"+String(today_date.getMonth()+1)+"-"+today_date.getDay()
+        var today_date = "{{product.get_min_order_date}}"
+        // get_shipping_method(today_date)
+        // $("#datepicker-input").val(today_date)
+        $("#datepicker").datepicker({
+            firstDay: 1,
+            dateFormat: 'yy-mm-dd',
+            minDate:  new Date(today_date),
+           
+           
+        }).datepicker("setDate", new Date());
+        
+        $("#datepicker").on("change", function () {
+            var selected = $(this).val();
+            console.log(selected);
+            $('#datepicker-input').val(selected);
+            $("#typetime-input").val("")
+            get_shipping_method(selected)
+            $("#date-not-select-parent").attr('class','md-form')
+            $('#date-not-select').hide();
+            $('#date-not-select1').hide();
+
+        });
+    });  
+    
+    function set_shipping_time(time_id,time_value,shipping_id){
+        $("#time-id").val(time_id);
+        $("#typetime-input").val(time_value);
+        $("#shipping_method_id").val(shipping_id);
+        $("#time-not-select-parent").attr('class','md-form')
+        $('#time-not-select').hide();
+        $('#date-not-select1').hide();
+        
+    }   
+
+  
+</script>
+<script>
+    
+ 
+    function submit_product_form(){ 
+        
+    var is_buy = $("#is_buy").val();
+    var valid_date_time = checkDeliveryDateAndTime();
+    var formData_1 = new FormData($("#add-to-cart")[0]); 
+    var formData_2 = new FormData($("#addon-form")[0]); 
+
+    for(var pair of formData_2.entries()){
+        formData_1.append(pair[0],pair[1]);
+    }
+
+    if(valid_date_time){
+        var formData = formData_1 + '&' + formData_2
+
+
+        $.ajax({
+            url: "{%url 'client:client-cart'%}",
+            type: 'POST',
+            data: formData_1,
+            success: function (data) {
+                if (data['status'] == 'Success') {
+                    if(data['redirect_to_checkout'] === 'yes'){
+                        window.location.replace("{%url 'client:client-cart'%}");
+                    }else{
+                        updateCartCount(data['cart_count'])
+                        $('#addon-model').modal('hide');
+                        $('#cart_count_desktop').html(data['cart_count'])
+                        $('#cart_count_mobile').html(data['cart_count'])
+                        $('#add-to-cart-success').show()
+                        $("html, body").animate({
+                            scrollTop: 70
+                            }, 200);  
+                        
+                    }
+                }
+                if(data['error']){
+                    showMessage(data['error'],"Error")
+                }
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+
+    }
+    
+
+
+}
+
+function updateCartCount(count){
+    $("#cart_count_desktop").text(count);
+    $("#cart_count_mobile").text(count);
+    $("#addon-modal").modal('hide');
+}
+
+function get_shipping_method(selected_date){
+    var product_id = "{{product.id}}"
+    $.ajax({
+        url: "{%url 'client:shipping-method'%}",
+        type: 'GET',
+        data: {'selected_date':selected_date,'product_id':product_id},
+        success: function (data) {
+            var shipping_methods = data['response']
+            console.log(shipping_methods,"---");
+            $(".shipping-methods-data").empty()
+
+            for(var item=0;item<shipping_methods.length;item++){
+
+            var string = `
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapseOne-${shipping_methods[item].shipping_method}">
+                    ${shipping_methods[item].shipping_method} 
+                    </a>
+                    <div class="right-most-button" data-toggle="collapse" href="#collapseOne-${shipping_methods[item].shipping_method}">
+                        <span>{{currency}}.${shipping_methods[item].price}</span>
+                    </div>
+                </div>
+                <div id="collapseOne-${shipping_methods[item].shipping_method}" class="collapse" data-parent="#accordion">
+                    <div class="card-body">`
+            
+                var shipping_time =  JSON.parse(shipping_methods[item].time)
+                console.log(shipping_time,"==",shipping_time.length)
+                for(var time = 0;time < shipping_time.length;time++){
+                var string = string +    `<div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" id="customRadioOne-${shipping_time[time].id}" name="example1" onclick="set_shipping_time('${shipping_time[time].id}','${tConvert(shipping_time[time].time_from)} - ${tConvert(shipping_time[time].time_to)}','${shipping_methods[item].id}')">
+                        <label class="custom-control-label" for="customRadioOne-${shipping_time[time].id}">${tConvert(shipping_time[time].time_from)} - ${tConvert(shipping_time[time].time_to)}</label>
+                        </div>`
+                }
+                   
+                var string = string +    
+                `</div>
+                </div>
+            </div>`
+
+
+            $(".shipping-methods-data").append(string)
+            
+
+
+            }
+
+            if (shipping_methods.length === 0 ){
+                $(".shipping-methods-data").append("Sorry, no time slot is not available in this date")
+                // $("#typetime-input").val("No time slot is not available in this date")
+                $("#time-id").val("")
+            }
+            
+            // $("#shipping_method_id").val(shipping_methods[0].id)
+            // var shipping_time_val =  JSON.parse(shipping_methods[0].time)
+            // $("#typetime-input").val(`${tConvert(shipping_time_val[0].time_from)} - ${tConvert(shipping_time_val[0].time_to)}`)
+            // $("#time-id").val(shipping_time_val[0].id)
+        
+            
+            
+            
+        },
+        
+    });
+}
+
+function tConvert (time) {
+   
+    time = time.replace(/:[^:]*$/,'')
+  // Check correct time format and split into components
+  time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+  if (time.length > 1) { // If time format correct
+    time = time.slice (1);  // Remove full string match value
+    time[5] = +time[0] < 12 ? ' AM ' : ' PM '; // Set AM/PM
+    time[0] = +time[0] % 12 || 12; // Adjust hours
+  }
+  return time.join (''); // return adjusted time or original string
+}
+    
+</script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.js"></script>
+
+<script type="text/javascript">
+ 
+
+  
+  {%if messages%}
+  {%for message in messages%}
+  $.notify('{{message}}','info');
+  {%endfor%}
+  {%endif%}
+
+
+</script>
+
+<script>
+    var attr_1 = ""
+    var attr_2 = ""
+    var varient_object = ""
+    var sugarless_price = 0
+    var eggless_price = 0
+    var total_sum = 0
+    var is_eggless_flat = '{{product.is_eggless_flat}}'
+    submit_attr();
+
+    function onclickFirstAttr(counter){
+        chooseSize(counter);
+        submit_attr();
+    }
+    
+    function submit_attr(){
+        attr_1 = document.getElementsByClassName('weight active')[0].innerHTML
+        append_attr2(get_related_attr(attr_1))
+        attr_2 = $('#sel1 :selected').text()
+        
+        varient_object = get_varient_id(attr_1,attr_2)
+        updateVarientId(varient_object['varient_id'])
+        updatePound(attr_1)
+        updateText(varient_object,sugarless_price,eggless_price)
+        
+        
+    }
+
+    function submit_attr2(){
+        var attr_1 = document.getElementsByClassName('weight active')[0].innerHTML
+        var attr_2 = $('#sel1 :selected').text()
+        var varient_object = get_varient_id(attr_1,attr_2)
+        updateVarientId(varient_object['varient_id'])
+        updatePound(attr_1)
+        updateText(varient_object,sugarless_price,eggless_price)
+
+    }
+
+    function updateVarientId(id){
+        $("#varient-id").val(id)
+    }
+
+    function updatePound(value){
+        $("#cake-weight").val(value)
+    }
+
+    function is_sugarless_click(){
+        console.log(varient_object,"sugarless")
+        var checked = $('#is_sugarless_id').is(":checked")
+        if(checked){
+            sugarless_price = parseFloat('{{product.get_sugarless_price}}')
+            updateText(varient_object,sugarless_price,eggless_price)
+        }else{
+            sugarless_price = 0
+            updateText(varient_object,sugarless_price,eggless_price)
+        }
+    }
+
+    function is_eggless_click(){
+        var checked = $('#is_eggless_id').is(":checked")
+        if(checked){
+            eggless_price = parseFloat('{{product.get_eggless_price}}')
+            updateText(varient_object,sugarless_price,eggless_price)
+        }else{
+            eggless_price = 0
+            updateText(varient_object,sugarless_price,eggless_price)
+        }
+    }
+
+    function updateText(varient_obj,sugarless_price,eggless_price){
+        if(is_eggless_flat === "no"){
+            eggless_price = eggless_price * parseFloat(attr_1)
+        }
+        total_sum = varient_obj['selling_price'] + sugarless_price + eggless_price
+        $('#selling-price').text(total_sum)
+        $('#base-item-total').text(`{{currency}}.${total_sum}`);
+        $('#grand_total_price').text(`{{currency}}.${total_sum}`);
+        if(varient_obj['old_price']!==""){
+            $('#old-price').text(`{{currency}}. ${varient_obj['old_price'] + sugarless_price + eggless_price}`)
+        }else{
+            $('#old-price').text("")
+        }
+
+        if(varient_obj['discount']!==""){
+            $('#discount-text').text(`${varient_obj['discount']}% off`)
+        }else{
+            $('#discount-text').text("")
+        }
+        varient_object = varient_obj;
+    }
+
+    function append_attr2(array){
+        $("#sel1").empty()
+
+        for(var item = 0; item<array.length; item++){
+            $("#sel1").append(` <option value="${array[item]}">${array[item]}</option>`)
+        }
+        
+    }
+
+
+    function get_varient_id(attr_1, attr_2) {
+        
+        var array = {{ varient_obj| safe}}
+        
+        for (var i = 0; i < array.length; i++) {
+            
+            if(attr_2==="" && array[i].attribute.includes(attr_1)){
+                    return array[i]    
+            }
+            if(array[i].attribute.includes(attr_1) && array[i].attribute.includes(attr_2)){
+                    return array[i]
+            }
+            
+
+        }
+    }
+
+    function get_related_attr(attr_1){
+        var array = {{ varient_obj| safe}}
+        var related_values =[]
+        
+        for (var i = 0; i < array.length; i++) {
+            
+          
+            if(array[i].attribute.includes(attr_1)){
+                related_values.push(array[i].attribute[1])
+                
+            }
+            
+
+        }
+        return related_values
+
+    }
+
+    $('p').each(function() {
+    var $this = $(this);
+    if($this.html().replace(/\s|&nbsp;/g, '').length == 0)
+    $this.remove(); }); 
+
+   
+
+</script>
+
+
+
+{%endblock%}

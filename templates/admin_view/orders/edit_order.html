@@ -1,0 +1,956 @@
+{% extends "admin_view/base.html" %} 
+{% load static %}
+{% load custom_tag %}
+{% load crispy_forms_tags %}
+{% block title %}Order | Admin{% endblock title %}
+{% block extra_css %}
+<style type="text/css">
+    .asteriskField {
+    color: red;
+}
+</style>
+<link href="{% static 'admin_view/assets/libs/select2/select2.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Bootstrap Tables css -->
+    
+<link href="{%static 'admin_view/assets/libs/summernote/summernote-bs4.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/libs/dropzone/dropzone.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/css/style.css'%}" rel="stylesheet" type="text/css" id="app-custom-stylesheet" />
+{% endblock %}
+{% block page_content %}
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %} 
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <!-- ============================================================== -->
+   <!-- Start Page Content here -->
+   <!-- ============================================================== -->
+
+        <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">UBold</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">eCommerce</a></li>
+                                            <li class="breadcrumb-item active">Order Edit</li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title">Add / Edit Order</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                {% include 'admin_view/partials/_alerts.html' %}
+                                <div class="card mb-0">
+                                    <div class="card-body" style="background-color: #1abc9c; padding: 1rem; border-radius: 2px;">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <h5 class="mt-0 mb-0" style="color: #ffffff;">Order ID: <span>#{{order.order_number}}</span></h5>
+                                            </div>
+                                            <div class="col-lg-6 text-right">
+                                                <h5 class="mt-0 mb-0" style="color: #ffffff;">Placed on: <span>{{order.date}}</span></h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Order edit headline -->
+
+
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <div class="card-box">
+                                    <h5 class="text-uppercase bg-light p-2 mt-0 mb-3">Order Details</h5>
+                                    <form action="{%url 'sales:order-update' order.id%}" id="order-create" class="needs-validation" method="post" enctype='multipart/form-data'>
+                                        {%csrf_token%}
+                                    <div class="form-group mb-3">
+                                        <label for="product-name">Choose Product<span class="text-danger"></span></label>
+                                        <select class="form-control select2" id="product-name" required="required">
+                                            <option>Select</option>
+                                            {%for i in products%}
+                                            <option value="{{i.id}}">{{i.name}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group mb-3" id="varient-div" >
+                                        <label for="product-varient">Choose Product Varients <span class="text-danger"></span></label>
+                                        <select class="form-control select2" id="product-varient">
+
+                                        </select>
+                                    </div>
+                                    <hr style='border-top: 1px solid red;'>
+                                    <span id="orderitem-variation">
+
+                                        {%for i in order.items.all%}
+                                        <ul class="pl-0"><li class="card-box product-box" id="varient-{{i.product.id}}">
+                                            <input type="hidden" class="material-control-input" name="varient" value="{{i.product.id}}">
+                                                        <div class="row">
+                                                            <div class="col-lg-5">
+                                                                <h5 class="font-16 mt-0 sp-line-1"><a href="{{i.product.product.get_absolute_url}}" class="text-dark">{{i.product.varient_name}}</a> </h5>
+                                                                <div class="special-request-form">
+                                                                    <div class="custom-controls-stacked d-block">
+                                                                        <label class="custom-control material-checkbox">
+                                                                        <input type="checkbox" class="material-control-input" name="eggless-{{i.product.id}}" {%if i.is_eggless%}checked{%endif%}>
+                                                                        <span class="material-control-indicator"></span>
+                                                                        <span class="material-control-description">Eggless[{{i.product.product.get_eggless_price}}]<span class="small"></span></span>
+                                                                        </label>
+                                                                    </div>  
+                                                                    <div class="custom-controls-stacked d-block">
+                                                                        <label class="custom-control material-checkbox">
+                                                                        <input type="checkbox" class="material-control-input" name='sugarless-{{i.product.id}}' {%if i.is_sugarless%}checked{%endif%}>
+                                                                        <span class="material-control-indicator"></span>
+                                                                        <span class="material-control-description">Sugarless[{{i.product.product.get_sugarless_price}}]<span class="small"></span></span>
+                                                                        </label>
+                                                                    </div> 
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-3">
+                                                                <div class="cart-manager">
+                                                                    {%if order.store.name == 'custom'%}
+                                                                        <input type="number" class="qtyValue" min="1" max="20" name="quantity" value="{{i.quantity}}" readonly/>
+                                                                    {%else%}
+                                                                    <input type="number" class="qtyValue" min="1" max="20" name="quantity" value="{{i.quantity}}" />
+                                                                    {%endif%}
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-2">
+                                                                <div class="product-price-tag">
+
+                                                                   {%if order.store.name == 'custom'%}
+                                                                   Rs.<input type="number" name="selling_price-{{i.id}}" value="{{i.price}}" style="width:70px;" onchange="updatePrice('{{order.id}}','{{i.id}}',this.value)">
+                                                                   {%else%}
+                                                                   Rs.{{i.price}}
+
+                                                                   {%endif%}
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-2">
+                                                                <div class="product-price-tag">
+                                                                    <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete" onclick="deleteVarient({{i.product.id}})"></i></a>
+                                                                </div>
+                                                            </div>
+                                                        </div> <!-- end row -->
+                                                        {%if order.store.name == 'custom'%}
+                                                        <div>
+                                                           <div class="row">
+                                                                <div class="col-md-6">
+                                                                <label>Weight</label>
+                                                            <input type="number" class="form-control" name="weight" style="width:70px;" value="{{i.pound}}" onchange="updatePound('{{order.id}}','{{i.id}}',this.value)">
+                                                            </div>
+
+                                                            <div class="col-lg-6">
+                                                                 <label>Flavour</label>
+                                                            <input class="form-control" type="text" name="falvour" style="width:200px;" value="{{i.flavour}}" onchange="updateFlavour('{{order.id}}','{{i.id}}',this.value)">
+                                                            </div>
+                                                           </div>
+                                                        </div>
+                                                        {%endif%}
+                                                    </li>
+                                                </ul>   <!-- end card-box-->
+
+                                            <div class="form-group mb-3" id="addon-{{i.product.id}}"> <label for="addons">Add-ons <span class="text-danger"></span></label>
+                                            <select class="form-control select2" id="addons" onchange="appendAddon(this.value,'{{i.product.id}}')">
+                                                <option value="" selected disabled hidden>Choose here</option>
+                                                {%for i in addons%}
+                                                <option value="{{i.id}}">{{i.name|title}}</option>
+                                                {%endfor%}
+                                            </select></div>
+                                           
+                                            <span id="addon-variation-{{i.product.id}}">
+                                               {%for addon in i.orderitem_addons.all%}
+                                               <div class="card-box addon-box " id="addon-{{addon.addons.id}}{{i.product.id}}"><div class="row">
+                                                <input type="hidden" class="material-control-input" name="addons-{{i.product.id}}" value="{{addon.addons.id}}">
+                                                <div class="col-lg-5">
+                                                    <h5 class="font-16 mt-0 sp-line-1"><a href="#" class="text-dark">{{addon.addons.name|title}}</a> </h5>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="cart-manager">
+                                                            
+                                                            
+                                                            <input type="number" class="qtyValue" value="{{addon.quantity}}" min="1" max="20" name='addon_quantity-{{i.product.id}}'/>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <div class="product-price-tag">
+                                                        Rs.{{addon.addons.price}}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <div class="product-price-tag">
+                                                        <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete" onclick="deleteAddon('{{addon.addons.id}}','{{i.product.id}}')"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end row -->
+                                            </div>
+                                               {%endfor%} 
+                                            </span>
+
+                                            <div class="form-group mb-3" id="image-{{i.product.id}}">
+                                            <label for="image">Image</label>
+                                            <input class="form-control" type="file" name="image-{{i.product.id}}" {%if i.photo_cake_image%} value="{{i.photo_cake_image.url}} "{%endif%}/>
+                                            {%if i.photo_cake_image%}<a target = "_blank" href="{{i.photo_cake_image.url}}">Preview image</a>{%endif%}
+                                            </div>
+
+                                            <div class="form-group mb-3" id="image1-{{i.product.id}}">
+                                            <label for="image1">Image 1</label>
+                                            <input class="form-control" type="file" name="image1-{{i.product.id}}" {%if i.photo_cake_image1%} value="{{i.photo_cake_image1.url}} "{%endif%}/>
+                                            {%if i.photo_cake_image1%}<a target="_blank" href="{{i.photo_cake_image1.url}}">Preview image</a>{%endif%}
+                                            </div>
+
+                                            <div class="form-group mb-3" id="image2-{{i.product.id}}">
+                                            <label for="image2">Image 2</label>
+                                            <input class="form-control" type="file" name="image2-{{i.product.id}}" {%if i.photo_cake_image2%} value="{{i.photo_cake_image2.url}} "{%endif%}/>
+                                            {%if i.photo_cake_image2%}<a target="_blank" href="{{i.photo_cake_image2.url}}">Preview image</a>{%endif%}
+                                            </div>
+
+                                            <div class="form-group mb-3" id="image3-{{i.product.id}}">
+                                            <label for="image3">Image 3</label>
+                                            <input class="form-control" type="file" name="image3-{{i.product.id}}" {%if i.photo_cake_image3%} value="{{i.photo_cake_image3.url}} "{%endif%}/>
+                                            {%if i.photo_cake_image3%}<a target="_blank" href="{{i.photo_cake_image3.url}}">Preview image</a>{%endif%}
+                                            </div>
+
+                                            <div class="form-group mb-3" id="message-{{i.product.id}}">
+                                            <label for="product-summary">Message</label>
+                                            <textarea class="form-control" id="product-summary" rows="1" placeholder="What would you like to write on the cake?" name="message-{{i.product.id}}">{{i.special_instruction}}</textarea>
+                                        </div>
+                                        <hr style='border-top: 1px solid red;'>
+                                        {%endfor%}
+                                    </span>
+
+
+
+
+
+<!--                                     <div class="form-group mb-3">
+                                        <label for="product-summary">Message</label>
+                                        <textarea class="form-control" id="product-summary" rows="1" placeholder="What would you like to write on the cake?" name="message"></textarea>
+                                    </div> -->
+
+                                    <!-- <div class="form-group mb-3">
+                                        <label for="product-summary">Special Request</label>
+                                        <textarea class="form-control" id="product-summary" rows="3" placeholder="Please enter request"></textarea>
+                                    </div>          -->                          
+                                </div> <!-- end card-box -->
+
+                                <div class="card-box">
+                                    <div class="row ml-0 mr-0 bg-light mb-3">
+                                        <div class="col-lg-6 pl-0 pr-0">
+                                            <h5 class="text-uppercase mt-0 mb-0 p-2">Delivery Information</h5>
+                                        </div>                                    
+                                        <div class="col-lg-6 pl-0 pr-0 text-right">
+                                            <h5 class="text-uppercase mt-0 mb-0 p-2">Ref. no.: 8b007</h5>
+                                        </div>
+                                    </div>                                    
+
+                                    <div class="form-group mb-3">
+                                        <label for="delivery-type">Delivery Type <span class="text-danger">*</span></label>
+                                        <select class="form-control select2" id="delivery-type" name="delivery-type" required="required">
+                                            <option value="{{order.items.all.0.shipping_method.id}}" selected>{{order.items.all.0.shipping_method.name|title}}</option>
+                                            {%for i in deliveryMethod%}
+                                            <option value="{{i.id}}">{{i.name|title}}</option>
+                                            {%endfor%}                                         
+                                        </select>
+                                    </div>
+
+                                    <div class="row ml-0 mr-0">
+                                        <div class="col-lg-6 pl-0 pr-0">
+                                            <div class="form-group mb-3">
+                                                <label for="delivery-date">Delivery Date <span class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" name="delivery-date" id="delivery-date" required="required" value="{{order.date|date:'Y-m-d'}}">
+                                            </div>
+                                        </div>
+    
+                                        <div class="col-lg-6 pr-0">
+                                            <div class="form-group mb-3">
+                                                <label for="delivery-time">Delivery Time <span class="text-danger">*</span></label>
+                                                <select class="form-control select2" id="delivery-time" name="delivery-time" required="required">
+                                                    <option value="{{order.time.id}}" selected>{{order.time.time_from}}-{{order.time.time_to}}</option>
+                                                                                            
+                                                </select>
+                                            </div>
+                                        </div>  
+                                    </div>                                                                      
+
+                                    <div class="form-group mb-0">
+                                        {{payment_form|crispy}}
+                                    </div>
+                                </div> <!-- end card-box -->
+                            </div> <!-- end col -->
+
+                            <div class="col-lg-5">
+                                
+                                <!-- <div class="card-box"> -->
+                                    <!-- <h5 class="text-uppercase mt-0 mb-3 bg-light p-2">Product Image</h5> -->
+
+                                    <!-- <form action="/" method="post" class="dropzone" id="myAwesomeDropzone" data-plugin="dropzone" data-previews-container="#file-previews"
+                                        data-upload-preview-template="#uploadPreviewTemplate"> -->
+                                    
+                                       <!--  <div class="fallback">
+                                            <input name="photo_cake_image" type="file" multiple />
+                                        </div> -->
+
+                                        <!-- <div class="dz-message needsclick">
+                                            <i class="h1 text-muted dripicons-cloud-upload"></i>
+                                            <h3>Drop files here or click to upload.</h3>
+                                            <span class="text-muted font-13">(Upload the image of the cake in case of a custom or new cake.)</span>
+                                        </div> -->
+                                    <!-- </form> -->
+                                    
+
+                                    <!-- Preview -->
+                                    <!-- <div class="dropzone-previews mt-3" id="file-previews"></div> -->
+
+                                <!-- </div>  end col -->
+
+                                <div class="card-box">
+                                    <h5 class="text-uppercase mt-0 mb-3 bg-light p-2">Customer Information</h5>
+
+                                    <div class="form-group mb-3">
+                                        <!-- <label for="product-meta-title">Name<span class="text-danger">*</span></label> -->
+                                        {{address_form.sender_fullname|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <!-- <label for="product-meta-keywords">Email<span class="text-danger">*</span></label> -->
+                                        {{address_form.sender_email|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                      <!--   <label for="product-meta-description">Phone Number <span class="text-danger">*</span></label> -->
+                                        {{address_form.contact_number|as_crispy_field}}
+                                    </div>
+                                    <div class="form-group mb-3">
+                                      <!--   <label for="product-meta-description">Phone Number <span class="text-danger">*</span></label> -->
+                                        {{address_form.sender_address|as_crispy_field}}
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        {{address_form.social_media_handler|as_crispy_field}}
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        {{address_form.source|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        {{address_form.type_of_cake|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-0">
+                                        <div class="custom-controls-stacked d-block">
+                                            <label class="custom-control material-checkbox">
+                                            {{address_form.i_am_receiver|as_crispy_field}}
+                                            <!-- <span class="material-control-indicator"></span> -->
+                                            <!-- <span class="material-control-description">Is Receiver</span> -->
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div> <!-- end card-box -->
+
+                                <div class="card-box">
+                                    <h5 class="text-uppercase mt-0 mb-3 bg-light p-2">Receiver Information</h5>
+
+                                    <div class="form-group mb-3">
+                                       <!--  <label for="receiver-name">Name<span class="text-danger">*</span></label> -->
+                                {{address_form.receiver_fullname|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                <!--         <label for="receiver-email">Email<span class="text-danger">*</span></label> -->
+                                       {{address_form.receiver_email|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <!-- <label for="receiver-phone-one">Phone Number <span class="text-danger">*</span></label> -->
+                                        {{address_form.receiver_contact_number1|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                       <!--  <label for="receiver-phone-two">Alt Phone Number </label> -->
+                                        {{address_form.receiver_contact_number2|as_crispy_field}}
+                                    </div>
+
+<!--                                     <div class="form-group mb-3">
+                                        <label for="region">Region <span class="text-danger">*</span></label>
+                                        <div class="mb-0">                            
+                                            <select name="location" class="custom-select" id="region" required="required">
+                                                <option>Select</option>
+                                                {%for location in locations%}
+                                                <option value="{{location.id}}">{{location.name|title}}</option>
+                                                {%endfor%}
+                                            </select>                                            
+                                        </div> 
+                                    </div>
+ -->
+                                    <div class="form-group mb-3">
+                                     <!--    <label for="city">City <span class="text-danger">*</span></label> -->
+                                        <div class="mb-0">     
+                                        {{address_form.receiver_city|as_crispy_field}}                       
+                                           <!--  <select name="receiver_city" class="custom-select" id="city" required="required">
+                                               <option value="{{city.id}}">{{city.name|title}}</option>     
+
+                                            </select>         -->                                    
+                                        </div> 
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        {{address_form.receiver_area|as_crispy_field}}
+                                        <!-- <label for="area">Area <span class="text-danger">*</span></label>
+                                        <div class="mb-0">                            
+                                            <select name="receiver_area" class="custom-select" id='area' required="required">
+                                            </select>                                            
+                                        </div>  -->
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <!-- <label for="receiver-address">Address<span class="text-danger">*</span></label> -->
+                                {{address_form.receiver_delivery_address|as_crispy_field}}
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group mb-3 col">
+                                            <!-- <label for="landmark">Landmark<span class="text-danger">*</span></label> -->
+                                            {{address_form.receiver_landmark|as_crispy_field}}
+                                        </div>
+                                        <div class="form-group mb-3 col">
+                                           <!--  <label for="occasion">Ocassion <span class="text-danger">*</span></label> -->
+                                            <div class="mb-0">                            
+                                                {{address_form.occasion|as_crispy_field}}                                            
+                                            </div> 
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-3 row">
+                                        <label class="col-lg-6 mb-0">Delivery Address Type : &nbsp;&nbsp;</label>
+                                        <div class="form-check-inline col">
+                                            <label class="form-check-label">
+                                              <input type="radio" class="form-check-input" name="receiver_address_type" value="Home" checked="checked">Home
+                                            </label>
+                                        </div>
+                                        <div class="form-check-inline col">
+                                            <label class="form-check-label">
+                                              <input type="radio" value="Office" class="form-check-input" name="receiver_address_type">Office
+                                            </label>
+                                        </div>                                    
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="receiver-info">
+                                            <div class="custom-controls-stacked d-block">
+                                                <label class="custom-control material-checkbox">
+                                                <input type="checkbox" class="material-control-input" name="hide_info_from_receiver">
+                                                <span class="material-control-indicator"></span>
+                                                <span class="material-control-description">Hide info from Receiver</span>
+                                                </label>
+                                            </div>  
+                                        </div>
+                                    </div>
+                                    
+                                </div> <!-- end card-box -->
+
+                            </div> <!-- end col-->
+                        </div>
+                        <!-- end row -->
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="text-center mb-3">
+                                    <a type="button" href="{%url 'sales:order-list'%}" class="btn w-sm btn-light waves-effect">Cancel</a>
+                                    <button type="submit"  class="btn w-sm btn-success waves-effect waves-light">Save</button>
+                                    <a href="#con-close-modal" data-toggle="modal"
+                                                                data-target="#con-close-modal-{{order.id}}" 
+                                                                 type="button" class="btn w-sm btn-danger waves-effect waves-light">Delete</a>
+                                </div>
+                            </div> <!-- end col -->
+                        </div>
+                        <!-- end row -->
+                    </form>
+
+                        <!-- file preview template -->
+                        <div class="d-none" id="uploadPreviewTemplate">
+                            <div class="card mt-1 mb-0 shadow-none border">
+                                <div class="p-2">   
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <img data-dz-thumbnail src="#" class="avatar-sm rounded bg-light" alt="">
+                                        </div>
+                                        <div class="col pl-0">
+                                            <a href="javascript:void(0);" class="text-muted font-weight-bold" data-dz-name></a>
+                                            <p class="mb-0" data-dz-size></p>
+                                        </div>
+                                        <div class="col-auto">
+                                            <!-- Button -->
+                                            <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
+                                                <i class="dripicons-cross"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+
+
+
+<div id="con-close-modal-{{order.id}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Delete Order ?</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body p-4">
+                        Are you sure want to delete this order ?
+                    </div>
+                    <div class="modal-footer">
+                        <form method="post" action="{% url 'sales:delete-order' order.id %}">
+                            {% csrf_token %}
+                            <!-- <input type="hidden" id="brand_id" name="brand_id"> -->
+                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-info waves-effect waves-light">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+
+
+
+
+<!-- App js -->
+<script src="{%static 'admin_view/assets/js/vendor.min.js'%}"></script>
+<!-- Summernote js -->
+<script src="{%static 'admin_view/assets/libs/summernote/summernote-bs4.min.js'%}"></script>
+<script src="{% static 'admin_view/assets/libs/select2/select2.min.js' %}"></script>
+<!-- Dropzone file uploads-->
+<script src="{%static 'admin_view/assets/libs/dropzone/dropzone.min.js'%}"></script>
+
+<!-- Init js-->
+<script src="{%static 'admin_view/assets/js/pages/form-fileuploads.init.js'%}"></script>
+
+ <!-- Tost-->
+ <script src="{% static 'admin_view/assets/libs/jquery-toast/jquery.toast.min.js' %}"></script>
+  <!-- toastr init js-->
+<script src="{% static 'admin_view/assets/js/pages/toastr.init.js' %}"></script>
+ <!-- Init js -->
+ <script src="{% static 'admin_view/assets/js/pages/add-product.init.js' %}"></script>
+<!-- App js -->
+<script src="{%static 'admin_view/assets/js/app.min.js'%}"></script>
+
+<!--   <script>  
+            $(document).ready(function(){
+                $(".product-box").hide();
+                $('#product-name').on('change', function() {                  
+                    // console.log($(".product-box").eq(1).html());   
+                    $(".product-box").show();               
+                });
+
+                $(".addon-box").hide();
+                $('#addon-name').on('change', function() {                  
+                    // console.log($(".product-box").eq(1).html());   
+                    $(".addon-box").show();               
+                });
+            });
+        </script>  
+        
+        <script>
+             $(document).ready(function(){ 
+                $('.action-icon').on('click', function() {
+                    $(this).parent().parent().parent().parent().hide();
+                });
+             });
+        </script> -->
+
+
+<script type="text/javascript">
+  $("#product-name").change(function(){
+    var product=this.value;
+
+    $.ajax({
+        url: '{%url 'sales:get-product-varient'%}',
+        data: {
+          'product': product,
+        },
+        dataType: 'json',
+        success: function (data) {
+          $('#product-varient').empty();
+          var varient=data['varient'];
+          $('#product-varient').append(`
+                                    <option value='None'>Choose....</option>`)
+          for(var i=0; i < product.length; i++ ){
+            $('#product-varient').append(`
+                                    <option value="${varient[i]['id']}">${varient[i]['varient_name']}</option>
+                                `);
+
+            console.log(data['varient'])
+          }
+ 
+        }
+
+
+
+      });
+
+
+  
+});
+
+
+
+ $("#product-varient").change(function(){
+    var varient=this.value;
+    if(varient !='None'){
+        $.ajax({
+            url: '{%url 'sales:get-varient'%}',
+            data: {
+              'varient': varient,
+            },
+            dataType: 'json',
+            success: function (data) {
+                var parent=document.getElementById('orderitem-variation');
+                var child=document.getElementById('varient-'+data['varient'][0]['id']);
+                if(parent && parent.contains(child)){}else{
+                    $('#orderitem-variation').append(`<ul class="pl-0"><li class="card-box product-box" id="varient-${data['varient'][0]['id']}">                          <input type="hidden" class="material-control-input" name="varient" value="${data['varient'][0]['id']}">
+                                                        <div class="row">
+                                                            <div class="col-lg-5">
+                                                                <h5 class="font-16 mt-0 sp-line-1"><a href="${data['varient'][0]['url']}" class="text-dark">${data['varient'][0]['varient_name']}</a> </h5>
+                                                                <div class="special-request-form">
+                                                                    <div class="custom-controls-stacked d-block">
+                                                                        <label class="custom-control material-checkbox">
+                                                                        <input type="checkbox" class="material-control-input" name="eggless-${data['varient'][0]['id']}">
+                                                                        <span class="material-control-indicator"></span>
+                                                                        <span class="material-control-description">Eggless[${data['varient'][0]['eggless_price']}]<span class="small"></span></span>
+                                                                        </label>
+                                                                    </div>  
+                                                                    <div class="custom-controls-stacked d-block">
+                                                                        <label class="custom-control material-checkbox">
+                                                                        <input type="checkbox" class="material-control-input" name='sugarless-${data['varient'][0]['id']}'>
+                                                                        <span class="material-control-indicator"></span>
+                                                                        <span class="material-control-description">Sugarless[${data['varient'][0]['sugarless_price']}]<span class="small"></span></span>
+                                                                        </label>
+                                                                    </div> 
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-3">
+                                                                <div class="cart-manager">
+                                                                                                                          
+                                                                        <input type="number" class="qtyValue" value="1" min="1" max="20" name="quantity"/>                                                          
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-2">
+                                                                <div class="product-price-tag">
+                                                                    Rs.${data['varient'][0]['price']}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-2">
+                                                                <div class="product-price-tag">
+                                                                    <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete" onclick="deleteVarient('${data['varient'][0]['id']}')"></i></a>
+                                                                </div>
+                                                            </div>
+                                                        </div> <!-- end row -->                                            
+                                                    </li> </ul>   <!-- end card-box-->`)
+                    
+                    var txt='<option value="" selected disabled hidden>Choose here</option>'
+                    for(var i=0; i<data['varient'][0]['addons'].length; i++ ){
+                        txt=txt+`<option value="${data['varient'][0]['addons'][i]['id']}">${data['varient'][0]['addons'][i]['name']}</option>`
+                    }
+                    txt=`<div class="form-group mb-3" id="addon-${data['varient'][0]['id']}"> <label for="addons">Add-ons <span class="text-danger"></span></label>
+                                            <select class="form-control select2" id="addons" onchange="appendAddon(this.value,'${data['varient'][0]['id']}')">`+txt+`</select></div>`
+                    $('#orderitem-variation').append(`${txt}`)
+                    $('#orderitem-variation').append(`<span id="addon-variation-${data['varient'][0]['id']}">
+                                            
+                                        </span>    `)
+                    $('#orderitem-variation').append(`<div class="form-group mb-3" id="image-${data['varient'][0]['id']}">
+                                            <label for="product-summary">Image</label>
+                                            <input class="form-control" type="file" name="image-${data['varient'][0]['id']}"/>
+                                        </div>
+
+                                        <div class="form-group mb-3" id="image1-${data['varient'][0]['id']}">
+                                            <label for="product-summary">Image 1</label>
+                                            <input class="form-control" type="file" name="image1-${data['varient'][0]['id']}"/>
+                                        </div>
+
+                                        <div class="form-group mb-3" id="image2-${data['varient'][0]['id']}">
+                                            <label for="product-summary">Image 2</label>
+                                            <input class="form-control" type="file" name="image2-${data['varient'][0]['id']}"/>
+                                        </div>
+
+                                        <div class="form-group mb-3" id="image3-${data['varient'][0]['id']}">
+                                            <label for="product-summary">Image 3</label>
+                                            <input class="form-control" type="file" name="image3-${data['varient'][0]['id']}"/>
+                                        </div>
+
+
+
+
+                                        `);
+                    $('#orderitem-variation').append(`<div class="form-group mb-3" id="message-${data['varient'][0]['id']}">
+                                            <label for="product-summary">Message</label>
+                                            <textarea class="form-control" id="product-summary" rows="1" placeholder="What would you like to write on the cake?" name="message-${data['varient'][0]['id']}"></textarea>
+                                        </div>`);
+                    $('#orderitem-variation').append(`<hr style='border-top: 1px solid red;'>`);
+                    
+                    var ids='#varient-'+data['varient'][0]['id'];
+                    $(`${ids}`)[0].scrollIntoView();
+
+                    
+
+            }
+            }
+          });
+            
+        }else{
+           console.log('select valid varient') 
+        }
+});
+
+function appendAddon(val,varient){
+    var addon=val;
+    if(addon !='None'){
+        $.ajax({
+            url: '{%url 'sales:get-addons'%}',
+            data: {
+              'addon': addon,
+            },
+            dataType: 'json',
+            success: function (data) {
+                var addon_variation='addon-variation-'+varient;
+                var parent=document.getElementById(addon_variation);
+                var child=document.getElementById('addon-'+data['addon'][0]['id']+varient);
+                if(parent && parent.contains(child)){}else{                
+                    $(`#${addon_variation}`).append(`<div class="card-box addon-box " id="addon-${data['addon'][0]['id']}${varient}"><div class="row">
+                        <input type="hidden" class="material-control-input" name="addons-${varient}" value="${data['addon'][0]['id']}">
+                                                <div class="col-lg-5">
+                                                    <h5 class="font-16 mt-0 sp-line-1"><a href="#" class="text-dark">${data['addon'][0]['name']}</a> </h5>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="cart-manager">
+                                                            
+                                                            
+                                                            <input type="number" class="qtyValue" value="1" min="1" max="20" name='addon_quantity-${varient}'/>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <div class="product-price-tag">
+                                                        Rs.${data['addon'][0]['price']}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <div class="product-price-tag">
+                                                        <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete" onclick="deleteAddon('${data['addon'][0]['id']}','${varient}')"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end row -->
+                                            </div>`)
+                }
+            }
+          });
+        }else{
+           console.log('select valid varient') 
+        }
+}
+
+
+function deleteVarient(id){
+    var varient='varient-'+id;
+    var message='message-'+id;
+    var addon='addon-'+id;
+    var image='image-'+id;
+    var image1='image1-'+id;
+    var image2='image2-'+id;
+    var image3='image3-'+id;
+    var addon_variation='addon-variation-'+id;
+    document.getElementById(varient).remove()
+    document.getElementById(message).remove()
+    document.getElementById(addon).remove()
+    document.getElementById(image).remove()
+    document.getElementById(image1).remove()
+    document.getElementById(image2).remove()
+    document.getElementById(image3).remove()
+    document.getElementById(addon_variation).remove()
+
+}
+
+
+function deleteAddon(id,varient){
+    var addon='addon-'+id+varient;
+    document.getElementById(addon).remove()
+}
+</script>
+<script type="text/javascript">
+    $("#delivery-type").change(function(){
+    var delivery_type=this.value;
+        $.ajax({
+            url: '{%url 'sales:get-time'%}',
+            data: {
+              'delivery_type': delivery_type,
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('#delivery-time').empty();
+                  var delivery_time=data['time'];
+                  console.log(delivery_time)
+                  for(var i=0; i < delivery_time.length; i++ ){
+                    $('#delivery-time').append(`<option value="${delivery_time[i]['id']}">${delivery_time[i]['time_from']}-${delivery_time[i]['time_to']}</option>
+                        `);
+                  }
+            }
+          });
+});
+</script>
+<script type="text/javascript">
+    
+$("#region").change(function(){
+    var region=this.value;
+        $.ajax({
+            url: '{%url 'client:get-city'%}',
+            data: {
+              'region': region,
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('#city').empty();
+                $('#city').append(`<option>Select</option>`);
+                  var city=data['city'];
+                  for(var i=0; i < city.length; i++ ){
+                    $('#city').append(`<option value="${city[i]['id']}">${city[i]['name']}</option>
+                        `);
+                  }
+            }
+          });
+});
+
+$("#city").change(function(){
+    var city=this.value;
+        $.ajax({
+            url: '{%url 'client:get-city-area'%}',
+            data: {
+              'city': city,
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('#area').empty();
+                $('#area').append(`<option>Select</option>`);
+                  var area=data['area'];
+                  for(var i=0; i < area.length; i++ ){
+                    $('#area').append(`<option value="${area[i]['name']}">${area[i]['name']}</option>
+                        `);
+                  }
+            }
+          });
+});
+
+
+</script>
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>  
+
+<script type="text/javascript">
+ $("#id_i_am_receiver").change(function(event){
+    if (this.checked){
+        document.getElementById('id_receiver_fullname').value=document.getElementById('id_sender_fullname').value
+        document.getElementById('id_receiver_email').value=document.getElementById('id_sender_email').value
+        document.getElementById('id_receiver_contact_number1').value=document.getElementById('id_contact_number').value
+    } else {
+        document.getElementById('id_receiver_fullname').value=' ';
+        document.getElementById('id_receiver_email').value=' ';
+        document.getElementById('id_receiver_contact_number1').value=' ';
+    }
+});
+</script>
+<script type="text/javascript">
+    function updatePrice(order,order_item,price){
+
+        $.ajax({
+            url: '{%url 'sales:update-price-of-custom-order'%}',
+            data: {
+              'order': order,
+              'order_item':order_item,
+              'price':price
+            },
+            dataType: 'json',
+            success: function (data) {
+                (window.jQuery),
+                function (i) {
+                   "use strict";
+                   i.NotificationApp.send("Update !", `New custom price update`, "top-right", "#5ba035;", "success")
+
+                }(window.jQuery);
+            }
+          });
+    }
+</script>
+<script type="text/javascript">
+    function updatePound(order,order_item,pound){
+
+        $.ajax({
+            url: '{%url 'sales:update-pound-of-custom-order'%}',
+            data: {
+              'order': order,
+              'order_item':order_item,
+              'pound':pound
+            },
+            dataType: 'json',
+            success: function (data) {
+                (window.jQuery),
+                function (i) {
+                   "use strict";
+                   i.NotificationApp.send("Update !", `Weight has been updated`, "top-right", "#5ba035;", "success")
+
+                }(window.jQuery);
+            }
+          });
+    }
+</script>
+<script type="text/javascript">
+    function updateFlavour(order,order_item,flavour){
+
+        $.ajax({
+            url: '{%url 'sales:update-flavour-of-custom-order'%}',
+            data: {
+              'order': order,
+              'order_item':order_item,
+              'flavour':flavour
+            },
+            dataType: 'json',
+            success: function (data) {
+                (window.jQuery),
+                function (i) {
+                   "use strict";
+                   i.NotificationApp.send("Update !", `Flavour has been updated`, "top-right", "#5ba035;", "success")
+
+                }(window.jQuery);
+            }
+          });
+    }
+</script>
+{% endblock %}

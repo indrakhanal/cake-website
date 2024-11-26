@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200&display=swap');
+@import url('https://use.fontawesome.com/releases/v5.7.0/css/all.css');
+
+html {
+    scroll-behavior: smooth!important;
+    font-size: 15px!important;
+}
+
+* {
+margin: 0px;
+padding: 0px;
+}
+
+body {
+background-color: #ffffff!important;
+font-size: 15px!important;
+font-family: 'Nunito'!important;
+color: #031927!important;
+}
+
+textarea:hover,  
+textarea:active, 
+textarea:focus, 
+button:focus,
+button:active,
+button:hover,
+label:focus,
+.btn:active,
+.btn.active
+{
+  outline:0px !important;
+  -webkit-appearance:none!important;
+  box-shadow: none !important;
+}
+
+::placeholder {
+  color: #C4C4C4!important;
+}
+
+.main-login-as {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 600px;
+}
+
+.title {
+    font-weight: 600;
+    color: #E3323A;
+}
+
+.left, .right {
+    width: 50%;
+    text-align: center;
+    height: 100%;
+}
+
+.left {
+    background-color: #EEEEEE;
+}
+
+.right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.right p {
+    margin-bottom: 40px;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+.right .btn-primary {
+    width: 40%;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    background-color: #E3323A;
+    color: #ffffff;
+    border: none;
+    text-transform: uppercase;
+    font-size: 14px!important;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary.active {
+    background-color: #bb282f;
+}
+
+  nav{
+    box-shadow: 0 6px 12px 0 rgba(228,114,119,0.1);
+    height: 65px; 
+    background:  #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    align-items: center;
+    z-index: 999;
+    position: sticky;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+  .dropdown-toggle::after{
+    display: none;
+  }
+  .navbar-brand{
+    margin-right: 0;
+  }
+  .nav-item{
+    padding-right: 10px;
+  }
+

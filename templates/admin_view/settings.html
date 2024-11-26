@@ -1,0 +1,226 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block title %}Settings | Admin{% endblock title %}
+
+{% block extra_css %}
+
+<!-- Custom box css -->
+<link href="{% static 'admin_view/assets/libs/custombox/custombox.min.css' %}" rel="stylesheet">
+
+<!-- Bootstrap Tables css -->
+<link href="{% static 'admin_view/assets/libs/bootstrap-table/bootstrap-table.min.css' %}" rel="stylesheet"
+   type="text/css" />
+
+
+{% endblock %}
+
+
+{% block page_content %}
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <!-- ============================================================== -->
+   <!-- Start Page Content here -->
+   <!-- ============================================================== -->
+
+   <div class="content-page">
+      <div class="content">
+
+         <!-- Start Content-->
+         <div class="container-fluid">
+
+            <!-- start page title -->
+            <div class="row">
+               <div class="col-12">
+                  <div class="page-title-box">
+                     <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                           <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                           <li class="breadcrumb-item"><a href="javascript: void(0);">Settings</a></li>
+                           <li class="breadcrumb-item active">Site Configuration</li>
+                        </ol>
+                     </div>
+                     <h4 class="page-title">Site Configuration</h4>
+                  </div>
+               </div>
+            </div>
+            <!-- end page title -->
+
+
+            <div class="row">
+
+               <div class="col-12">
+                  {%if perms.settings.change_settings or perms.settings.add_settings%}
+                  <div style="float:right;" class="mt-3 mb-3 mr-3">
+                     <a href="{%url 'settings:create'%}" class="btn btn-danger waves-effect waves-light" data-animation="fadein" data-overlaycolor="#38414a"><i class="mdi mdi-plus-circle mr-1"></i>Edit Settings</a>
+                 </div>
+                 {%endif%}
+
+                  <div class="card-box">
+                     <div class="col-sm-4 mb-4">
+                        {% include 'admin_view/partials/_alerts.html' %}
+
+
+
+                     </div>
+                     <div class="table-responsive">
+                        <table class="table table-centered table-borderless table-striped mb-0">
+                           <tbody>
+                              <tr>
+                                 <td style="width: 35%;">Outlet Name</td>
+
+                                 {% if settings.outlet_name %}
+                                 <td>{{settings.outlet_name}}</td>
+                                 {%else%}
+                                 <td>N/A</td>
+                                 {% endif %}
+
+                              </tr>
+
+
+
+                              <tr>
+                                 <td style="width: 35%;">Store Address</td>
+
+                                 {% if settings.store_address %}
+                                 <td>{{settings.store_address}}</td>
+                                 {%else%}
+                                 <td>N/A</td>
+                                 {% endif %}
+                              </tr>
+
+                              <tr>
+                                 <td style="width: 35%;">Contact Email</td>
+
+                                 {% if settings.contact_email %}
+                                 <td>{{settings.contact_email}}</td>
+                                 {%else%}
+                                 <td>N/A</td>
+                                 {% endif %}
+                              </tr>
+
+
+                              <tr>
+                                 <td style="width: 35%;">Contact Number</td>
+
+                                 {% if settings.contact_number %}
+                                 <td>{{settings.contact_number}}</td>
+                                 {%else%}
+                                 <td>N/A</td>
+                                 {% endif %}
+                              </tr>
+
+
+                              <tr>
+                                 <td style="width: 35%;">Delivery Available Time</td>
+
+                                 {% if settings.delivery_available_time %}
+                                 <td>{{settings.delivery_available_time}}</td>
+                                 {%else%}
+                                 <td>N/A</td>
+                                 {% endif %}
+                              </tr>
+
+                              <tr>
+                                 <td style="width: 35%;">Currency</td>
+                                 <td>{{settings.get_currency_display}}</td>
+                                
+                                 
+                              </tr>
+                              
+
+                              <tr>
+                                 <td style="width: 35%;">Minimum Order Price</td>
+
+                                 {% if settings.minimum_order_price %}
+                                 <td>Rs. {{settings.minimum_order_price}}</td>
+                                 {%else%}
+                                 <td>N/A</td>
+                                 {% endif %}
+                              </tr>
+
+
+                              <!-- <tr>
+                                 <td style="width: 35%;">Tax Charges</td>
+                                 <td>{% if settings.apply_extra_charge %}Yes{% else %}No{% endif %}</td>
+                                
+                                 
+                              </tr>
+ -->
+
+                              <tr>
+                                 <td style="width: 35%;">Outlet Logo</td>
+
+                                 {% if settings.outlet_logo %}
+                                 <td><img src="{{settings.outlet_logo.url}}" height="100"></td>
+                                 {% else %}
+                                 <td>No Preview Available</td>
+                                 {% endif %}
+
+
+                              </tr>
+
+                           </tbody>
+                        </table>
+                     </div> <!-- end .table-responsive -->
+                  </div> <!-- end card-box -->
+               </div><!-- end col -->
+            </div>
+            <!-- end row -->
+
+         </div> <!-- container -->
+
+      </div> <!-- content -->
+
+      <!-- Footer Start -->
+      <footer class="footer">
+         <div class="container-fluid">
+            <div class="row">
+               <div class="col-md-6">
+                  2015 - 2019 &copy; UBold theme by <a href="">Coderthemes</a>
+               </div>
+               <div class="col-md-6">
+                  <div class="text-md-right footer-links d-none d-sm-block">
+                     <a href="javascript:void(0);">About Us</a>
+                     <a href="javascript:void(0);">Help</a>
+                     <a href="javascript:void(0);">Contact Us</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </footer>
+      <!-- end Footer -->
+
+   </div>
+
+   <!-- ============================================================== -->
+   <!-- End Page content -->
+   <!-- ============================================================== -->
+
+
+
+</div>
+
+
+
+<!-- END wrapper -->
+
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %}
+{% endblock %}
+
+{% block extra_javascript %}
+
+
+<script src="{% static 'admin_view/assets/libs/bootstrap-table/bootstrap-table.min.js' %}"></script>
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/bootstrap-tables.init.js' %}"></script>
+
+<!-- Modal-Effect -->
+<script src="{% static 'admin_view/assets/libs/custombox/custombox.min.js' %}"></script>
+
+<script src="{% static 'admin_view/custom.js' %}"></script>
+
+
+
+{% endblock %}

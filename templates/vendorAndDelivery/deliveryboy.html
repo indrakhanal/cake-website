@@ -1,0 +1,460 @@
+{%load static%}
+<!doctype html>
+<html lang="en">
+   <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link rel="stylesheet" href="{%static 'cake-977/delivery-boy/css/style.css'%}" type="text/css">
+      <link rel="stylesheet" href="{%static 'cake-977/delivery-boy/css/responsive.css'%}" type="text/css">
+      <link rel="stylesheet" href="{%static 'cake-977/delivery-boy/css/tabview.css'%}" type="text/css">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+   <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+      <title>Cake977-Deliveryboy-app</title>
+   </head>
+   <body>
+      <header>
+          <div class="hamburger-menu">
+        <input id="menu__toggle" type="checkbox" />
+          <label class="menu__btn" for="menu__toggle">
+            <span></span>
+          </label>
+  
+          <ul class="menu__box">
+            <li><a class="menu__item" href="{%url 'vendorAndDelivery:user-assigned-delivery' user%}?date={{today_date}}">All</a></li>
+            <li><a class="menu__item" href="{%url 'vendorAndDelivery:user-assigned-delivery' user%}?delivery_status=Accepted&date={{date_day}}">Accepted</a></li>
+            <li><a class="menu__item" href="{%url 'vendorAndDelivery:user-assigned-delivery' user%}?delivery_status=Picked&date={{date_day}}">Picked</a></li>
+            <li><a class="menu__item" href="{%url 'vendorAndDelivery:user-assigned-delivery' user%}?delivery_status=Complete&date={{date_day}}">Completed</a></li>
+            <li><a class="menu__item" href="{%url 'vendorAndDelivery:user-assigned-delivery' user%}?delivery_status=Cancelled&date={{date_day}}">Cancelled</a></li>
+          </ul>
+        </div>
+        {%if delivery_status%}
+         <h3>{{delivery_status|title}} Orders</h3>
+         {%else%}
+                  <h3>All Orders</h3>
+         {%endif%}
+         <form>
+         <select name="date" onchange="this.form.submit()" class="form-control">
+            <option value="today" {%if date_day == 'today'%}selected{%endif%}>Today</option>
+            <option value="yesterday" {%if date_day == 'yesterday'%}selected{%endif%}>Yesterday</option>
+         </select>
+      </form>       
+         <span class="notification">
+         <!-- <i class="fas fa-bell"></i> -->
+         <!-- <a href="#" class="badge badge-notify">{{total_count}}</a> -->
+         </span>
+      </header>
+      <section class="select-store">
+      <div style="margin:10px 0px 0px 20px; ">  <span style="color: red;font-size: 12px;">{{total_count}} orders found</span></div>
+      <div class="selection-store">
+         <form method="get" action="{%url 'vendorAndDelivery:user-assigned-delivery' user%}">
+         
+        <select onchange="this.form.submit()" name="store">
+          <option value="">All</option>
+          {%for i in store%}
+          <option value="{{i.id}}" {%if store_select == i.id %} selected {%endif%}>{{i.name|title}}</option>
+          {%endfor%}
+          
+        </select>
+        <input type="hidden" name="delivery_status" value="{{delivery_status}}">
+        </form>
+      </div>
+    </section>
+      <section class="order-list-section">
+         <ul class="order-list">
+            {%for order in orders%}
+            <li class="order-info" data-toggle="modal" data-target=".bd-example-modal-lg-{{order.order.order_number}}"  {%if order.order.delivery_status == 'Complete'%}style="background-color: #90ee90!important;"{%endif%}>
+               <div class="order-name">
+                  <span class="order-status">
+                  <img src="{%static 'cake-977/delivery-boy/img/Pending.png'%}">
+                  </span>
+                  <span class="order-details">
+                     <p>{%if order.vendor%}<span style="color:red;">Vendor Order</span><br><span style="font-size:14px;">   ({{order.vendor.name|title}})</span>{%else%}Order{%endif%} #:{{order.order.order_number}}</p>
+                     {{order.order.items.all.count}} items<br>
+                     Amount Rs.{{order.order.total}} - {{order.order.order_status}}<br>
+                     Factory: {{order.factory.name|title}}<br>
+                     Expected Delivery: {{order.expected_delivery_time}}
+                  </span>
+               </div>
+               <ul class="order-datetime">
+                  <li>
+                     {{order.pickup_date}}
+                  </li>
+                  <li>
+                     {{order.pickup_time}}
+                  </li>
+               </ul>
+
+            </li>
+            <!-- Modal for details -->
+            <div class="delivery-app-popup">
+               <div class="modal fade bd-example-modal-lg-{{order.order.order_number}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <h5 class="modal-title" id="exampleModalLabel">Order #:{{order.order.order_number}}</h5>
+                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true">&times;</span>
+                           </button>
+                        </div>
+                        <ul class="nav nav-tabs" id="myTab-{{order.order.order_number}}" role="tablist">
+                           <li class="nav-item">
+                              <a class="nav-link active" id="goods-tab-{{order.order.order_number}}" data-toggle="tab" href="#goods-{{order.order.order_number}}" role="tab" aria-controls="goods" aria-selected="true">Goods</a>
+                           </li>
+                           <li class="nav-item">
+                              <a class="nav-link" id="order-detail-tab-{{order.order.order_number}}" data-toggle="tab" href="#order-detail-{{order.order.order_number}}" role="tab" aria-controls="order-detail" aria-selected="false">Order-detail</a>
+                           </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent-{{order.order.order_number}}">
+                           <div class="tab-pane fade show active" id="goods-{{order.order.order_number}}" role="tabpanel" aria-labelledby="goods-tab">
+                              {%for i in order.order.items.all%}
+                              <div class="modal-mid-section">
+                                 <div class="left-modal-db">
+                                    <p>Delivery Date/Time:  {{order.pickup_date}}</p>
+                                    {%include 'vendorAndDelivery/image-carosoul.html'%}
+                                  </div>
+                           <div class="right-modal-db">
+                                    <p>Product:{{i.product.varient_name|title}}</p>
+                                    <table class="table table-striped">
+                                       <tbody>
+                                          <tr>
+                                             <td>Quantity</td>
+                                             <td class="description-title">{{i.quantity}}</td>
+                                          </tr>
+                                          <tr>
+                                             <td>Pound</td>
+                                             <td class="description-title">{{i.pound}}</td>
+                                          </tr>
+                                          <tr>
+                                             <td>Sugarless</td>
+                                             {%if i.is_eggless%}
+                                             <td class="description-title">Yes</td>
+                                             {%else%}
+                                             <td class="description-title">No</td>
+                                             {%endif%}
+                                          </tr>
+                                          <tr>
+                                             <td>Eggless</td>
+                                             {%if i.is_sugerless%}
+                                             <td class="description-title">Yes</td>
+                                             {%else%}
+                                             <td class="description-title">No</td>
+                                             {%endif%}
+                                          </tr>
+                                          <tr>
+                                             <td>Message</td>
+                                             {%if i.special_instruction%}
+                                             <td class="description-title">{{i.special_instruction}}
+                                             </td>
+                                             {%else%}
+                                             <td class="description-title">No any message</td>
+                                             {%endif%}
+                                          </tr>
+                                       </tbody>
+                                    </table>
+                                 </div>
+                              </div>
+                              <div class="addon-info">
+                                 <ul class="main-addon">
+                                    {%for addon in i.orderitem_addons.all%}
+                                    <li class="addons-added">
+                                       <div class="addon-item">
+                                          {%if addon.addons.addon_image%}
+                                          <img src="{% if addon.addon_image %} {{addon.addon_image.url}} {% endif %}" alt="Addon Image">
+                                          {%endif%}
+                                       </div>
+                                       <div class="addon-description">
+                                          <ul>
+                                             <li>
+                                                <span class="badge badge-addon">Addon</span>
+                                             </li>
+                                             <li>
+                                                {{addon.addons.name|title}}
+                                             </li>
+                                             <li>
+                                                Quantity: {{addon.quantity}}
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </li>
+                                    {%endfor%}
+                                 </ul>
+                                 <div class="modal-mid-section" style="margin: 10px;">
+                                    <table>
+                                       <thead>
+                                          <th>Dispatcher Remarks:</th>
+                                       </thead>
+                                       <tbody>
+                                          <tr>
+                                             <td>{{order.remarks}}</td>
+                                          </tr>
+                                       </tbody>
+                                    </table>
+                               </div>
+                              </div>
+                              {%endfor%}
+                           </div>
+                           <div class="tab-pane fade" id="order-detail-{{order.order.order_number}}" role="tabpanel" aria-labelledby="order-detail-tab">
+                              <div class="container">
+                                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                       <div class="panel-heading" role="tab" id="headingOne">
+                                          <h4 class="panel-title">
+                                             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                             Store Details
+                                             </a>
+                                          </h4>
+                                       </div>
+                                       <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                          <div class="panel-body">
+                                             <table class="table table-md">
+                                                <tbody>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Store name</td>
+                                                      <td class="right-td">{{order.order.store}}</td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Contact no.</td>
+                                                      <td class="right-td">{{order.order.store.contact_number}}</td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Location</td>
+                                                      <td class="right-td">{{order.order.store.store_location1}} </td>
+                                                   </tr>
+                                                   <!--                                                   <tr>
+                                                      <td colspan="6" class="left-td">Store name</td>
+                                                      <td class="right-td">Bro Bakery</td>
+                                                      </tr> -->
+                                                </tbody>
+                                             </table>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                       <div class="panel-heading" role="tab" id="headingTwo">
+                                          <h4 class="panel-title">
+                                             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                             Delivery Address
+                                             </a>
+                                          </h4>
+                                       </div>
+                                       <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                          <div class="panel-body">
+                                             <table class="table table-md">
+                                                <tbody>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Receiver's Name</td>
+                                                      <td class="right-td">{{order.order.delivery_address.receiver_fullname}}</td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Email Address</td>
+                                                      <td class="right-td">{{order.order.delivery_address.receiver_email}}</td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Address</td>
+                                                      <td class="right-td">{{order.order.delivery_address.receiver_delivery_address}}
+                                                      </td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Contact</td>
+                                                      <td class="right-td">{{order.order.delivery_address.receiver_contact_number1}}</td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Delivery Date</td>
+                                                      <td class="right-td">{{order.order.date}}</td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Delivery Time</td>
+                                                      <td class="right-td">{{order.order.time.time_from}}-{{order.order.time.time_to}}</td>
+                                                   </tr>
+                                                   <tr class="main-info">
+                                                      <td colspan="6" class="left-td">Sender's Name</td>
+                                                      <td class="right-td">{{order.order.delivery_address.sender_fullname}}</td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Email Address</td>
+                                                      <td class="right-td">{{order.order.delivery_address.sender_email}}</td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Contact</td>
+                                                      <td class="right-td">{{order.order.delivery_address.contact_number}}</td>
+                                                   </tr>
+                                                </tbody>
+                                             </table>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    
+                                    <div class="panel panel-default">
+                                       <div class="panel-heading" role="tab" id="headingFour">
+                                          <h4 class="panel-title">
+                                             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFours">
+                                             Payment
+                                             </a>
+                                          </h4>
+                                       </div>
+                                       <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                                          <div class="panel-body">
+                                             <table class="table table-md">
+                                                <tbody>
+                                                   <tr>
+                                                      <td colspan="6"></td>
+                                                      <td class="right-td">
+                                                        {{order.order.payment_status}}
+                                                         <!-- <span>Unpaid</span>
+                                                         <label class="switch">
+                                                         <input type="checkbox">
+                                                         <span class="slider round"></span>
+                                                         </label>
+                                                         <span>Paid</span> -->
+                                                      </td>
+                                                   </tr>
+                                                   <tr>
+                                                      <form>
+                                                      <td colspan="6" class="left-td">
+                                                      <div class="panel-body status-button">
+                                                         <select name="delivery-status" onchange="PaymentMethod(this,'{{order.order.order_number}}','{{order.user.id}}')">
+                                                            <option selected disabled>{{order.order.payment_method}}</option>
+                                                            <option value="COD">COD</option>
+                                                            <option value="COD FONEPAY">COD FONEPAY</option>
+                                                            <option value="COD ESEWA">COD ESEWA</option>
+                                                            <option value="COD KHALTI">COD KHALTI</option>
+                                                         </select>
+                                                         <!-- {{order.order.payment_method}} -->
+                                                      </div>
+                                                      </td>
+                                                      </form>
+                                                      <td class="right-td">Rs.{{order.order.total}}</td>
+                                                   </tr>
+                                                   <tr>
+                                                      <td colspan="6" class="left-td">Total items</td>
+                                                      <td class="right-td">{{order.order.items.all.count}}</td>
+                                                   </tr>
+                                                   <!-- <tr class="main-info">
+                                                      <td colspan="6" class="left-td">Total</td>
+                                                      <td class="right-td">98765</td>
+                                                   </tr>
+                                                   <tr class="main-info">
+                                                      <td colspan="6" class="left-td">Weight</td>
+                                                      <td class="right-td">3kg</td>
+                                                   </tr> -->
+                                                </tbody>
+                                             </table>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingFive">
+                                       <h4 class="panel-title">
+                                          <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                          Delivery Status
+                                          </a>
+                                       </h4>
+                                    </div>
+                                    <form>
+                                    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                                       <div class="panel-body status-button">
+                                          <div class="status-order">Status</div>
+                                          <select name="delivery-status" onchange="DeliveryStatus(this,'{{order.order.id}}','{{order.user.id}}')">
+                                             <option selected>{{order.order.delivery_status}}</option>
+                                             <option value="Accepted">Accepted</option>
+                                             <option value="Picked">Picked</option>
+                                             <option value="Complete">Complete</option>
+                                             <!-- <option value="Cancelled">Cancelled</option> -->
+                                          </select>
+                                       </div>
+                                    </div>
+                                    </form>
+                                 </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            {%empty%}
+            <p style="padding:20px;">No any delivery.</p>
+            {%endfor%}
+         </ul>
+      </section>
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.js"></script>
+      <script type="text/javascript">
+          
+        function DeliveryStatus(item,order_id,user){
+        var status = item.value;
+        var order_id = order_id;
+        var user = user;
+        var token = '{{csrf_token}}';
+        $.ajax({
+        headers: { "X-CSRFToken": token },
+        method:'POST',
+        url: '{%url 'vendorAndDelivery:change-delivery-status'%}',
+        data: {
+          'delivery_status': status,
+          'order_id':order_id,
+          'user':user
+        },
+        dataType: 'json',
+        success: function (data) {
+            if(data['status']==='success'){
+
+                // $.notify('Delivery Status updated', 'info');
+                location.reload()
+        }else{
+            $.notify('Permission Denied', 'info');
+        }
+        }
+
+      });
+
+    }
+
+
+
+
+    function PaymentMethod(item,order_number,user){
+        var method = item.value;
+        var order_number = order_number;
+        var user = user;
+        var token = '{{csrf_token}}';
+        $.ajax({
+        headers: { "X-CSRFToken": token },
+        method:'POST',
+        url: '{%url 'vendorAndDelivery:change-payment-method'%}',
+        data: {
+          'payment_method': method,
+          'order_number':order_number,
+          'user':user
+        },
+        dataType: 'json',
+        success: function (data) {
+            if(data['status']==='success'){
+
+                $.notify('Payment Method updated', 'info');
+                // location.reload()
+        }else{
+            $.notify('Permission Denied', 'info');
+        }
+        }
+
+      });
+
+    }
+
+      </script>
+   </body>
+
+</html>

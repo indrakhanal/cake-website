@@ -1,0 +1,110 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+<title>{{settings.outlet_name|title}} contact us</title>
+{%endblock%}
+{%block extra_css%}
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/select_location_pop_up.html'%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%} 
+
+  <Section id="contact-details">
+    <div class="Contact-us">
+      <div class="google-map">
+        <div class="google-map-only">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.8518357481107!2d85.33183351470855!3d27.690973882798716!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb199328e344bd%3A0x1e439982e75c14c4!2sSmart%20Tech%20Solution%20Pvt.%20Ltd.!5e0!3m2!1sen!2snp!4v1602067349562!5m2!1sen!2snp"
+            width="100%" height="250" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false"
+            tabindex="0"></iframe>
+        </div>
+        <div class="google-map-mob">
+          <iframe class="responsive-iframe"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.8518357481107!2d85.33183351470855!3d27.690973882798716!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb199328e344bd%3A0x1e439982e75c14c4!2sSmart%20Tech%20Solution%20Pvt.%20Ltd.!5e0!3m2!1sen!2snp!4v1602067349562!5m2!1sen!2snp"
+            frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+        </div>
+        <div class="address-details">
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row">Address</th>
+                <td>{{settings.store_address}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Phone</th>
+                <td>{{settings.contact_number}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Email</th>
+                <td>{{settings.contact_email}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <div class="message-form">
+
+        
+          {%if success%}
+          <h4>Your Message Sent</h4>
+          <span style="color:" style="text-align: center; font-size: 20px;">Your message has been sent.</span><br>
+          <span style="text-align: center;font-size: 20px;">We will review your message soon.</span><br>
+          <span style="text-align: center;font-size: 20px;">Thank you for messaging us.</span><br>
+          {%else%}
+          <h4>Send Us a Message</h4>
+          <form method="post" action="{%url 'client:contact'%}">
+		  <label>Full Name</label>
+          <div class="row">
+            <div class="col first-col">
+               {{form.first_name}}
+            </div>
+            <div class="col">
+             {{form.last_name}}
+            </div>
+          </div>
+          <div class="form-group contact">
+            <label for="contact-number">Contact Number</label>
+           {{form.contact_number}}
+
+              {% for error in form.contact_number.errors %}
+                  <strong style="color: red;">{{ error|escape }}</strong>
+              {% endfor %}
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label><br>
+           {{form.message}}
+          </div>
+          <div class="send-message">
+            <button type="submit" class="btn btn-primary">Send Message</button>
+          </div>
+        </form>
+        {%endif%}
+      </div>
+    </div>
+  </Section> 
+
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+
+  {%include 'client/cake-977/partials/payment_partner.html'%}
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+ 
+
+
+
+
+{%endblock%}

@@ -1,0 +1,22 @@
+{%load static%}
+{%if active_store%}
+ <!-- Brands -->
+    <section class="brand">
+      <h2>Exploring amazing cakes</h2>
+      <h4 class="brand-subtitle">Baked By</h4>
+      <div class="brand-list brand-list__first">
+        {%for store in active_store%}
+        <div class="brand-list-one">
+          <a href="{{store.store.get_absolute_url}}">
+            <img {%if store.store.image%}src="{{store.store.image_thumbnail_150X150.url}}"{%else%}src="{%static 'cake-977/img/b1.png'%}"{%endif%}>
+            
+          </a>
+        </div>
+        {%endfor%}
+      
+      </div>
+      <div class="see-allbrands">
+          <a href="{%url 'client:stores-list-client'%}" class="btn btn-success" type="button">See all bakeries</a>
+        </div>  
+    </section>
+{%endif%}

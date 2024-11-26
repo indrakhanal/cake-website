@@ -1,0 +1,148 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+    <title>Filtered Products</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/select_location_pop_up.html'%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+{%include 'client/cake-977/partials/list/banner.html'%}
+
+
+<div class="list-main">
+	<section class="list-main-body">
+        <div class="breadcrumbs-sortby">
+          <div class="breadcrumbs">
+            <a href="{%url 'client:catalog'%}">Home ></a>
+            <a href="{{flavour_.get_absolute_url}}">{{currency}}.{{min_price}} - {{currency}}.{{max_price}} </a>
+            <!-- <a href="#" class="active">Chocolate Cakes</a> -->
+          </div>
+
+          <form method="get" action="{% url 'client:price-range-product-lists'%}">
+           {%csrf_token%}
+           
+          <div class="sortby-dropdown">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Sort by : </label>
+              </div>
+              <select class="custom-select" id="inputGroupSelect01" name="filter" onchange="this.form.submit()">
+                <!-- <option selected>Recommended</option> -->
+                <option>All</option>
+                <option value="price-hl" {%if filter_value == 'price-hl'%}selected{%endif%}>Price (high to low)</option>
+                <option value="price-lh" {%if filter_value == 'price-lh'%}selected{%endif%}>Price (low to high)</option>
+                <option value="rating" {%if filter_value == 'rating'%}selected{%endif%}>Ratings</option>
+              </select>
+            </div>
+          </div>
+          <input type="hidden" name="page" value="{{page}}">
+          <input type="hidden" name="min_price" value="{{min_price}}">
+          <input type="hidden" name="max_price" value="{{max_price}}">
+        </form>
+        </div>
+      </section>
+      {%include 'client/cake-977/partials/list/quick_filter_price_range.html'%}
+      {%include 'client/cake-977/partials/list/quick_filter_price_range_mob.html'%}
+      <section class="listpage-main">
+        <div class="listpage-main-cards">
+          <!-- First Row -->
+          <div class="row listpage-main-rows">
+            {%for i in products%}
+            <div class="col-md-3">
+                <div class="card" style="width: 17rem;">
+                  <div class="image-box">
+                   {%if i.image%}
+                  <a href="{{i.get_absolute_url}}">
+                 <img class="card-img-top" src="{{i.listpage_thumbnail.url}}" alt="{{i.name}}">
+               </a>
+                  {%else%}
+                  <a href="{{i.get_absolute_url}}">
+                  <img class="card-img-top" src="{%static 'cake-977/def_img/Cake977-255X255px-02.png'%}" alt="default image">
+                </a>
+                  {%endif%} 
+                  </div>
+                  {%if i.tags_card%}
+                  <span class="on-sale">
+                    <span> {{i.tags_card.name|title}}</span>
+                  </span>
+                  {%endif%}
+                  <div class="card-body">
+                    <a href="{{i.get_absolute_url}}" class="card-title">{{i.name|title}}</a>
+                     <p class="cake-price">{{currency}}. {{i.listing_product_varient.selling_price}}<span>{%if i.listing_product_varient.price %}<del>{{currency}}. {{i.listing_product_varient.old_price}}</del></span>
+                    <span class="cake-offer">{{i.listing_product_varient.discount}}% off</span>{%endif%}
+                  </p>
+                    <div class="card-details">
+                      <div class="card-left">
+                        <p class="cake-delv-info">Get it <span>Today</span></p>
+                        <a class="card-text" href="{%url 'client:store-product-list' i.store.slug%}">By {{i.store.name|title}}, {{i.store.store_location1|title}}</a> 
+                      </div>
+                      <div class="card-right">
+                        <div class="rating-badge">
+                          <p>{{i.avg_review}} <span><i {% if i.avg_review == 5.0 %}class="fas fa-star"{% else %}class="fas fa-star-half-alt"{% endif %}></i></span></p>
+                        </div>
+                        <div class="total-reviews">
+                          <span>{{i.product_review.all.count}} reviews</span>
+                        </div>
+                      </div>
+                      </div>
+                  </div> 
+                </div>
+              </div>
+            {%empty%}
+            <span style="text-align: center; margin-left:100px;">Product is not available.</span>
+
+            {%endfor%}
+            
+            
+          </div>
+        </div>
+        <div class="right">
+          <ul class="pagination-mainlist">
+            {% if products.has_other_pages %}
+                {% if products.has_previous %}
+            <li><a id="prev" href="?filter={{filter_value}}&page={{ products.previous_page_number }}&min_price={{min_price}}&max_price={{max_price}}">«</a></li>
+             {% else %}
+             <!-- <li><a id="prev">«</a></li> -->
+             {%endif%}
+            {% for counter in products.paginator.page_range %}
+            {% if products.number == counter %}
+            <li><a id="test2" class="active">{{counter}}</a></li>
+            {%else%}
+            <li><a id="test1" href="?filter={{filter_value}}&page={{ counter }}&min_price={{min_price}}&max_price={{max_price}}">{{counter}}</a></li>
+            {%endif%}
+            
+            {%endfor%}
+             {% if products.has_next %}
+            <li><a href="?filter={{filter_value}}&page={{ products.next_page_number }}&min_price={{min_price}}&max_price={{max_price}}" id="next">»</a></li>
+            {% else %}
+            {% endif %}
+            {%endif%}
+          </ul>
+        </div>
+      </section>
+	
+</div>
+	  {%include 'client/cake-977/partials/payment_partner.html'%}
+
+	{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+    
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="{%static 'cake-977/js/product-slider.js'%}"></script>
+
+{%endblock%}

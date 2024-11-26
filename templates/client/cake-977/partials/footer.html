@@ -1,0 +1,103 @@
+ {%load static%}
+ <!-- Footer Section -->
+    <footer>
+      <div class="footer">
+        <div class="footer-left">
+          <img src="{% if settings.outlet_logo %} {{settings.outlet_logo.url}} {% endif %}">
+          <p>
+           "We are exactly what you are looking for. We bring to you an online cake delivery service where
+you can purchase and order your favorite cakes - creating a unique bakery shopping experience
+without having to hop from one shop or website to another looking for your desired cake. We
+ambitiously claim to deliver 100% fresh cakes at your doorstep with complete ease and care on
+the same day or as planned. Our online cake delivery in Kathmandu, Bhaktapur, and Lalitpur
+allows for cross-country purchases enabling you to send delicious cakes to your parents,
+relatives, or friends on various occasions from any part of the world.We invite you to celebrate
+your special occasions with your favorite cakes from oho! cake."
+          </p>
+        </div>
+        <div class="footer-mid">
+          <div class="footer-mid__left">
+            <ul>
+              <li><a href="{%url 'client:catalog'%}">Home</a></li>
+              <li><a href="{%url 'client:about-us'%}">About</a></li>
+              <!-- <li><a href="#">FAQ</a></li> -->
+
+              <li><a href="{%url 'client:contact'%}">Contact</a></li>
+              {%if not user.is_authenticated%}
+              <li><a href="{%url 'accounts:login'%}">Sign in</a></li>
+              {%endif%}
+            </ul>
+          </div>
+          <div class="footer-mid__right">
+            <ul>
+              <li><a href="{%url 'client:track-order'%}">Track Order</a></li>
+              <li><a href="{%url 'client:privacy-policy'%}">Privacy Policy</a></li>
+              <li><a href="{%url 'client:terms-condition'%}">Terms & conditions</a></li>
+              <!-- <li><a href="{%url 'sitemap'%}">Sitemap</a></li> -->
+             
+              
+            </ul>
+          </div>
+        </div>
+        <div class="footer-right">
+          <p>Get in touch with us</p>
+          <ul>
+            <li><a href="mailto:{{settings.contact_email}}"><span><i class="fas fa-envelope"></i></span> &nbsp &nbsp {{settings.contact_email}}</a></li>
+            <li><a href="tel:{{settings.contact_number}}"><span><i class="fas fa-phone"></i></span> &nbsp &nbsp {{settings.contact_number}}</a></li>
+            
+
+            <li><a href="https://goo.gl/maps/gMhu6kaSBqBS8eBc9"><span><i class="fas fa-map-marker-alt"></i></span> &nbsp &nbsp {{settings.store_address}}</a></li>
+
+             <li>Find us at: &nbsp
+              <span><a href="https://www.facebook.com/OhoCakeNepal/"><i class="fab fa-facebook-square"></i></a></span>
+                &nbsp
+              <span><a href="https://www.instagram.com/oho.cake/"><i class="fab fa-instagram"></i></a></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        2020 Cake Company | All right reserved.
+      </div>
+
+
+
+
+
+
+      
+<!-- Load Facebook SDK for JavaScript -->
+      <div id="fb-root" style="overflow: hidden;"></div>
+      <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            xfbml            : true,
+            version          : 'v10.0'
+          });
+        };
+
+        (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));</script>
+
+      <!-- Your Chat Plugin code -->
+      <div class="fb-customerchat"
+        attribution="setup_tool"
+        page_id="103306998237098">
+      </div>
+
+
+
+
+
+    <div id="fb-root"></div>
+
+    <!-- Your Chat Plugin code -->
+    <div id="fb-customer-chat" class="fb-customerchat">
+    </div>
+
+    </footer> 

@@ -1,0 +1,73 @@
+<div class="row">
+        <div class="col-md-6">
+          
+          <div class="col receivers-detail-label">
+            <h6>Receiver's Detail</h6>
+                <label for="name">Recipient Name:</label>
+                {{order.delivery_address.receiver_fullname}}
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="email">Email:</label>
+                {{order.delivery_address.receiver_email}}
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="address">Address:</label>
+                {{order.delivery_address.receiver_delivery_address}}
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="name">Landmark:</label>
+                {{order.delivery_address.receiver_landmark}}
+              </div>
+              <div class="col receivers-detail-label">
+                    <label for="name">Delivery Address Type:</label>
+                    {{order.delivery_address.receiver_address_type}}
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="mobile1">Recipient's Mobile:</label>
+                {{order.delivery_address.receiver_contact_number1}}
+              </div>
+               <div class="col receivers-detail-label">
+                <label for="mobile2">Recipient's Alt Mobile:</label>
+                {{order.delivery_address.receiver_contact_number2}}
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="mobile2">Occasion:</label>
+                {{order.delivery_address.occasion}}
+            </div>
+
+            <div class="col receivers-detail-label">
+                <label for="mobile2">Hide Info form receiver:</label>
+                {%if order.delivery_address.hide_info_from_receiver%}
+                Yes
+                {%endif%}
+            </div>
+            <div class="col receivers-detail-label">
+                <label for="mobile2">Is Receiver:</label>
+                {%if order.delivery_address.i_am_receiver%}
+                Yes
+                {%endif%}
+            </div>
+            
+        </div>
+        
+        <div class="col-md-6">
+          
+           <div class="col receivers-detail-label">
+            <h6>Sender's Detail</h6>
+                <label for="name">Sender Name:</label>
+                {{order.delivery_address.sender_fullname}}
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="email">Email:</label>
+                {{order.delivery_address.sender_email}}
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="phone">Contact Number:</label>
+                {{order.delivery_address.contact_number}}
+              </div>
+            
+        </div>
+</div>
+
+
+

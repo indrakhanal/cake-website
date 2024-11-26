@@ -1,0 +1,20 @@
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+  	{% if locations.has_other_pages %}
+     {% if locations.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ locations.previous_page_number }}{%if keywords%}&keywords={{keywords}}{%endif%}">Previous</a></li>
+    {%endif%}
+
+    {%for counter in locations.paginator.page_range%}
+    {% if locations.number == counter %}
+    <li class="page-item active"><a class="page-link" >{{counter}}</a></li>
+    {%else%}
+    <li class="page-item"><a class="page-link" href="?page={{ counter }}{%if keywords%}&keywords={{keywords}}{%endif%}">{{counter}}</a></li>
+    {%endif%}
+    {%endfor%}
+    {%if locations.has_next%}
+    <li class="page-item"><a class="page-link" href="?page={{ locations.next_page_number }}{%if keywords%}&keywords={{keywords}}{%endif%}">Next</a></li>
+    {%endif%}
+    {%endif%}
+  </ul>
+</nav>

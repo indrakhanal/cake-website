@@ -1,0 +1,24 @@
+<table data-toggle="table" data-search="false" data-show-refresh="false" data-sort-name="id"
+    data-page-list="[5, 10, 20]" data-page-size="5" data-pagination="false" data-show-pagination-switch="false"
+    class="table-borderless">
+    <thead class="thead-light">
+        <tr>
+            <th data-align="center">NAME</th>
+            <th data-align="center">MOBILE</th>
+            <th data-align="center">ORDERS</th>
+            <th data-align="center">VALUE</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if highest_value_customers %}
+        {% for customer in highest_value_customers %}
+        <tr>
+            <td data-align="center"><a>{{ customer.name|title}}</a></td>
+            <td data-align="center">{{ customer.mobile }}</td>
+            <td data-align="center">{{ customer.orders }}</td>
+            <td data-align="center">{{ customer.total_value }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>

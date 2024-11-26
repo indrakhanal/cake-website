@@ -1,0 +1,52 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+<title>{{settings.outlet_name|title}} about us</title>
+{%endblock%}
+{%block extra_css%}
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/select_location_pop_up.html'%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}     <section class="about-middle-section">
+      <div class="about-left-content">
+        <h1>About <span>Oho! Cake</span></h1>
+        <p>
+         "We bring to you an online cake delivery service where you can purchase and order your favorite
+cakes - creating a unique bakery shopping experience without having to hop from one shop or
+website to another looking for your desired cake. We ambitiously claim to deliver 100% fresh
+cakes at your doorstep with complete ease and care on the same day or as planned. Our online
+cake delivery in Kathmandu, Bhaktapur, and Lalitpur allows for cross-country purchases
+enabling you to send delicious cakes to your parents, relatives, or friends on various occasions
+from any part of the world. We are here to create some unforgettable memories and some
+undying emotions by helping you to send cake to your beloved ones online. We invite you to
+celebrate your special occasions with your favorite cakes from oho! cake."
+        </p>
+      </div>
+      <div class="about-right-content">
+        <img src="{%static 'cake-977/img/about-new.png'%}">
+      </div>
+    </section>
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+
+{%include 'client/cake-977/partials/payment_partner.html'%}
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+ 
+
+
+
+
+{%endblock%}

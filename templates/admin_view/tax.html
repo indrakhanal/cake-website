@@ -1,0 +1,467 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block title %}Sales & Taxes | Admin{% endblock title %}
+
+{% block extra_css %}
+<link href="{% static 'admin_view/assets/libs/footable/footable.core.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Custom box css -->
+<link href="{% static 'admin_view/assets/libs/custombox/custombox.min.css' %}" rel="stylesheet">
+<link href="{% static 'admin_view/assets/libs/dropify/dropify.min.css' %}" rel="stylesheet" type="text/css" />
+
+<link href="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- App css -->
+<link href="{%static 'admin_view/assets/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/icons.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/app.min.css'%}" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+
+{% block page_content %}
+<div id="wrapper">
+    {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+    {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start Content-->
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active">Sales Taxes</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Sales Taxes</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-12">
+                        {% include 'admin_view/partials/_alerts.html' %}
+                        <div class="card-box">
+                            <form method="get" action="{%url 'settings:tax-list'%}">
+                                <div class="row">
+                                    <!-- <a href="#" onclick="abc();" id="delete-bin" class="action-icon" style="margin-left: 20px;"> <i
+                                        class="mdi mdi-delete" title="Delete All"></i></a> -->
+                                         <a style="margin-left: 20px;" href="#con-close-modal" id="delete-bin" data-toggle="modal"
+                                               data-target="#con-close-modal-md" 
+                                               class="action-icon"> <i
+                                                class="mdi mdi-delete" title="Delete All"></i></a>
+                                        <div class="col-lg-2">
+                                            
+                                            <input id="keyword"  name="keywords" type="text" placeholder="Keyword (name)"
+                                            class="form-control" autocomplete="on" {%if keywords%}value="{{keywords}}"{%endif%}>
+                                        </div>
+
+                                       
+
+                                        <div >
+                                            <button type="submit"
+                                            class="btn btn-dark waves-effect waves-light">Search
+                                        </button>
+                                        </div>
+                                      
+
+                                       
+                                         <div style="float:right;" class="ml-auto mr-2">
+                                            <a  href="#custom-modal" class="btn btn-danger waves-effect waves-light"
+                                            data-animation="fadein" data-plugin="custommodal" data-overlaycolor="#38414a"><i
+                                                class="mdi mdi-plus-circle mr-1"></i> Add Sales Taxes</a>
+                                        </div>
+                                     
+                                    
+                                </div>
+                            </form>     
+                        
+                            
+
+
+                            <div class="table-responsive" >
+                                <table id="demo-foo-filtering" class="table  toggle-circle mb-0" data-page-size="20" style=" table-layout: fixed; word-wrap: break-word; margin-top: 20px;">
+                                    <thead>
+                                        <tr>
+                                            <th data-sort-ignore="true" style="width: 40px;">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="customCheck1" onClick="toggle(this)">
+                                                    <label class="custom-control-label" for="customCheck1">&nbsp;</label>
+                                                </div>
+                                            </th>
+                                            <th class="text-center">Name</th>
+                                            <th class="text-center">Rate</th>
+                                             <th class="text-center">Is Compound</th>
+                                            
+                                           
+                                            <th class="text-center"  data-sort-ignore="true">Actions</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <form id="dell" method="post" action="{%url 'settings:tax-bulk-delete'%}">
+                                                    {%csrf_token%}
+                                        {%for i in tax%}
+
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input name="foo" onclick="allCheckboxChecked();" type="checkbox" class="custom-control-input" id="customCheck-{{i.id}}" value="{{i.id}}" onchange="checkChanged(this);">
+                                                    <label class="custom-control-label" for="customCheck-{{i.id}}">&nbsp;</label>
+                                                </div>
+                                            </td>
+                                           
+                                            <td class="text-center">{{i.name|title}}</td>
+                                            <td class="text-center">{{i.rate}}</td>
+                                            {%if i.is_compound%}
+                                            <td class="text-center">Yes</td>
+                                            {%else%}
+                                             <td class="text-center">No</td>
+                                            {%endif%}
+
+
+                                
+                                            <td class="text-center">
+
+                                                <a title="Edit" href="#custom-modal-{{i.id}}" id="abc-{{i.id}}" class="action-icon"> <i
+                                                        class="mdi mdi-square-edit-outline"></i></a>
+
+
+                                                <!-- <button type="button" class="btn btn-primary waves-effect waves-light" id="abc-{{i.id}}"><i class="mdi mdi-square-edit-outline"></i></button> -->
+
+
+                                                <a title="Edit" href="#custom-modal-{{i.id}}" class="action-icon"
+                                            data-animation="fadein" data-plugin="custommodal" data-overlaycolor="#38414a" style="display:none;" id="a-{{i.id}}"><i
+                                                        class="mdi mdi-square-edit-outline"></i></a>
+                                                <a title="Delete" href="#con-close-modal" data-toggle="modal"
+                                                    data-target="#con-close-modal-{{i.id}}" class="action-icon"> <i
+                                                        class="mdi mdi-delete"></i></a>
+                                            </td>
+                                           
+                                            
+                                        </tr>
+                                        {%endfor%}
+                                        </form>
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="active">
+                                            <td colspan="5">
+                                                <div class="text-right">
+                                                    <ul
+                                                        class="pagination pagination-rounded justify-content-end footable-pagination m-t-10 mb-0">
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div> <!-- end .table-responsive-->
+                        </div> <!-- end card-box -->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+
+            </div> <!-- container -->
+
+        </div> <!-- content -->
+
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- END wrapper -->
+
+    {%for i in tax%}
+    <div id="con-close-modal-{{i.id}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete tax ?</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body p-4">
+                    Are you sure want to delete this tax ?
+                </div>
+                <div class="modal-footer">
+                    <form method="post" action="{% url 'settings:tax-delete' i.id %}">
+                        {% csrf_token %}
+                        <!-- <input type="hidden" id="brand_id" name="brand_id"> -->
+                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-info waves-effect waves-light">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {%endfor%}
+    <div id="con-close-modal-md" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete taxes ?</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body p-4">
+                    Are you sure want to delete selected taxes ?
+                </div>
+                <div class="modal-footer">
+                    
+                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                        <button type="submit" onclick="abc()" class="btn btn-info waves-effect waves-light">Delete</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+<div id="custom-modal" class="modal-demo">
+    <button type="button" class="close" onclick="Custombox.modal.close();">
+        <span>&times;</span><span class="sr-only">Close</span>
+    </button>
+    <h4 class="custom-modal-title">Add Taxes</h4>
+    <div class="custom-modal-text text-left">
+        <form method="post" action="{% url 'settings:ajax-tax-create' %}" id="tax-create">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name"> Name</label>
+               {{form.name}}
+            </div>
+            <div class="form-group">
+                <label for="delivery_charge"> Tax in percentage</label>
+               {{form.rate}}
+            </div>
+             <div class="form-group mb-3">
+
+                    <div class="checkbox form-check-inline ml-1">
+                        {{form.is_compound}}
+                        <label for="checkbox-reco"> Compound </label>
+                    </div>
+    
+                </div>
+            
+                       <div class="text-right">
+                <button type="submit" class="btn btn-success waves-effect waves-light">Save</button>
+
+            </div>
+        </form>
+    </div>
+</div>
+{%for i in tax%}
+
+<div id="custom-modal-{{i.id}}" class="modal-demo">
+    <button type="button" class="close" onclick="Custombox.modal.close();">
+        <span>&times;</span><span class="sr-only">Close</span>
+    </button>
+    <h4 class="custom-modal-title">Edit Tax</h4>
+    <div class="custom-modal-text text-left">
+        <form method="post" action="{% url 'settings:ajax-tax-update' i.id %}"
+        id="update-{{i.id}}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name"> Name</label>
+               {{form.name}}
+            </div>
+                        <div class="form-group">
+                <label for="name">Tax in percentage</label>
+               {{form.rate}}
+            </div>
+            <div class="form-group mb-3">
+
+                   <div class="checkbox form-check-inline ml-1">
+                        <input type="checkbox" name="is_compound" id='active-{{i.id}}'>
+                        <label for="checkbox-reco"> Compound </label>
+                    </div>
+    
+                </div>
+            
+
+                       <div class="text-right">
+                <button type="submit" class="btn btn-success waves-effect waves-light">Save</button>
+
+            </div>
+        </form>
+    </div>
+</div>
+{%endfor%}
+
+
+    {% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+    {% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+    {% block extra_javascript %}
+
+<script type="text/javascript">
+    function abc(){
+        
+       document.getElementById('dell').submit();
+
+    }
+
+
+</script>
+<script type="text/javascript">
+
+    $(function () {
+        var frm = $('#tax-create');
+        frm.submit(function (ev) {
+            $.ajax({
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                data: frm.serialize(),
+                success: function (data) {
+                    if (data['status'] === 'success') {
+                        location.reload();
+                    }
+                    else {
+
+                        alert(Object.values(data['errors']))
+                    }
+                }
+            });
+            ev.preventDefault();
+        });
+    });
+
+</script>
+{%for i in tax%}
+<script>
+    $("#abc-{{i.id}}").click(function () {
+
+      
+
+      $.ajax({
+        url: '{% url 'settings:ajax-tax-update' i.id %}',
+        method:'GET',
+        dataType: 'json',
+        success: function (data) {
+            if(data['status']==='success'){
+                oFormObject = document.forms['update-{{i.id}}'];
+                oformElement = oFormObject.elements[1].value =data['addons'].name;
+                oformElement = oFormObject.elements[2].value =data['addons'].rate;
+              
+                if(data['addons'].is_compound===true){
+                    var abc='active-'+{{i.id}}
+                    document.getElementById(abc).setAttribute("checked", "checked");
+                }
+                    
+                document.getElementById("a-{{i.id}}").click();
+               
+
+            }
+
+          
+        }
+      });
+
+    });
+
+  
+    $(function () {
+        var frm = $('#update-{{i.id}}');
+        frm.submit(function (ev) {
+            $.ajax({
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                data: frm.serialize(),
+                success: function (data) {
+                    if (data['status'] === 'success') {
+                        location.reload();
+                    }
+                    else {
+
+                        alert(Object.values(data['errors']))
+                    }
+                }
+            });
+            ev.preventDefault();
+        });
+    });
+
+
+  </script>
+  {%endfor%}
+
+<script src="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.js' %}"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+
+    <!-- Vendor js -->
+    <!-- <script src="{% static 'admin_view/assets/js/vendor.min.js' %}"></script> -->
+    
+    <!-- Footable js -->
+
+    <script src="{% static 'admin_view/assets/libs/footable/footable.all.min.js' %}"></script>
+    <!-- Modal-Effect -->
+    <script src="{% static 'admin_view/assets/libs/custombox/custombox.min.js' %}"></script>
+
+    <script src="{% static 'admin_view/custom.js' %}"></script>
+    <!-- Init js -->
+    <script src="{% static 'admin_view/assets/js/pages/foo-tables.init.js' %}"></script>
+
+
+
+    <script src="{% static 'admin_view/assets/libs/dropify/dropify.min.js' %}"></script>
+    <!-- Init js-->
+    <script src="{% static 'admin_view/assets/js/pages/form-fileuploads.init.js' %}"></script>
+
+    <!-- Init js -->
+    <script src="{% static 'admin_view/assets/js/pages/form-advanced.init.js' %} "></script>
+
+
+    <!-- Tost-->
+    <script src="{% static 'admin_view/assets/libs/jquery-toast/jquery.toast.min.js' %}"></script>
+    <!-- toastr init js-->
+    <script src="{% static 'admin_view/assets/js/pages/toastr.init.js' %}"></script>
+
+
+<script>
+     function toggle(source) {
+        checkboxes = document.getElementsByName('foo');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+        checkboxes[i].checked = source.checked;
+        }
+
+        var checkBox = 'input[name="foo"]';
+        if ($(checkBox+':checked').length == 0) {
+            $("#delete-bin").hide();
+        }else if($(checkBox+':checked').length == $(checkBox).length){
+            $("#delete-bin").show();
+        }
+    }
+
+function allCheckboxChecked(){
+    $("#delete-bin").show();
+   
+    var checkBox = 'input[name="foo"]';
+    if ($(checkBox+':checked').length == 0) {
+        $("#delete-bin").hide();
+        $('#customCheck1').prop('checked', false);
+    }else if($(checkBox+':checked').length == $(checkBox).length){
+        $('#customCheck1').prop('checked', true);
+
+    }
+   
+}
+$("#delete-bin").hide();
+
+    
+    </script>
+
+    {% endblock %}

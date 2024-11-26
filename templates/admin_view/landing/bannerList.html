@@ -1,0 +1,372 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block title %}Banner | Admin{% endblock title %}
+
+{% block extra_css %}
+<link href="{% static 'admin_view/assets/libs/footable/footable.core.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Custom box css -->
+<link href="{% static 'admin_view/assets/libs/custombox/custombox.min.css' %}" rel="stylesheet">
+
+
+<link href="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- App css -->
+<link href="{%static 'admin_view/assets/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/icons.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/app.min.css'%}" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+
+{% block page_content %}
+<div id="wrapper">
+    {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+    {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start Content-->
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active"> Banner</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Landing Banners-{{location.name|title}}</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-12">
+                        {% include 'admin_view/partials/_alerts.html' %}
+                        <div class="card-box">
+                            <form method="get" action="{%url 'landing:banner-list' location.slug%}">
+                                <div class="row">
+                                    <!-- <a href="#" onclick="abc();" id="delete-bin" class="action-icon" style="margin-left: 20px;"> <i
+                                        class="mdi mdi-delete" title="Delete All"></i></a> -->
+                                        <a style="margin-left: 20px;" href="#con-close-modal" id="delete-bin" data-toggle="modal"
+                                               data-target="#con-close-modal-md" 
+                                               class="action-icon"> <i
+                                                class="mdi mdi-delete" title="Delete All"></i></a>
+                                       <!--  <div class="col-lg-2">
+                                            
+                                            <input id="keyword"  name="keywords" type="text" placeholder="Keyword (name)"
+                                            class="form-control" autocomplete="on" {%if keywords%}value="{{keywords}}"{%endif%}>
+                                        </div> -->
+
+                                       
+
+                                        <!-- <div >
+                                            <button type="submit"
+                                            class="btn btn-dark waves-effect waves-light">Search
+                                        </button>
+                                        </div>
+                                      
+ -->
+                                       
+                                         <div style="float:right;" class="ml-auto mr-2">
+                                            <a  href="{%url 'landing:banner-create' location.slug%}" class="btn btn-danger waves-effect waves-light"
+                                            ><i
+                                                class="mdi mdi-plus-circle mr-1"></i> Add Banner</a>
+                                        </div>
+                                     
+                                    
+                                </div>
+                            </form>     
+                        
+                            
+
+
+                            <div class="table-responsive" >
+                                <table id="demo-foo-filtering" class="table  toggle-circle mb-0" data-page-size="20" style=" table-layout: fixed; word-wrap: break-word; margin-top: 20px;">
+                                    <thead>
+                                        <tr>
+                                            <th data-sort-ignore="true" style="width: 40px;">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="customCheck1" onClick="toggle(this)">
+                                                    <label class="custom-control-label" for="customCheck1">&nbsp;</label>
+                                                </div>
+                                            </th>
+                                            <th class="text-center">Image</th>
+                                            <th class="text-center">Display Order</th>
+                                            <th class="text-center">Redirect URl</th>
+                                             <th class="text-center">Is Active</th>
+                                            
+                                           
+                                            <th class="text-center"  data-sort-ignore="true">Actions</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <form id="dell" method="post" action="{%url 'landing:banner-bulk-delete' location.slug%}">
+                                                    {%csrf_token%}
+                                        {%for i in banner%}
+
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input name="foo" onclick="allCheckboxChecked();" type="checkbox" class="custom-control-input" id="customCheck-{{i.id}}" value="{{i.id}}" onchange="checkChanged(this);">
+                                                    <label class="custom-control-label" for="customCheck-{{i.id}}">&nbsp;</label>
+                                                </div>
+                                            </td>
+                                           
+                                            <td>
+                                                
+                                                    <div class="col-lg-3">
+                                                        {% if i.image %}
+                                                        <img src="{{i.image.url}}" height="40" width="40">
+                                                        {%else%}
+                                                        <img src="https://image.shutterstock.com/image-vector/picture-vector-icon-no-image-260nw-1350441335.jpg" height="40" width="40" >
+                                                        {% endif %}
+                                                    </div>
+                                                   
+                                                
+                                            </td>
+                                            <td class="text-center">{{i.display_order}}</td>
+                                            <td class="text-center">{{i.redirect_url}}</td>
+                                            {%if i.is_active%}
+                                                <td class="text-center">
+                                                    <!-- <form> -->
+                                                      
+                                                    <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck2-{{i.id}}" checked="checked" onchange="status('False','{{i.id}}');">
+                                                            <label class="custom-control-label" for="customCheck2-{{i.id}}"></label>
+                                                        </div>
+                                                        <!-- </form> -->
+                                                </td>
+                                                {%else%}
+                                                <td class="text-center">
+                                                    <!-- </form> -->
+                                                    <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheck2-{{i.id}}" onchange="status('True','{{i.id}}');">
+                                                            <label class="custom-control-label" for="customCheck2-{{i.id}}"></label>
+                                                        </div>
+                                                        <!-- </form> -->
+                                                </td>
+                                                {%endif%}
+
+
+                                
+                                            <td class="text-center">
+
+                                                <a href="{%url 'landing:banner-update' i.id location.slug%}" title="Edit" id="abc-{{i.id}}" class="action-icon"> <i
+                                                        class="mdi mdi-square-edit-outline"></i></a>
+
+
+                                                
+
+                                                
+                                                <a title="Delete" href="#con-close-modal" data-toggle="modal"
+                                                    data-target="#con-close-modal-{{i.id}}" class="action-icon"> <i
+                                                        class="mdi mdi-delete"></i></a>
+                                            </td>
+                                           
+                                            
+                                        </tr>
+                                        {%endfor%}
+                                        </form>
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="active">
+                                            <td colspan="6">
+                                                <div class="text-right">
+                                                    <ul
+                                                        class="pagination pagination-rounded justify-content-end footable-pagination m-t-10 mb-0">
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div> <!-- end .table-responsive-->
+                        </div> <!-- end card-box -->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+
+            </div> <!-- container -->
+
+        </div> <!-- content -->
+
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- END wrapper -->
+
+    {%for i in banner%}
+    <div id="con-close-modal-{{i.id}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete banner ?</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body p-4">
+                    Are you sure want to delete this banner ?
+                </div>
+                <div class="modal-footer">
+                    <form method="post" action="{% url 'landing:banner-delete' i.id location.slug%}">
+                        {% csrf_token %}
+                        <!-- <input type="hidden" id="brand_id" name="brand_id"> -->
+                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-info waves-effect waves-light">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {%endfor%}
+
+
+     <div id="con-close-modal-md" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete banner ?</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body p-4">
+                    Are you sure want to delete selected banners ?
+                </div>
+                <div class="modal-footer">
+                   
+                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                        <button type="submit" onclick="abc();" class="btn btn-info waves-effect waves-light">Delete</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    {% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+    {% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+    {% block extra_javascript %}
+
+<script type="text/javascript">
+    function abc(){
+        
+       document.getElementById('dell').submit();
+
+    }
+
+
+</script>
+
+
+
+<script src="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.js' %}"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+
+    <!-- Vendor js -->
+    <!-- <script src="{% static 'admin_view/assets/js/vendor.min.js' %}"></script> -->
+    
+    <!-- Footable js -->
+
+    <script src="{% static 'admin_view/assets/libs/footable/footable.all.min.js' %}"></script>
+    <!-- Modal-Effect -->
+    <script src="{% static 'admin_view/assets/libs/custombox/custombox.min.js' %}"></script>
+
+    <script src="{% static 'admin_view/custom.js' %}"></script>
+    <!-- Init js -->
+    <script src="{% static 'admin_view/assets/js/pages/foo-tables.init.js' %}"></script>
+
+
+
+
+    <!-- Init js -->
+    <script src="{% static 'admin_view/assets/js/pages/form-advanced.init.js' %} "></script>
+
+
+    <!-- Tost-->
+    <script src="{% static 'admin_view/assets/libs/jquery-toast/jquery.toast.min.js' %}"></script>
+    <!-- toastr init js-->
+    <script src="{% static 'admin_view/assets/js/pages/toastr.init.js' %}"></script>
+
+
+<script type="text/javascript">
+    
+
+function status(n,i){
+   
+    val=n;
+
+     $.ajax({
+        url: '{%url 'landing:banner-status' location.slug%}',
+        method:'GET',
+        data: {
+          'val': val,
+          'item-id':i,
+        },
+        dataType: 'json',
+        success: function (data) {
+            (window.jQuery),
+                function (i) {
+                   "use strict";
+                   i.NotificationApp.send("Update !", `Active Status Changed`, "top-right", "#5ba035;", "success")
+
+                }(window.jQuery);
+        }
+      });
+}
+
+</script>
+    <script>
+        function toggle(source) {
+        checkboxes = document.getElementsByName('foo');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+        checkboxes[i].checked = source.checked;
+        }
+
+        var checkBox = 'input[name="foo"]';
+        if ($(checkBox+':checked').length == 0) {
+            $("#delete-bin").hide();
+        }else if($(checkBox+':checked').length == $(checkBox).length){
+            $("#delete-bin").show();
+        }
+    }
+
+function allCheckboxChecked(){
+    $("#delete-bin").show();
+   
+    var checkBox = 'input[name="foo"]';
+    if ($(checkBox+':checked').length == 0) {
+        $("#delete-bin").hide();
+        $('#customCheck1').prop('checked', false);
+    }else if($(checkBox+':checked').length == $(checkBox).length){
+        $('#customCheck1').prop('checked', true);
+
+    }
+   
+}
+$("#delete-bin").hide();
+
+    
+    </script>
+
+    {% endblock %}

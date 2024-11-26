@@ -1,0 +1,107 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+<title>Product Reviews</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/select_location_pop_up.html'%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+
+
+ <div class="review-page">
+        <div class="rev-section">
+            <div class="product-rev">
+            	{%if product.image%}
+            	<img class="product-img" src="{{product.review_thumbnail.url}}">
+            	{%else%}
+                <img class="product-img" src="{%static 'cake-977/def_img/Cake977-255X255px-02.png'%}">
+                {%endif%}
+                <h5>{{product.name|title}}</h5>
+                <p>{{currency}}. {{product.product.all.0.selling_price}}</p>
+            </div>
+            {%if allow_review_status%}
+            <form class="review-rating" method="post" action="{%url 'client:product-review' product.id%}">
+            	{%csrf_token%}
+                <h2>Rate this Product</h2>
+                <section class="rating-widget">
+                    <!-- Rating Stars Box -->
+                    <div class="rating-stars">
+                        <div class="star-rating">
+                            <input type="radio" id="5-stars" name="rating" value="5" required {%if review_or_not%}
+                            {%if review_or_not.review_star == 5 %}
+                            checked
+                            {%endif%}
+                            {%else%}
+                            checked 
+                            {%endif%}/>
+                            <label for="5-stars" class="star">&#9733;</label>
+                            <input type="radio" id="4-stars" name="rating" value="4" required {%if review_or_not%}
+                            {%if review_or_not.review_star == 4 %}
+                            checked
+                            {%endif%} 
+                            {%endif%}/>
+                            <label for="4-stars" class="star">&#9733;</label>
+                            <input type="radio" id="3-stars" name="rating" value="3" required {%if review_or_not%}
+                            {%if review_or_not.review_star == 3 %}
+                            checked
+                            {%endif%} 
+                            {%endif%}/>
+                            <label for="3-stars" class="star">&#9733;</label>
+                            <input type="radio" id="2-stars" name="rating" value="2" required {%if review_or_not%}
+                            {%if review_or_not.review_star == 2 %}
+                            checked
+                            {%endif%} 
+                            {%endif%}/>
+                            <label for="2-stars" class="star">&#9733;</label>
+                            <input type="radio" id="1-star" name="rating" value="1" required {%if review_or_not%}
+                            {%if review_or_not.review_star == 1 %}
+                            checked
+                            {%endif%} 
+                            {%endif%}/>
+                            <label for="1-star" class="star">&#9733;</label>
+                        </div>
+                    </div>
+                </section>
+                <div class="form-group">
+                    <label for="usr">Name</label>
+                    <input type="text" class="form-control" id="usr" value="{{user.first_name|title}} {{user.last_name|title}}" readonly>
+                  </div>
+                  <!-- <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="password" class="form-control" id="title">
+                </div> -->
+                <div class="form-group">
+
+                    <label for="review">Review</label>
+                    <textarea class="form-control" rows="4" id="review" name="comment" required>{%if review_or_not%}{{review_or_not.review_text}}{%endif%}</textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+            {%else%}
+            <p>Buy product to review.</p>
+            {%endif%}
+
+        </div>
+    </div>
+
+      {%include 'client/cake-977/partials/payment_partner.html'%}
+
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+
+
+{%endblock%}

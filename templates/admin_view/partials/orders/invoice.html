@@ -1,0 +1,224 @@
+{% load static %}
+{% load custom_tag %}
+
+<div id="refresh-invoice">
+
+    <div class="content">
+
+        <!-- Start Content-->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+
+                    <!-- Logo & title -->
+                    <div class="clearfix">
+                        <div class="float-left">
+                            <!-- {%if settings.outlet_logo%} -->
+                            <!-- <img src="{{settings.outlet_logo.url}}" alt="" height="20"> -->
+                            <!-- {%endif%} -->
+                        </div>
+                        <div class="float-left">
+                            <!-- <h4 class="m-0 d-print-none">Invoice</h4> -->
+                            <div class="col-xl-12">
+                             
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                           
+                                <h5>BILL FROM:</h5>
+                                <address>
+                                    {{settings.outlet_name}} <br>
+                                    {{settings.store_address}}<br>
+                                    <abbr title="Phone">P:</abbr> {{settings.contact_number}}<br>
+                                    
+                                    {% if settings.contact_email %}
+                                        {{settings.contact_email}}
+                                    {% endif %}
+                                        
+                                </address>
+
+                               
+                        </div><!-- end col -->
+
+                        <div class="col-sm-4">
+                            <h5>BILL TO:</h5>
+                            <address>
+                            {{order.delivery_address.receiver_fullname|title}} <br>
+                            {{order.delivery_address.receiver_delivery_address}} | {{ order.delivery_address.receiver_address_type}} <br>
+                            {{order.delivery_address.receiver_landmark}}<br>
+                                
+                                
+                                
+                                <abbr title="Phone">P:</abbr> {{order.delivery_address.contact_number}}
+                            </address>
+                        </div> <!-- end col -->
+
+                        <div class="col-sm-4">
+                          
+                                <div class="float-right">
+                                    <div class="">
+                                        <svg id="barcode"></svg>
+                                    </div>
+                                </div><!-- end col -->
+
+                           
+                        </div><!-- end col -->
+    
+                       
+                      
+                    </div>
+                    <!-- end row -->
+
+                    <div class="col-12 mt-2" style="margin-left:-8px;">
+                        <span>Delivery Date:{{order.date}}</span><br>
+                        <span>Delivery Time:{{order.time.time_from}}-{{order.time.time_to}}</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table mt-4 table-centered">
+                                    <thead>
+                                    <tr>
+                                        <th>Order Items</th>
+                                        
+                                        <th>Weight</th>
+                                        <th >Price</th>
+                                        <th >Quantity</th>
+                                        <th>Sugarless</th>
+                                        <th>Eggless</th>
+                                        <th >Total</th>
+                                        
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {%for item in order.items.all%}
+
+                                        <tr>
+                                            <input type="hidden" name="item_id-{{forloop.counter}}" value="{{item.id}}">
+    
+                                            <td>
+    
+                                                {% if item.product.image %}
+                                                    <img src="{{item.product.image.url}}" height="40" width="30" class="mr-1">
+                                                    {%else%}
+                                                    <img src="https://image.shutterstock.com/image-vector/picture-vector-icon-no-image-260nw-1350441335.jpg" height="40" width="40" class="mr-1">
+                                                {% endif %}
+    
+                                                <a href="{%url 'catalog:product-update' item.product.product.id item.product.product.store.slug%}"> {{item.name|title}}<br>
+                                                    <span style="margin-left: 50px;font-size: smaller;">Addons:{%if not item.orderitem_addons.all %} N/A {%endif%}</span>
+                                                        {%for i in item.orderitem_addons.all%}
+                                                            <span style="font-size: smaller;">( {{i.addons.name|title}} : {{ request.user|currency_symbol }}.{{i.addons.price}} )</span>
+                                                        {%endfor%}
+                                               </a><br>
+                                                
+    
+                                            </td>
+                                            
+                                            <td>{{item.pound}}</td>
+                                            <td>{{ request.user|currency_symbol }}.{{item.price}}</td>
+    
+                                            <td>{{item.quantity}}</td>
+    
+                                             <td>
+                                                <p class="ml-2">{%if item.is_sugerless%}Yes {% else %} No {%endif%}</p>
+    
+                                                </div>
+                                            </td>
+    
+                                             <td>
+                                                <p class="ml-2">{%if item.is_eggless%}Yes {% else %}No{%endif%}</p>
+                                            </td>
+    
+    
+                                        
+                                            <td>{{ request.user|currency_symbol }}.<span id="total_product_price-{{forloop.counter}}">{{item.total}}</span>
+                                            </td>
+                                            
+    
+    
+                                        </tr>
+    
+    
+    
+    
+                                    {%endfor%}
+    
+                                
+
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive -->
+                        </div> <!-- end col -->
+                    </div>
+                    <!-- end row -->
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="clearfix pt-5">
+                                <h6 class="text-muted">Notes:</h6>
+
+                                <small class="text-muted">
+                                    All accounts are to be paid within 7 days from receipt of
+                                    invoice. To be paid by cheque or credit card or direct payment
+                                    online. If account is not paid within 7 days the credits details
+                                    supplied as confirmation of work undertaken will be charged the
+                                    agreed quoted fee noted above.
+                                </small>
+                            </div>
+                        </div> <!-- end col -->
+
+                        
+                        <div class="col-sm-6">
+
+                            <div class="float-right">
+                                <h5>Sub Total: <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                                            id='sub_total'>{{order.sub_total_order}}</span></span></h5>
+                                    
+                                <h5>Delivery Cost: <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                                                id='sub_total'>{{order.shipping_cost}}</span></span></h5>
+                                
+                                {% for charge in order.order_charge.all  %}
+                                <h5>{{charge.name}} ({{charge.rate}}%): <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                                    id='sub_total'>{{charge.total}}</span></span></h5>
+                                {% endfor %}
+                            
+                                <h5><b>Grand Total:</b> <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                                            id="grand_total">{{order.total}}</span></span></h5>
+                    
+                    
+                            </div>
+                            <div class="clearfix"></div>
+                        </div> <!-- end col -->
+                    </div>
+                    <!-- end row -->
+
+                    <div class="mt-4 mb-1">
+                        <div class="text-right d-print-none">
+                            <a href="javascript:window.print()"
+                            class="btn btn-primary waves-effect waves-light"><i
+                                    class="mdi mdi-printer mr-1"></i> Print</a>
+                        
+                        </div>
+                    </div>
+
+                </div> <!-- end col -->
+            </div>
+            <!-- end row -->
+
+        </div> <!-- container -->
+
+    </div> <!-- content -->
+
+</div>
+
+{% block extra_javascript %}
+
+    <script src="{% static 'admin_view/barcode.js' %}"></script>
+    <script>
+        JsBarcode("#barcode", "{{order.order_number}}");
+    </script>
+
+{% endblock %}

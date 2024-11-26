@@ -1,0 +1,326 @@
+{%load static%}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{%static 'cake-977/vendor-app/css/style.css'%}" type="text/css">
+    <link rel="stylesheet" href="{%static 'cake-977/vendor-app/css/responsive.css'%}" type="text/css">
+    <link rel="stylesheet" href="{%static 'cake-977/vendor-app/css/tabview.css'%}" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <title>Cake977-Baker-app</title>
+  </head>
+  <body>
+    <header>
+        <h3>{%if factory%}Order List-{{factory}}{%else%}Order List{%endif%}</h3>
+        <form>
+			<select name="date" onchange="this.form.submit()" class="form-control">
+				<option value="today" {%if date_day == 'today'%}selected{%endif%}>Today</option>
+				<option value="tomorrow" {%if date_day == 'tomorrow'%}selected{%endif%}>Tomorrow</option>
+			</select>
+		</form>       
+        <span class="notification">
+            <i class="fas fa-bell"></i>
+            <a href="#" class="badge badge-notify">{{total_count}}</a>
+        </span>
+
+
+    </header>
+    <section class="order-list-section">
+        <ul class="order-list">
+           {%for order in orders%}
+            <li class="order-info" data-toggle="modal" data-target=".bd-example-modal-lg-{{order.order_number}}" {%if order.order_status == 'Dispatched'%}style="background-color: #90ee90!important;"{%endif%}>
+                <div class="order-name">
+                    <span class="order-status">
+                        <img src="{%static 'cake-977/vendor-app/img/Pending.png'%}">
+                    </span>
+                    <span class="order-details">
+                        <p>{%if order.vendor%}<span style="color:red;">Vendor Order</span><br><span style="font-size:14px;">   ({{order.vendor.name|title}})</span>{%else%}Order{%endif%} #:{{order.order_number}}</p>
+                        {{order.items.all.count}} items<br>
+                        <!-- Amount Rs.{{order.total}} - {{order.order_status}}<br> -->
+                          Status: {{order.order_status}}<br>
+
+                        {%if not order.vendor_assigned_order%}
+                        	<a href="#">Assign Me</a>
+                        {%else%}
+                        <span>Baker Assigned: {{order.vendor_assigned_order.user.first_name|title}}
+                        {{order.vendor_assigned_order.user.last_name|title}}
+                        </span>
+                        {%endif%}
+                    </span>
+                </div>
+
+                <ul class="order-datetime">
+                	{%if order.delivery_order%}
+                	<li>{{order.delivery_order.user.first_name}} {{order.delivery_order.user.last_name}}</li>
+
+                    <li>
+                        {{order.delivery_order.pickup_date}}
+                    </li>
+                    <li>
+						{{order.delivery_order.pickup_time}}
+                    </li>
+                    {%else%}
+                    <li>No assigned</li>
+                    {%endif%}
+
+
+                </ul>
+            </li>
+            <!-- Modal for details -->
+		    <div class="delivery-app-popup">
+		        <div class="modal fade bd-example-modal-lg-{{order.order_number}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		        	
+		            <div class="modal-dialog modal-lg">
+		                <div class="modal-content">
+		                    <div class="modal-header">
+		                        <h5 class="modal-title" id="exampleModalLabel">Order #:{{order.order_number}}</h5>
+		                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                        <span aria-hidden="true">&times;</span>
+		                        </button>
+		                    </div>
+		                    <table style="margin: 5px;">
+		                    	{%if not order.vendor_assigned_order%}
+		                    	<tr>
+		                    		<td colspan="2">
+		                    			<form method="POST" action=".">
+		                    				{%csrf_token%}
+		                    				<input type="hidden" name="order" value="{{order.order_number}}">
+		                    				<button type="submit" class="btn btn-primary">Click to assign yourself</button><br>
+		                    			</form>
+		                    		</td>
+		                    	</tr>
+		                    	{%endif%}
+
+		                    <tr>
+                            	<td>Order Status</td>
+                        			<form>
+                                      <td colspan="6" class="left-td">
+                                      <div class="panel-body status-button">
+                                         <select name="delivery-status" onchange="OrderStatus(this,'{{order.order_number}}')" class="form-control">
+                                            <option selected disabled>{{order.order_status}}</option>
+                                            <option value="Dispatched">Ready To Dispatch</option>
+                                            <option value="Processing">Processing</option>
+                                            
+                                         </select>
+                                         <!-- {{order.order.payment_method}} -->
+                                      </div>
+                                      </td>
+                                      </form>
+                            </tr>
+                            </table>
+		                    {%for i in order.items.all%}
+		                    <div class="modal-mid-section">
+		                        <div class="left-modal">
+		                            <p>Pickup Date/Time:  {{order.delivery_order.pickup_date}},{{order.delivery_order.pickup_time}}</p>
+		                            {%include 'vendorAndDelivery/image-carosoul.html'%}
+
+		                        </div>
+		                        <div class="right-modal">
+		                            <p>{{i.product.varient_name|title}}
+		                            <!-- :  Rs.{{i.product.selling_price}} -->
+		                        </p>
+		                            <table class="table table-striped">
+		                                <tbody>
+		                                <tr>
+		                                    <td>Quantity</td>
+		                                    <td class="description-title">{{i.quantity}}</td>
+		                                </tr>
+		                                <tr>
+		                                    <td>Pound</td>
+		                                    <td class="description-title">{{i.pound}}</td>
+		                                </tr>
+		                                
+		                                <tr>
+		                                    <td>Sugarless</td>
+		                                    {%if i.is_sugarless%}
+		                                    <td class="description-title">Yes</td>
+		                                    {%else%}
+		                                    <td class="description-title">No</td>
+		                                    {%endif%}
+		                                </tr>
+		                                
+		                                
+		                                <tr>
+		                                    <td>Eggless</td>
+		                                    {%if i.is_eggless%}
+		                                    <td class="description-title">Yes</td>
+		                                    {%else%}
+		                                    <td class="description-title">No</td>
+		                                    {%endif%}
+		                                </tr>
+		                             
+		                                <tr>
+		                                    <td>Message</td>
+		                                    {%if i.special_instruction%}
+		                                    <td class="description-title">{{i.special_instruction}}
+		                                    </td>
+		                                    {%else%}
+		                                   		<td class="description-title">No any message</td>
+		                                    {%endif%}
+		                                </tr>
+		                                
+		                                </tbody>
+		                            </table>
+		                        </div>
+		                    </div>
+		                    {%endfor%}
+		                    <div class="modal-mid-section">
+		                    	<table>
+		                    		<thead>
+		                    			<th>Remarks</th>
+		                    		</thead>
+		                    	<tbody>
+		                    		<tr>
+		                    			<td>{{order.remarks}}</td>
+		                    		</tr>
+		                    	</tbody>
+		                    </table>
+		                    </div>
+
+
+						<!--<div class="addon-info">
+		                        <ul class="main-addon">
+		                            <li class="addons-added">
+		                                <div class="addon-item">
+		                                    <img src="img/party1.jpg">
+		                                </div>
+		                                <div class="addon-description">
+		                                    <ul>
+		                                        <li>
+		                                            <span class="badge badge-addon">Addon</span>
+		                                        </li>
+		                                        <li>
+		                                            Number Candles
+		                                        </li>
+		                                        <li>
+		                                            Quantity: 2
+		                                        </li>
+		                                    </ul>
+		                                </div>
+		                            </li>
+		                            <li class="addons-added">
+		                                <div class="addon-item">
+		                                    <img src="img/party1.jpg">
+		                                </div>
+		                                <div class="addon-description">
+		                                    <ul>
+		                                        <li>
+		                                            <a href="#" class="badge badge-addon">Addon</a>
+		                                        </li>
+		                                        <li>
+		                                            Number Candles
+		                                        </li>
+		                                        <li>
+		                                            Quantity: 2
+		                                        </li>
+		                                    </ul>
+		                                </div>
+		                            </li>
+		                            <li class="addons-added">
+		                                <div class="addon-item">
+		                                    <img src="img/party1.jpg">
+		                                </div>
+		                                <div class="addon-description">
+		                                    <ul>
+		                                        <li>
+		                                            <a href="#" class="badge badge-addon">Addon</a>
+		                                        </li>
+		                                        <li>
+		                                            Number Candles
+		                                        </li>
+		                                        <li>
+		                                            Quantity: 2
+		                                        </li>
+		                                    </ul>
+		                                </div>
+		                            </li>
+		                            <li class="addons-added">
+		                                <div class="addon-item">
+		                                    <img src="img/party1.jpg">
+		                                </div>
+		                                <div class="addon-description">
+		                                    <ul>
+		                                        <li>
+		                                            <a href="#" class="badge badge-addon">Addon</a>
+		                                        </li>
+		                                        <li>
+		                                            Number Candles
+		                                        </li>
+		                                        <li>
+		                                            Quantity: 2
+		                                        </li>
+		                                    </ul>
+		                                </div>
+		                            </li>
+		                            <li class="addons-added">
+		                                <div class="addon-item">
+		                                    <img src="img/party1.jpg">
+		                                </div>
+		                                <div class="addon-description">
+		                                    <ul>
+		                                        <li>
+		                                            <a href="#" class="badge badge-addon">Addon</a>
+		                                        </li>
+		                                        <li>
+		                                            Number Candles
+		                                        </li>
+		                                        <li>
+		                                            Quantity: 2
+		                                        </li>
+		                                    </ul>
+		                                </div>
+		                            </li>
+		                        </ul>
+		                    </div> -->
+		                </div>
+		            </div>
+		            
+		        </div>
+		    </div>
+            {%endfor%}
+        </ul>
+
+    </section>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.js"></script>
+
+
+    <script type="text/javascript">
+    	function OrderStatus(item,order_number){
+        var status = item.value;
+        var order_number = order_number;
+		var user = '{{request.user.id}}'
+        var token = '{{csrf_token}}';
+        $.ajax({
+        headers: { "X-CSRFToken": token },
+        method:'POST',
+        url: '{%url 'vendorAndDelivery:change-order-status'%}',
+        data: {
+
+          'order_status': status,
+          'order_number':order_number,
+		  'user':user,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if(data['status']==='success'){                
+                location.reload()
+        }else{
+            $.notify('Permission Denied', 'info');
+        }
+        }
+      });
+    }
+    </script>
+  </body>
+</html>

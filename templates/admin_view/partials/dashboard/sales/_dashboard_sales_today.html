@@ -1,0 +1,78 @@
+<!-- best seller row-->
+{% load static %}
+
+<div class="card-box widget-inline">
+
+    <div class="row">
+
+        <div class="col-sm-6 col-xl-4">
+            <div class="p-2 text-center">
+                <img src="{% static 'admin_view/images/bank.svg' %}" height="30">
+                <h3><span data-plugin="counterup">{{ total_sales_today.total_price }}</span></h3>
+                <p class="text-muted font-15 mb-0">Total Sales<br>( {{total_sales_order_count_today}} orders )</p>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-4">
+            <div class="p-2 text-center">
+                <img src="{% static 'admin_view/images/bank.svg' %}" height="30">
+                <h3><span data-plugin="counterup">{{ total_sales_paid_today.total_price }}</span></h3>
+                <p class="text-muted font-15 mb-0">Paid <br>( {{total_paid_sales_today}} orders )</p>
+            </div>
+        </div>
+
+
+        <div class="col-sm-6 col-xl-4">
+            <div class="p-2 text-center">
+                <img src="{% static 'admin_view/images/bank.svg' %}" height="30">
+                <h3> <span data-plugin="counterup">{{ total_sales_cod_today.total_price }}</span></h3>
+                <p class="text-muted font-15 mb-0">Unpaid <br>( {{total_pending_sales_today}} orders)</p>
+            </div>
+        </div>
+
+    </div> <!-- end row -->
+</div> <!-- end card-box-->
+
+<h5>Bestsellers</h5>
+
+<table data-toggle="table" data-search="false" data-show-refresh="false" data-sort-name="id"
+    data-page-list="[5, 10, 20]" data-page-size="5" data-pagination="false" data-show-pagination-switch="false"
+    class="table-borderless mt-2">
+    <thead class="thead-light">
+        <tr>
+            <th data-align="center">DISH</th>
+            <th data-align="center">CATEGORY</th>
+            <th data-align="center">PRICE</th>
+            <th data-align="center">STATUS</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if best_selling_product_today %}
+        {% for product in best_selling_product_today %}
+
+        <tr>
+            {%if product.store_slug%}
+            <td>{%if perms.catalog.change_product%}
+                <a href="{% url 'catalog:product-update' product.id product.store_slug%}">{{ product.name|title }}</a>{%else%}{{ product.name|title }}{%endif%}</td>
+            {%endif%}
+            <td>
+                {% for category in product.category  %}
+                {{ category.name|title }}<br>
+                {% endfor %}
+            </td>
+            <td>{{ product.price }}</td>
+
+            {% if product.status == "In Stock" %}
+            <td><span class="badge label-table badge-success">{{ product.status }}</span></td>
+            {%else%}
+            <td><span class="badge label-table badge-danger">{{ product.status }}</span></td>
+
+            {% endif %}
+
+        </tr>
+        {% endfor %}
+
+        {% endif %}
+
+    </tbody>
+</table>

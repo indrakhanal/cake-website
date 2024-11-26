@@ -1,0 +1,109 @@
+<div class="row">
+    <div class="col-lg-6">
+
+        <h5 class="text-uppercase bg-light p-2 mt-0 mb-3">General</h5>
+
+
+        <div class="form-group mb-3">
+            <label for="id_outlet_name">Outlet Name <span class="text-danger">*</span></label>
+            {{form.outlet_name}}
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="id_store_address">Outlet Address <span class="text-danger">*</span></label>
+            {{form.store_address}}
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="id_contact_email">Contact Email </label>
+            {{form.contact_email}}
+        </div>
+
+
+        <div class="form-group mb-3">
+            <label for="id_whatsapp_number">Contact Number<span class="text-danger">*</span></label>
+            {{form.contact_number}}
+        </div>
+
+
+        <div class="form-group mb-3">
+            <label for="id_delivery_available_time">Currency <span class="text-danger">*</span></label>
+            {{form.currency}}
+
+        </div>
+
+
+        <div class="form-group mb-3">
+            <label for="id_minimum_order_price">Minimum Order Price <span class="text-danger">*</span></label>
+            {{form.minimum_order_price}}
+        </div>
+
+
+    </div> <!-- end col -->
+
+    <div class="col-lg-6">
+         <h5 class="text-uppercase bg-light p-2 mt-0 mb-3">Delivery <!-- & Tax Charges --></h5>
+
+        <div class="form-group mb-3">
+            <label for="id_delivery_available_time">Delivery Available Time <span class="text-danger">*</span></label>
+            {{form.delivery_available_time}}
+        </div>
+
+
+       <!--  <div class="form-group mb-3" style="margin-left: 10px;">
+            <div class="checkbox form-check-inline">
+
+                {{form.apply_extra_charge}}
+                <label for="id_apply_extra_charge">Apply Tax Charges </label>
+            </div>
+
+        </div> -->
+
+
+       <!--  <div class="form-group mb-3">
+
+            <h5 class="text-uppercase bg-light p-2 mt-0 mb-3">Nepxpress DELIVERY</h5>
+
+            <div class="form-group mb-3">
+                <label for="id_nepxpress_username">Username (Key)</label>
+                {{form.nepxpress_username}}
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="id_nepxpress_password">Password</label>
+                {{form.nepxpress_password}}
+            </div>
+        </div> -->
+
+        <div class="form-group mb-3">
+
+            <h5 class="text-uppercase bg-light p-2 mt-0 mb-3">Banner Display</h5>
+
+            <div class="form-group mb-3">
+                <label for="id_nepxpress_username">Text</label>
+                {{form.banner_top_message}}
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="id_nepxpress_password">Redirect Url</label>
+                {{form.banner_top_message_redirect}}
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+
+            <h5 class="text-uppercase bg-light p-2 mt-0 mb-3">Meta Tags</h5>
+
+            <div class="form-group mb-3">
+                <label for="">Meta Tags</label>
+                {{form.script_tags}}
+            </div>
+
+            
+        </div>
+
+
+    </div> <!-- end col-->
+
+</div>
+<!-- end row -->

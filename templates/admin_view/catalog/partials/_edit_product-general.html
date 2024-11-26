@@ -1,0 +1,177 @@
+{% load crispy_forms_tags %}
+{{form.media}}
+{%if form.errors %}
+{% for error in form.non_field_errors %}
+<div class="alert alert-danger">
+    <strong>{{ error|escape }}</strong>
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="row card-box">
+   
+        <div class="col-lg-6">
+            <h5 class="text-uppercase mt-0 mb-3 bg-light p-2">General</h5>
+            <div class="form-group mb-3">
+               
+                {{form.name|as_crispy_field}}
+            </div>
+            <div class="form-group mb-3">
+                {{form.slug|as_crispy_field}}
+            </div>
+
+              <div class="form-group mb-3">
+               {{form.category|as_crispy_field}}
+            </div>
+
+               <div class="form-group mb-3">
+               
+               {{form.flavour|as_crispy_field}}
+            </div>
+
+               <div class="form-group mb-3">
+                        {{form.addons|as_crispy_field}}
+                </div>
+
+
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group mb-3">
+                        <div class="checkbox form-check-inline ml-1">
+                            {{form.is_available|as_crispy_field}}
+                            
+                        </div>
+                    </div>
+    
+                </div>
+                <div class="col-lg-3">
+                      <div class="form-group mb-3">
+                <div class="checkbox form-check-inline">
+                    {{form.show_sugarless|as_crispy_field}}
+                </div>
+            </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group mb-3">
+                <div class="checkbox form-check-inline">
+                    {{form.show_eggless|as_crispy_field}}
+                    
+                </div>
+            </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group mb-3">
+
+            <div class="checkbox form-check-inline">
+                {{form.is_props|as_crispy_field}}
+            </div>
+
+        </div>
+
+            </div>
+            </div>
+
+
+
+
+            
+
+        </div> <!-- end col-->
+
+        <div class="col-lg-6">
+            <h5 class="text-uppercase mt-0 mb-3 bg-light p-2">ADDITIONAL</h5>
+               
+
+           
+            <div class="form-group mb-3">
+                        {{form.tags|as_crispy_field}}
+                </div>
+
+            <div class="form-group mb-3">
+                {{form.note|as_crispy_field}}
+            </div>
+
+         
+            <div class="form-group mb-3">
+                    {{form.min_order_time|as_crispy_field}}
+                </div>
+
+
+            <div class="form-group mb-3">
+                {{form.display_order|as_crispy_field}}
+            </div>
+
+
+        </div>
+    
+
+        <div class="col-lg-12 mb-3">
+            <h5 class="mt-2 mb-3 bg-light p-2">OVERRIDE FIELDS</h5>
+    
+            <div class="row">
+                <div class="col-lg-6">
+
+                    <div class="form-group mb-3">
+                        {{form.shipping_method|as_crispy_field}}
+                    </div>
+    
+                </div>
+    
+                <div class="col-lg-6">
+    
+                 
+                    <div class="form-group mb-3">
+                        {{form.related_products|as_crispy_field}}
+                    </div>
+    
+                </div>
+            </div>
+           
+        </div>
+
+
+    <div class="col-lg-12 mb-3">
+        <h5 class="mt-2 mb-3 bg-light p-2">PRODUCT DETAILS</h5>
+        {{form.long_description|as_crispy_field}}
+    </div>
+
+    <div class="col-lg-12 mb-3">
+        <h5 class="mt-2 mb-3 bg-light p-2">DELIVERY INFORMATION</h5>
+        {{form.delivery_information|as_crispy_field}}
+    </div>
+
+    <div class="col-lg-12 mb-3">
+        <h5 class="mt-2 mb-3 bg-light p-2">INSTRUCTION</h5>
+        {{form.instruction|as_crispy_field}}
+    </div>
+
+
+        <h5 class="mt-2 mb-3 bg-light p-2 col-12">IMAGE ( 245px * 160px )</h5>
+        <div class="col-lg-6 mb-3">
+        <input type="checkbox" style="display:none" name="image-clear" id="image-clear_id">
+            <input onchange="uploaded();" type="file" name="image" class="dropify" data-height="200"
+                accept="image/*" id="id_image">
+
+        </div>
+        <div class="col-lg-6 mb-3">
+        <input type="checkbox" style="display:none" name="image1-clear" id="image1-clear_id">
+            <input onchange="uploaded1();" type="file" name="image1" class="dropify" data-height="200"
+                accept="image/*" id="id_image1">
+
+        </div>
+        <div class="col-lg-6">
+        <input type="checkbox" style="display:none" name="image2-clear" id="image2-clear_id">
+            <input onchange="uploaded2();" type="file" name="image2" class="dropify" data-height="200"
+                accept="image/*" id="id_image2">
+
+        </div>
+        <div class="col-lg-6">
+        <input type="checkbox" style="display:none" name="image3-clear" id="image3-clear_id">
+            <input onchange="uploaded3();" type="file" name="image3" class="dropify" data-height="200"
+                accept="image/*" id="id_image3">
+
+        </div>
+</div>
+<!-- end row -->

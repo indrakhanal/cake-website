@@ -1,0 +1,44 @@
+{%load static%}
+
+
+
+            <section class="listpage-banner">
+              <div class="cake-brand-listpage">
+                <picture class="banner-image-shopwise">
+                  {% if product.store.banner_image %}
+                  <img src="{{product.store.banner_image.url}}">
+                  {%else%}
+                  <img src="{%static 'cake-977/img/miraz-new.jpg'%}">
+                  {%endif%}
+                </picture>
+                <div class="cake-brand_details">
+                  <div class="cake-brand_logo">
+                    {% if product.store.image %}
+                      <img src="{{product.store.image_thumbnail_150X150.url}}">
+                      {%endif%}
+                  </div>
+                  <div class="cake-brand_info">
+                      <h3>
+                        <a href="{{product.store.get_absolute_url}}">
+                      {{product.store.name|title}}
+                    </a>
+
+                    </h3> 
+                      <p>                      {{product.store.store_location1|title}}</p> 
+                     <div class="rating"> 
+                    {%for counter in product.store.get_average_product_review %}
+                        <i class="fa fa-star"></i>
+                      {%endfor%}
+                     </div> 
+                     <p>Deliver to: {%for location in product.store.location.all%}
+                        {{location.name|title}}{% if not forloop.last %},{% endif %}  
+                        {%endfor%} </p> 
+                  </div>              
+              </div>
+              </div>         
+            </section>
+
+
+
+
+      

@@ -1,0 +1,16 @@
+@media screen and (max-width: 1024px) and (min-width: 576px) {
+    .left-modal img{
+        width: 250px;
+        height: 250px;
+    }
+    .right-modal p{
+        text-align: right;
+    }
+    .delivery-app-popup .modal-dialog {
+        max-width: 600px;
+        margin: 1.75rem auto;
+    }
+    .right-modal{
+        flex-basis: 50%;
+    }
+}

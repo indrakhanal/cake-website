@@ -1,0 +1,163 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+    <title>Store list</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/select_location_pop_up.html'%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+{%include 'client/cake-977/partials/shop-list/banner.html'%}
+<div class="list-main">
+<section class="list-main-body">
+      <div class="breadcrumbs-sortby">
+        <div class="breadcrumbs">
+           <a href="{%url 'client:catalog'%}">Home</a> >
+            <a href="#" class="active">Bakeries</a>
+        </div>
+        <form method="get" action="{%url 'client:stores-list-client'%}">
+        
+
+          <div class="sortby-dropdown">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Sort by : </label>
+              </div>
+              <select class="custom-select" id="inputGroupSelect01" name="filter" onchange="this.form.submit()">
+                <!-- <option selected>Recommended</option> -->
+                <option>All</option>
+              <option value="rated" {%if filter_value == 'rated'%}selected{%endif%}>Ratings</option>
+              </select>
+            </div>
+          </div>
+        <input type="hidden" name="page" value="{{page}}">
+      </form>
+      </div>
+    </section>
+    <section class="shopwise-main-part">
+       {%for i in stores%}
+        
+      <div class="shopwise-main">
+        <div class="shops-left-bar">
+          <a class="cake-link" href="{{i.get_absolute_url}}">
+          {%if i.image%}
+          <img src="{{i.storewise_thumbnail.url}}">
+          {%else%}
+          <img src="{%static 'cake-977/def_img/Cake977-defaultlogo.png'%}">
+          {%endif%}
+          <h6 class="shop-name">{{i.name|title}}</h6>
+          <span class="shop-location">{{i.store_location1|title}}</span>
+        </a>
+          <div class="shop-rating">
+            <div class="rating-badge">
+              {%with review=i.get_average_product_review_count%}
+              <p>{{review}} <span><i {% if review == 5.0 %}class="fas fa-star"{% else %}class="fas fa-star-half-alt"{% endif %}></i></span></p>
+              {%endwith%}
+            </div>
+            <div class="total-reviews">
+              <span>{{i.get_product_review_count}} reviews</span>
+            </div>
+          </div>
+          </span>
+        </div>
+        <div class="product-carousel">
+          <div class="owl-carousel shop-carousel">
+            {%for product in i.allProducts %}
+            <div class="card">
+              <a class="cake-link" href="{{product.get_absolute_url}}">
+              <div class="image-box">
+                {% if product.image %}
+                    <img class="card-img-top" src="{{product.shopwise_item_product.url}}" alt="{{i.name}}">
+                {% else %}
+                    <img class="card-img-top" src="{%static 'cake-977/def_img/Cake977-255X255px-02.png'%}" alt="default image">
+                {% endif %}
+              </div>
+              <div class="card-body bakeries-card">
+                <h5 class="card-title">{{product.name|title}}</h5>
+                  <p class="cake-price">{{currency}}. {{product.listing_product_varient.selling_price}}<span>{%if product.listing_product_varient.price %}<del>{{currency}}. {{product.listing_product_varient.old_price}}</del></span>
+                    <span class="cake-offer">{{product.listing_product_varient.discount}}% off</span>{%endif%}
+                  </p>
+                <div class="card-details">
+                  <div class="card-left">
+                    <p class="cake-delv-info">Get it <span>Today</span></p>
+                  </div>
+                  <div class="card-right">
+                    <div class="rating-badge">
+                      {% with avg_review=product.avg_review %}
+                      <p>{{avg_review}} <span><i {% if avg_review == 5.0 %} class="fas fa-star" {% else %} class="fas fa-star-half-alt" {% endif %}></i></span></p>
+                      {%endwith%}
+                    </div>
+                  </div>
+                </div>
+                <div class="card-details">
+                  <div class="card-left">
+                    <a class="card-text" href="{{product.store.get_absolute_url}}">{%if product.store%} By {{product.store.name|title}}, {%for location in product.store.location.all%}
+                        {{location.name|title}}
+                        {%endfor%}
+                        {%endif%}</a>
+                  </div>
+                  <div class="card-right">
+                    <div class="total-reviews">
+                      
+                      <span>{{product.product_reviews_count}} reviews</span>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+            </div>
+           {%endfor%}
+          </div>
+        </div>
+      </div>
+      
+      {%endfor%}
+      
+      <div class="right">
+        <ul class="pagination-mainlist">
+            {% if stores.has_other_pages %}
+                {% if stores.has_previous %}
+            <li><a id="prev" href="?filter={{filter_value}}&page={{ stores.previous_page_number }}">«</a></li>
+             {% else %}
+             <!-- <li><a id="prev">«</a></li> -->
+             {%endif%}
+            {% for counter in stores.paginator.page_range %}
+            {% if stores.number == counter %}
+            <li><a id="test2" class="active">{{counter}}</a></li>
+            {%else%}
+            <li><a id="test1" href="?filter={{filter_value}}&page={{ counter }}">{{counter}}</a></li>
+            {%endif%}
+            
+            {%endfor%}
+             {% if stores.has_next %}
+            <li><a href="?filter={{filter_value}}&page={{ stores.next_page_number }}" id="next">»</a></li>
+            {% else %}
+            {% endif %}
+            {%endif%}
+          </ul>
+      </div>
+    </section>
+  </div>
+        
+  {%include 'client/cake-977/partials/payment_partner.html'%}
+
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+    <script src="{%static 'cake-977/js/pagination.js'%}"></script>
+
+
+{%endblock%}

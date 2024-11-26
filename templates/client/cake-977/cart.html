@@ -1,0 +1,1088 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+    <title>Cart</title>
+{%endblock%}
+{%block extra_css%}
+    <link href="{%static 'cake-977/css/buy-stepper.css'%}" rel="stylesheet" type="text/css">
+    <script src="{% static 'cake-977/khalti.js' %}"></script>
+    <link rel="icon" href="img/logo-cakes.png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+     <section class="main-cart-section">
+    <!-- Cart when it is full -->
+    <div class="cart full" id="cart-full-part">
+      <div class="cart__body">
+          <h3 class="cart__title">Shopping Cart</h3>
+      </div>
+
+      <div class="cart__summary-item">
+         <ul class="cart__summary-item-list">
+          {%for item in cart_list%}
+          {%for i in item.varient%}
+          <li>
+              <div class="product-row">
+                  <div class="product-card">
+                     {%if i.product.image%}
+                            <div class="product-image"
+                style="background-image: url({{i.product.cart_thumbnail.url}});background-size: cover;background-repeat: no-repeat;background-position: center;">
+                     </div>
+                            {%else%}
+                            <div class="product-image"
+                style="background-image: url('{%static 'cake-977/def_img/Cake977-162x140px-04.png'%}');background-size: cover;background-repeat: no-repeat;background-position: center;">
+                     </div>
+                     {%endif%}
+                  </div>
+                  <div class="product-card-attribute">
+                    <span class="product-card-name">
+                      <div class="row product-head">
+                        <a href="{{i.product.get_absolute_url}}" style="width: 45%;">
+                        <h5 style="width: 100%;overflow: hidden;text-overflow: ellipsis;">{{i.varient_name|title}}</h5>
+                        </a>
+                        <div class="cart-manager">
+                        <form class="qtySelector">
+                          <div class="value-button decrease" value="Decrease Value" onclick="cartChangedMinus('{{i.id}}','{{item.date}}','{{item.time}}');">-</div>
+                          <input type="number" class="qtyValue"  id="item_quantity--{{i.id}}{{item.date}}{{item.time}}"
+                                    value="{{item.quantity}}" onchange="cartChanged('{{i.id}}','{{item.date}}','{{item.time}}');" name="varient-{{i.id}}"/>
+                          <div class="value-button increase" value="Increase Value" onclick="cartChangedPlus('{{i.id}}','{{item.date}}','{{item.time}}');">+</div>
+                        </form>
+                      </div>
+                       <div class="close-cart">
+                      <p data-toggle="modal" data-target="#deleteBtntwo-{{i.id}}{{item.date}}{{item.time}}"><i class="far fa-times-circle"></i></p>
+                      <!-- The Modal -->
+                      <div class="modal fade" id="deleteBtntwo-{{i.id}}{{item.date}}{{item.time}}">
+                        <div class="modal-dialog">
+                          <div class="modal-content">                            
+                           
+                            <!-- Modal body -->
+                            <div class="modal-body" style="padding: 20px;">
+                              Are you sure you want to delete this item?
+                            </div>
+                            
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="sendAjaxQuantityChangeRequest('{{i.id}}','0','{{item.date}}','{{item.time}}')">Delete</button>
+                              <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                      </div>                      
+                      <div class="row product-card-price">
+                        <div class="col">
+                          <ul>
+                                <li>{% if i.product.is_cake_props %} {{i.product.get_first_varient_attribute_name}} - {{item.pound}} {% else %}{{item.pound}} Pound {% endif %}</li>
+                                {%if item.eggless%}
+                                <li>Eggless</li>
+                                {%endif%}
+                                {%if item.sugarless%}
+                                <li>Sugarless</li>
+                                {%endif%}
+                                <li>Date</li>
+                                <li>Time</li>
+                                {%if item.message%}
+                                <li>Message</li>
+                                {%endif%}
+                                
+                                <li>Addon Total</li>
+                     
+                                <li>Subtotal</li>
+
+                              </ul>
+                        </div>
+                        <div class="col">
+                          <ul>
+                                <li>{{currency}}. {{item.display_price}}</li>
+                                {%if item.eggless%}
+                                <li>{{currency}}.{{item.eggless_price}}</li>
+                                {%endif%}
+                                {%if item.sugarless%}
+                                <li>{{currency}}.{{item.sugarless_price}}</li>
+                                {%endif%}
+                                <li>{{item.date}}</li>
+                                <li>{{item.delivery_time.time_from}}-{{item.delivery_time.time_to}}</li>
+                                {%if item.message%}
+                                <li>{{item.message}}</li>
+                                {%endif%}
+                                <li>{{currency}}.{{item.addon_total_price}}</li>
+                                <li class="cart-sub-total">{{currency}}.{{item.display_price_with_egg_sugar_and_addon}}</li>
+                              </ul>
+                        </div>
+                      </div>
+                    </span>                              
+                  </div>                  
+              </div>              
+          </li>
+          {%endfor%}
+          {%empty%}
+          <p>Your cart is empty now.</p>
+          {%endfor%}
+         
+        </ul>
+      </div>
+      {%if request.user.is_authenticated%}
+      <div id="myDIV">
+        {%if is_unique_item_only == 1%}
+         <form class="form-inline promo-form"  action="POST" id='promocode-form' onsubmit="applyCoupon();return false;">
+              {%csrf_token%}
+        
+              <div class="input-group mb-3">
+                  <input type="text" class="form-control" id="coupon-field" placeholder="Enter code" name="coupon" required="required" {%if coupon%}value="{{coupon}}"{%endif%}>
+                  <div class="input-group-append">
+                      <button class="btn promo-btn" type="submit">Apply</button>
+                  </div>
+              </div>
+        </form>
+        {%else%}
+        <p style="color: red;">Coupon can be applied for only single item on cart.</p>
+        {%endif%}
+        
+      </div>
+      {%endif%}
+
+      <span id="error_coupon" style="color: red; font-size:13px;"></span>
+      <div class="code-display" id="coupon-applied">
+
+          {%if coupon%}
+          <span style="width: 37%;" id="applied-code"> 
+          Code: {{coupon.coupon_number}}</span>
+          <span class="perct-code" id="discount-coupon">Discount:{%if coupon.coupon_type == 'Flat' %} {{currency}}.{{coupon.value}} off {%else%} {{coupon.value}}% off{%endif%}</span>
+          {% else %}
+          <span style="width: 37%;" id="applied-code"> </span>
+          <span class="perct-code" id="discount-coupon"></span>
+         
+          {%endif%}
+      </div>
+      <div class="cart__summary" id="cart-summ">
+          <dl class="cart__summary__amount">
+              <dt class="cart__summary__amount-subtotal">Subtotal</dt>
+              {%if coupon%}
+              <dd class="cart__summary__amount-subtotal">{{currency}}. {{discounted_sub_total}}<strike>{{currency}}. {{total_without_shipping_cost}}</strike></dd>
+              {%else%}
+              <dd class="cart__summary__amount-subtotal">{{currency}}. {{discounted_sub_total}}</dd>
+              {%endif%}
+
+              <dt class="cart__summary__amount-delivery">Delivery Fee</dt>
+              <dd class="cart__summary__amount-delivery">{{currency}}. {{shipping_cost_total}}</dd>
+              <dt class="cart__summary_amount-payable">
+                  Payable
+                  <em>(Incl.tax)</em> 
+              </dt>
+              <dd class="cart__summary_amount-payable">{{currency}}. {{discounted_total}}</dd>
+          </dl>
+      </div>
+    </div> 
+    <div class="checkout-section">
+      
+      <div class="cart__body">
+        <h3 class="cart__title">Checkout</h3>
+        <p class="small checkout-instruct">Login to checkout or continue as a guest. The credentials will be used to send you the information of your orders</p>
+      </div> 
+      
+      <div>
+        <div class="checkout-first-form"> 
+         
+        {%if not user.is_authenticated%}       
+          <a {% if cart_count <= 0 %} href="#" onclick="showMessage1('You Cart is empty. Please add item to proceed to order');"{%else%}href="{%url 'accounts:login'%}?next=/cart/"{%endif%}class="btn btn-success checkout-login-btn" href="{%url 'accounts:login'%}" type="button">Login to checkout</a>
+
+          <a {% if cart_count <= 0 %} class="btn btn-success checkout-login-btn" onclick="showMessage1('You Cart is empty. Please add item to proceed to order');" {%else%}class="btn btn-success checkout-success-btn"{%endif%} href="#" type="button" >Continue as guest</a>
+          {%else%}
+          <a {% if cart_count <= 0 %} class="btn btn-success" onclick="showMessage1('You Cart is empty. Please add item to proceed to order');" {%else%}class="btn btn-success checkout-success-btn"{%endif%} style="color: white;"  type="button" id="checkout-btn">Checkout to order</a>
+          {%endif%}
+          
+          
+        </div>
+        {%if not user.is_authenticated%}
+        <p class="small signup-text-check" style="font-weight: 600; text-align: center;">Don't have account yet?<span>&nbsp;<a
+          href="{%url 'accounts:signup'%}">create a new account</a></span></p>
+          {%endif%}
+      </div>      
+      
+      <div class="change_address">
+        <span class="tick-mark"><i class="far fa-check-circle"></i></span>
+          <div class="text-section-address">
+           <h6>Receipant's Detail</h6>
+          <span id="rec_name"></span><br>
+          <span id="rec_add"></span><br>
+          <span id="rec_phone"></span><br><br>
+
+          <h6>Sender's Detail</h6>
+          <span id="sen_name"></span><br>
+          <span id="sen_email"></span><br>
+          <span id="sen_phone"></span>&nbsp;&nbsp;
+          <button id="change-address-button">Change address</button>
+          </div>
+
+      </div>  
+      
+      <div class="shipping-delivery-section">
+        <div class="cart__body">
+          <h3 class="cart__title">Shipping & Delivery</h3>
+        </div> 
+        <form id="receiver-form" class="needs-validation">
+          {%csrf_token%}
+        <h6 class="sender-detail">Sender's Detail<span class="small">&nbsp; &nbsp;<i class="fas fa-info-circle"></i> Order related communication will also be sent on these details.</span></h6>
+          <div class="row sender-form">
+            <div class="row">
+              <div class="col receivers-detail-label">
+                <label for="sender_full_name">Sender's Name</label>
+                <input type="text" class="form-control double-field" name="sender_full_name" id="sen__name" placeholder="*Sender's Name" required {%if user.is_authenticated%}value="{{user.first_name}} {{user.last_name}}"{%endif%}>
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="sender_email">Email</label>
+                <input type="email" class="form-control double-field" id="sen__email" name="sender_email" placeholder="Sender's Email(Optional)" {%if user.is_authenticated%}value="{{user.email}}"{%endif%}>
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+              </div>
+            </div>
+            <div class="row">
+              <div class="col receivers-detail-label">
+                <label for="sender_address">Address</label>
+                <input type="text" class="form-control" name="sender_address" placeholder="*Sender's Address" id="sender_address" required>
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="sender_phone_number">Sender's Mobile</label>
+                <input type="tel" name="sender_phone_number" id="sen__phone" class="form-control double-field" placeholder="*Sender's Mobile" maxlength="10" minlength="10" required {%if user.is_authenticated%}value="{{user.profile.phone_number}}"{%endif%}>
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+              </div>
+            </div>
+          </div>       
+        <div class="Receivers-detail">
+          <h6>Receiver's Detail</h6>         
+            <div class="custom-control custom-checkbox self-receiver small">
+              <input type="checkbox" class="custom-control-input" id="customCheckself" name="i_am_receiver" onchange="changeReceiver();">
+              <label class="custom-control-label" for="customCheckself">I am the receiver.</label>
+            </div>          
+            <div class="row">
+              <div class="col receivers-detail-label">
+                <label for="receiver_fullname">Recipient Name</label>
+                <input type="text" class="form-control" name="receiver_fullname" id="rec__name" placeholder="*Recipient's Name" required>
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="receiver_email">Email</label>
+                <input type="email" class="form-control" name="receiver_email" placeholder="Recipient's Email(Optional)" id="rec__email">
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+              </div>
+            </div>
+
+            <div class="row desktop-view">
+              <div class="col receivers-detail-label">
+                <!-- <input type="text" class="form-control" name="receipantaddress" placeholder="*Recipient's Address" required> -->
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+                <div class="delivery-address">
+                  <label for="city">City</label>
+                  <select class="form-control" id="city" name="city" required>
+                    {%for city in sub_location%}
+                    <option value="{{city.id}}">{{city.name|title}}</option>
+                    {%endfor%}
+                    
+                  </select>
+              </div> 
+              </div>
+              <div class="col receivers-detail-label">
+                <!-- <input type="text" class="form-control" name="receipantaddress" placeholder="*Recipient's Address" required> -->
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+                <div class="delivery-address">
+                  <label for="area">Area</label>
+                  <select class="form-control" id="area" name="area" required>
+                    {%for area in sub_location_area%}
+                    <option value="{{area.id}}">{{area.name|title}}</option>
+                    {%endfor%}
+                  </select>
+              </div> 
+              </div>
+            </div>
+            <div class="row mobile-view">
+              <div class="col receivers-detail-label">
+                <!-- <input type="text" class="form-control" name="receipantaddress" placeholder="*Recipient's Address" required> -->
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+                <div class="delivery-address">
+                  <label for="cityM">City</label>
+                  <select class="form-control" id="cityM" name="city" required>
+                    {%for city in sub_location%}
+                    <option value="{{city.id}}">{{city.name|title}}</option>
+                    {%endfor%}
+                  </select>
+              </div> 
+              </div>
+            </div>
+            <div class="row mobile-view">
+              <div class="col receivers-detail-label">
+                <!-- <input type="text" class="form-control" name="receipantaddress" placeholder="*Recipient's Address" required> -->
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+                <div class="delivery-address">
+                  <label for="areaM">Area</label>
+                  <select class="form-control" id="areaM" name="area" required>
+                    {%for area in sub_location_area%}
+                    <option value="{{area.id}}">{{area.name|title}}</option>
+                    {%endfor%}
+                  </select>
+              </div> 
+              </div>
+            </div>
+
+
+
+
+            <div class="row">
+              <div class="col receivers-detail-label">
+                <label for="receiver_address">Address</label>
+                <input type="text" class="form-control" id="rec__address" name="receiver_address" placeholder="*Recipient's Address" required>
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+              </div>
+            </div>
+            <div class="row">
+              <div class="col receivers-detail-label">
+                <label for="landmark">Landmark</label>
+                <input type="text" class="form-control" name="landmark" placeholder="Landmark" required>
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+              </div>
+              <div class="col">
+                <label class="receivers-detail-text">Address Type</label><br>
+                <label class="radio-inline"><input type="radio" name="address_type" value="Home" checked> Home</label> &nbsp
+                <label class="radio-inline"><input type="radio" name="address_type" value="Office"> Office</label>&nbsp
+                <label class="radio-inline"><input type="radio" name="address_type" value="other"> Other</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col receivers-detail-label">
+                <label for="receiver_number1">Recipient's Mobile</label>
+                <input type="tel" id="rec__phone" name="receiver_number1"  class="form-control double-field" placeholder="*Recipient's Mobile" maxlength="10" minlength="10" required>
+                <!-- <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div> -->
+              </div>
+              <div class="col receivers-detail-label">
+                <label for="receiver_number2">Recipient's Alt Mobile</label>
+                <input type="tel" id="phone" name="receiver_number2" class="form-control double-field" placeholder="Recipient's Alt Mobile" maxlength="10" minlength="10">
+              </div>
+            </div>
+            <div class="occasion-section">
+                <label for="sellist1">What Ocassion is the cake for?</label>
+                <select class="form-control" id="sel2" name="occasion" required>
+                  <option value="Birthday">Birthday</option>
+                  <option value="Anniversary">Anniversary</option>
+                  <option value="Baby Shower">Baby Shower</option>
+                  <option value="Weeding">Wedding</option>
+                  <option value="Other">Other</option>
+                </select>
+            </div>            
+            <div class="custom-control custom-checkbox hide-info small">
+              <input type="checkbox" class="custom-control-input" id="customCheck" name="hide_info_from_receiver">
+              <label class="custom-control-label" for="customCheck">Hide the information from receipant for surprise.</label>
+            </div>
+            <input id="payment_method" name="payment_method" value="COD" type="hidden">
+            <button class="btn btn-success shipping-del-btn" id="submit-checkoutform" type="submit">Continue</button>
+          </form>
+        </div>  
+      </div>
+      <div class="payment">
+        <div class="cart__body">
+          <h3 class="cart__title">Payment Information</h3>
+          <p id="error_display"></p>
+        </div>
+        <p class="small">Choose a way to payment method for your order:</p>
+        
+        
+        <div class="custom-control custom-radio">
+          <input type="radio" id="payment-cod" name="customRadio" class="custom-control-input" value="cod" onclick="setPaymentMethod('COD')" checked>
+          <label class="custom-control-label" for="payment-cod">Cash on delivery</label>
+        </div>
+
+        {% if khalti.is_active_khalti %}
+        <div class="custom-control custom-radio">
+          <input type="radio" id="payment-khalti" name="customRadio" value="khalti" class="custom-control-input" onclick="setPaymentMethod('KHALTI')">
+          <label class="custom-control-label" for="payment-khalti">Khalti</label>
+        </div>
+        {% endif %}
+
+        {% if esewa.is_active_esewa %}
+        <div class="custom-control custom-radio">
+          <input type="radio" id="payment-three" name="customRadio" class="custom-control-input" onclick="setPaymentMethod('ESEWA')">
+          <label class="custom-control-label" for="payment-three">eSewa</label>
+        </div>
+        {% endif %}
+
+        {% if ime.is_active_ime %}
+        <div class="custom-control custom-radio">
+          <input type="radio" id="payment-four" name="customRadio" class="custom-control-input" onclick="setPaymentMethod('IME')">
+          <label class="custom-control-label" for="payment-four">IME Pay</label>
+        </div>
+        {% endif %}
+       
+        {% if nic.is_active_nic %}
+        <div class="custom-control custom-radio">
+          <input type="radio" id="payment-five" name="customRadio" class="custom-control-input" onclick="setPaymentMethod('CARD')">
+          <label class="custom-control-label" for="payment-five">Visa / MasterCard</label>
+        </div>
+        {% endif %}
+        <a class="btn btn-success checkout-success-btn" type="button" style="color: white;" onclick="checkPaymentInformation()">Continue</a>
+
+
+        <!-- <a class="btn btn-success checkout-success-btn" href="#" type="button" data-toggle="modal" data-target="#proceed-payment">Continue</a> -->
+
+        <!-- <a class="btn btn-success checkout-success-btn" type="button" style="color: white;" data-target="#proceed-payment">Continue</a> -->
+          <!-- The Modal -->
+          <div class="modal" id="proceed-payment">
+            <div class="modal-dialog">
+              <div class="modal-content">
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                  Confirm Order ?
+                </div>
+                <span style="padding: 15px;"> Note : Your order will be placed first & then will be taken to complete the payment page. If for any reason your payment is unsuccessful, your order will be placed as Cash on Delivery.</span>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                  <a type="button" style="color: white;" onclick="placeOrder('receiver-form')" class="btn btn-danger">Confirm</a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+      </div>
+    </div>
+    </section>
+
+
+   
+    <form id="nic-form" method="POST" action=""></form>
+    
+
+    <form id="esewa-form" action="{{esewa.transaction_req_url}}" method="POST">
+      {% csrf_token %}
+      <input id="esewa-tAmt" value="{{discounted_total}}" name="tAmt" type="hidden">
+      <input id="esewa-Amt" value="{{discounted_total}}" name="amt" type="hidden">
+      <input value="0" name="txAmt" type="hidden">
+      <input value="0" name="psc" type="hidden">
+      <input value="0" name="pdc" type="hidden">
+      <input value="{{esewa.service_code}}" name="scd" type="hidden">
+      <input id="esewa-pid" name="pid" type="hidden">
+      <input value="{{esewa.success_url}}" type="hidden" name="su">
+      <input value="{{esewa.failure_url}}" type="hidden" name="fu">
+    </form>
+  
+  <form id="ime-form" action="" method="post">
+      <input id="TokenId" name="TokenId" type="hidden"/>
+      <input id="MerchantCode" name="MerchantCode" type="hidden"/>
+      <input id="RefId" name="RefId" type="hidden"/>
+      <input id="TranAmount" name="TranAmount" type="hidden" />
+      <input type="hidden" name="Method" value="POST">
+      <input type="hidden" name="RespUrl" value="{{ime.ime_success_url}}">
+      <input type="hidden" name="CancelUrl" value="{{ime.ime_cancelled_url}}">
+  </form>
+  
+  {%include 'client/cake-977/partials/payment_partner.html'%}
+  {%include 'client/cake-977/partials/footer.html'%}
+
+{%endblock%}
+
+{%block js%}
+  
+   
+
+  <!-- Optional JavaScript -->
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/sidemenu.js'%}"></script>
+    <script src="{%static 'cake-977/js/mob-bottom-menu.js'%}"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/checkout.js'%}"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/tabs.js'%}"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/qty-button.js'%}"></script>
+    <script src="{%static 'cake-977/js/horizontal-stepper.js'%}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.js"></script>
+
+   
+    <script id="1" language="JavaScript" type="text/javascript" src="https://cdn.esewa.com.np/ui/js/eSewa_logo/script.js" data-width="100px" data-elementId="eSewaLogoSection" data-type="DARK"></script>
+
+   <script src="https://malsup.github.io/jquery.blockUI.js"></script>
+   <script src="{% static 'cake-977/_block_ui.js' %}"></script>
+    <script>
+    $(function() {
+        $( "#datepicker" ).datepicker({ firstDay: 1});
+        });     
+    </script>
+
+
+    <script>
+      function checkPaymentInformation(){
+        var payment_val = $("#payment_method").val();
+        if(payment_val==="COD"){
+          $.ajax({
+              type: "POST",
+              url: "{% url 'client:place-order' %}",
+              data: $("#receiver-form").serialize(),
+              success: function (data) {
+                  
+                  if(data['status']==='success'){
+                    send_email(data['reference']);
+                    window.location.href = '/order/success/'+data['reference']; 
+                  }
+                  if(data['error']){
+                      $('#error_display').notify(data['error']);
+                  }
+              }
+            });
+        }else if(payment_val === "KHALTI"){
+          placeOrder('receiver-form');
+        }else{
+          $('#proceed-payment').modal('show');
+        }
+      }
+      
+    </script>
+    
+    <script>
+
+    
+   
+      function changeReceiver(){
+        if(checkSenderValues()){
+          showMessage("Enter Sender Details First","Info")
+          $('#customCheckself').prop('checked', false);
+          return;
+        }
+        if($("#customCheckself").is(":checked")){
+          $("#rec__name").val($("#sen__name").val())
+          $("#rec__email").val($("#sen__email").val())
+          $("#rec__address").val($("#sender_address").val())
+          $("#rec__phone").val( $("#sen__phone").val())
+
+          $("#rec_name").text($("#rec__name").val())
+          $("#rec_add").text($("#rec__address").val())
+          $("#rec_phone").text($("#rec__phone").val())
+
+          $('#rec__name').prop('readonly', true);
+          $('#rec__email').prop('readonly', true);
+          $('#rec__address').prop('readonly', true);
+          $('#rec__phone').prop('readonly', true);
+        }else{
+          $('#rec__name').prop('readonly',false);
+          $('#rec__email').prop('readonly', false);
+          $('#rec__address').prop('readonly', false);
+          $('#rec__phone').prop('readonly', false);
+        }
+      }
+
+      function checkSenderValues(){
+        
+        var sen_name = $("#sen__name").val().trim()
+        var sen_address = $("#sender_address").val().trim()
+        var sen_phone = $("#sen__phone").val().trim()
+        console.log(sen_name,sen_address,sen_phone)
+        if(sen_name==="" || sen_address ==="" || sen_phone ===""){
+          return true
+        }else{
+          return false
+        }
+      }
+    
+    </script>
+
+
+    <script>
+    
+        var total_payable_amount = {{discounted_total}}
+        
+        function setPaymentMethod(payment_method){
+          $("#payment_method").val(payment_method);
+        }
+
+        function cartChangedPlus(n,date,time){
+           var varient_name=document.getElementsByName('varient-'+n)
+           console.log(varient_name)
+          var total_quantity_varient=0;
+          for(var i=0; i<varient_name.length; i++){
+            total_quantity_varient=total_quantity_varient+parseInt(varient_name[i].value)
+          }
+          total_quantity_varient=total_quantity_varient+1;
+            var varient_id=n;
+            var quantity=parseInt(document.getElementById("item_quantity--"+n+date+time).value)+1;
+            
+            if(quantity===0){
+
+              var delete_item='deleteBtntwo-'+n+date+time;
+              
+               $(`#${delete_item}`).modal('show');
+            }else{
+            sendAjaxQuantityChangeRequest(varient_id,quantity,date,time,total_quantity_varient);
+            }
+        }
+
+        function cartChangedMinus(n,date,time){
+
+
+          var varient_name=document.getElementsByName('varient-'+n)
+          var total_quantity_varient=0;
+          for(var i=0; i<varient_name.length; i++){
+            total_quantity_varient=total_quantity_varient+parseInt(varient_name[i].value)
+          }
+          total_quantity_varient=total_quantity_varient-1;
+
+            var varient_id=n;
+            var quantity=parseInt(document.getElementById("item_quantity--"+n+date+time).value) -1;
+          
+            
+            if(quantity===0){
+
+              
+              var delete_item='deleteBtntwo-'+n+date+time;
+              
+              
+               $(`#${delete_item}`).modal('show');
+            }else{
+            sendAjaxQuantityChangeRequest(varient_id,quantity,date,time,total_quantity_varient);
+            }
+            
+        }
+
+        function cartChanged(n,date,time){
+
+          var varient_name=document.getElementsByName('varient-'+n)
+
+          var total_quantity_varient=0;
+          for(var i=0; i<varient_name.length; i++){
+            total_quantity_varient=total_quantity_varient+parseInt(varient_name[i].value)
+          }
+          
+            var varient_id=n;
+            var quantity=document.getElementById("item_quantity--"+n+date+time).value;
+            quantity=parseInt(quantity)
+            if(quantity===0){
+            
+              
+              var delete_item='deleteBtntwo-'+n+date+time;
+              
+               $(`#${delete_item}`).modal('show');
+            }else{
+            sendAjaxQuantityChangeRequest(varient_id,quantity,date,time,total_quantity_varient);
+            }
+            
+        }
+    
+    </script>
+
+  <script>
+        $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+        function sendAjaxQuantityChangeRequest(varient_id,quantity,date,time,total_quantity_varient){
+            $.ajax({
+            type: "POST",
+            url: "{% url 'client:cart-update' %}",
+            data : { csrfmiddlewaretoken: '{{ csrf_token }}', 'varient' : varient_id, 'quantity' : quantity,'delivery_date':date,'time':time, 'total_quantity_varient':total_quantity_varient},
+            success: function (data) {
+              if(data['status']==='Success'){
+                update_payable_amt(data['total_payable_amount']);
+                $("#cart_count_desktop").html(data['cart_count'])
+                $("#cart_count_mobile").html(data['cart_count'])
+                $("#cart-full-part").load(location.href+" #cart-full-part>*","");
+                
+                // location.reload()
+
+              
+              }
+              if(data['error']){{
+                showMessage(data['error'],'Error')
+              }}
+
+
+            }
+          });
+        
+        
+          }
+
+        function update_payable_amt(total){
+          total_payable_amount = total
+        }
+
+  </script>
+      
+
+
+ <script>
+        function applyCoupon(){
+
+            var queryString = $('#promocode-form').serialize();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'client:apply-coupon' %}",
+                data: queryString,
+                success: function (data) {
+                  if(data['status']==='Success'){
+                    // $('#sub-total-price-cart').html(`<strike>{{currency}}.${data['previous_total']}</strike>&nbsp{{currency}}.${data['total']}`)
+                  
+
+                  $('#coupon-applied').empty()
+                  if(data['coupon']['coupon_type']==='Flat'){
+                    $('#coupon-applied').append(`
+                        <span style="width: 37%;" id="applied-code"> 
+                        Code: ${data['coupon']['coupon_number']}</span>
+                        <span class="perct-code" id="discount-coupon">Discount: {{currency}}.${data['coupon']['value']} off</span>
+                        `)
+
+                  }else{
+                  $('#coupon-applied').append(`
+                        <span style="width: 37%;" id="applied-code"> 
+                        Code: ${data['coupon']['coupon_number']}</span>
+                        <span class="perct-code" id="discount-coupon">Discount:${data['coupon']['value']}% off</span>
+                        `)
+                  }
+
+                  $("#cart-summ").load(location.href+" #cart-summ>*","");
+
+
+                  }
+                
+            if(data['error']){
+              
+              if(data['min_value'] && data['max_value']){
+                $('#error_coupon').empty()
+                var msg='Code'+' can be applied once.'
+                var msg2='Minimum Subtotal should be '+data['min_value'];
+                var msg3='Valid till '+data['validity_date']+'.'; 
+                $('#error_coupon').append(`${msg}  </br> ${msg2} </br> ${msg3}`);
+                // $('#error_coupon').notify(msg);
+                // $('#error_coupon').notify(msg2);
+                // $('#error_coupon').notify(msg3);
+                
+              }else{
+                $('#error_coupon').notify(data['error']);
+                
+             }
+            }
+                }
+            });
+            return false;
+
+        }
+</script>
+
+
+<script type="text/javascript">
+  $('#rec__address').keyup(function (){
+    $('#rec_add').text($(this).val());
+     
+});
+  $('#rec__name').keyup(function (){
+    
+    $('#rec_name').text($(this).val());
+     
+});
+    $('#rec__phone').keyup(function (){
+    
+    $('#rec_phone').text($(this).val());
+     
+});
+
+    $('#sen__name').keyup(function (){
+    
+    $('#sen_name').text($(this).val());
+     
+});
+  $('#sen__phone').keyup(function (){
+    
+    $('#sen_phone').text($(this).val());
+     
+});
+    $('#sen__email').keyup(function (){
+    
+    $('#sen_email').text($(this).val());
+     
+});
+</script>
+
+
+<script>
+
+function send_email(reference){
+    $.ajax({
+    type: "GET",
+    url: "{% url 'client:send-email' %}",
+    data: {'reference':reference},
+    success: function (data) {
+        
+    }
+    });
+  }
+
+  
+</script>
+
+<!-- Payment Functions -->
+<script type="text/javascript">
+
+  function ime_payment(){
+    $.ajax({
+      type: "POST",
+      url: "{% url 'payment:request-ime-creds' %}",
+      data: $("#receiver-form").serialize(),
+      
+      success: function (data) {
+        $('#proceed-payment').modal('hide');
+        if(data['status']==='success'){
+          send_email(data['reference'])
+          form_ime = data['form']
+          $('#ime-form').attr('action', form_ime['ime_checkout_url']);
+          $("#TokenId").val(form_ime['TokenId']);
+          $("#MerchantCode").val(form_ime['MerchantCode']);
+          $("#RefId").val(form_ime['RefId']);
+          $("#TranAmount").val(form_ime['TranAmount']);
+          setTimeout(function(){
+              $("#ime-form").submit();
+          }, 500);
+          
+        }else{
+        showMessage(data['message']);
+        }
+      }
+    });
+  }
+
+  function esewa_payment(){
+    $.ajax({
+      type: "POST",
+      url: "{% url 'payment:init-payment' %}",
+      data: $("#receiver-form").serialize(),
+      
+      success: function (data) {
+          $('#proceed-payment').modal('hide');
+          if(data['status']==="Success"){
+            send_email(data['reference'])
+            $("#esewa-tAmt").val(data['total']);
+            $("#esewa-Amt").val(data['total']);
+            $("#esewa-pid").val(data['reference']);
+            setTimeout(function(){
+              $("#esewa-form").submit();
+            }, 500);
+          }else{
+            showMessage(data['message'])
+          }
+          
+          
+      }
+    });
+  }
+
+
+  
+
+  function submitCardForm(){
+    $.ajax({
+      type: "POST",
+      url: "{% url 'payment:card-checkout' %}",
+      data: $("#receiver-form").serialize(),
+      success: function (data) {
+        send_email(data['reference'])
+          $('#proceed-payment').modal('hide');
+          $("#nic-form").empty();
+          form = data['form']
+          $('#nic-form').attr('action', form.action);
+          for(var count = 0 ; count < form.children.length; count++){
+            $("#nic-form").append(`
+              <input type="${form.children[count]['type']}" name="${form.children[count]['name']}" value="${form.children[count]['value']}">
+            `);
+          }
+          setTimeout(function(){
+            $("#nic-form").submit();
+          }, 500);
+          
+      }
+    });
+  }
+  
+    function placeOrder(receiver_form){
+      
+      var payment_method_value = $("#payment_method").val();
+     
+      
+      if(payment_method_value === "KHALTI"){
+        open_khalti_popup(product_name,product_identity,product_url,total_payable_amount,public_key);
+        return;
+      }
+      if(payment_method_value === "ESEWA"){
+        esewa_payment();
+        return;
+      }
+      if(payment_method_value === "IME"){
+        ime_payment();
+        return;
+      }
+      if(payment_method_value === "CARD"){
+        submitCardForm();
+        return;
+      }
+      
+   
+  }
+  
+</script>
+
+
+<script>
+  
+  product_name = "khalti ordered products"
+  product_identity = "khalti-ordered-products"
+  product_url = "https://ohocake.com"
+  total_payable_amount = total_payable_amount
+  public_key = "{{khalti.public_key}}"
+  
+  
+  
+  function khalti_payment_success(payload) {
+    var khalti_data = $("#receiver-form").serialize() + '&token=' + payload.token;
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'payment:khalti-payment' %}",
+      data: khalti_data,
+      dataType: 'json',
+
+      success: function (data) {
+
+          if (data['status'] === "success") {
+            send_email(data['reference']);
+            window.location.href = '/order/success/'+data['reference']; 
+          
+          }else{
+            showMessage(data['message'])
+          }
+      },
+      error: function (xhr, errmsg, err) {
+        console.log(err,"------",errmsg,"----------",xhr)
+        showMessage("Something went wrong!")
+      }
+      });
+
+  }
+  
+  function khalti_payment_error(error){
+
+  }
+
+  function khalti_popup_closed(){
+    
+  }
+</script>
+
+
+    <script>
+      $(document).ready(function () {
+
+        {%if user.is_authenticated and cart_count >= 1%}
+        document.getElementById('checkout-btn').click();
+        {%endif%}
+        
+          target_offset1 = $('.cart').offset();
+          target_top1 = target_offset1.top;
+          target_offset2 = $('.checkout-section').offset();
+          target_top2 = target_offset2.top;
+          var oldURL = document.referrer;
+          oldURL=oldURL.split('/')
+
+          if (oldURL.includes('detail') && oldURL.includes('product')) {
+            $('html, body').animate({
+              scrollTop: target_top2
+            }, 300);
+          }    
+          else {
+            $('html, body').animate({
+              scrollTop: target_top1
+            }, 300);
+          }      
+      });
+    </script>  
+
+
+
+<script type="text/javascript">
+  $("#city").change(function(){
+    var city=this.value;
+
+    $.ajax({
+        url: '{%url 'client:get-city-area'%}',
+        data: {
+          'city': city,
+        },
+        dataType: 'json',
+        success: function (data) {
+          $('#area').empty();
+          var area=data['area'];
+          for(var i=0; i < area.length; i++ ){
+            $('#area').append(`<option value="${area[i]['id']}">${area[i]['name']}</option>
+                                `);
+          }
+ 
+        }
+
+
+
+      });
+
+
+  
+});
+
+
+
+$("#cityM").change(function(){
+    var city=this.value;
+
+    $.ajax({
+        url: '{%url 'client:get-city-area'%}',
+        data: {
+          'city': city,
+        },
+        dataType: 'json',
+        success: function (data) {
+          $('#areaM').empty();
+          var area=data['area'];
+          for(var i=0; i < area.length; i++ ){
+            $('#areaM').append(`<option value="${area[i]['id']}">${area[i]['name']}</option>
+                `);
+          }
+        }
+      });
+});
+</script>
+
+
+
+
+{%endblock%}

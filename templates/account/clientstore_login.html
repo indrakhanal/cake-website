@@ -1,0 +1,101 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{% load socialaccount %}
+{% providers_media_js %}
+{%block title%}
+    <title>{{page_title}}</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+ <main>
+
+      <!--Login Section-->
+    <div class="account-login" id="account-login">
+      <div class="form-container sign-in-container">
+
+        <form method="post" action="{% url 'accounts:login' %}">
+        	{%csrf_token%}
+          <h1>Login to your account</h1>
+          <p class="small">Enter your username and password to login to your account</p>
+          {%if form.errors %} 
+		    {% for field in form %} 
+		    {% for error in field.errors %}
+		    <div class="alert alert-danger">
+		        <strong>{{ error|escape }}</strong>
+		    </div>
+		    {% endfor %} 
+		    {% endfor %} 
+		    {% for error in form.non_field_errors %}
+		    <div class="alert alert-danger">
+		        <strong>{{ error|escape }}</strong>
+		    </div>
+		    {% endfor %} 
+		    {% endif %}
+          {{form.login}}
+          {{form.password}}
+          {%if redirect_field_value%}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {%else%}
+             <input type="hidden" name="next" value="/client/profile/" />
+            {%endif%}
+          
+         <!--  <div class="custom-control custom-checkbox remember-me small">
+            <input type="checkbox" class="custom-control-input" id="customCheckremember" name="example3">
+            <label class="custom-control-label" for="customCheckremember">Remember me</label>
+          </div> -->
+          <div class="loginform-btn-section">
+            <button class="btn btn-primary" type="submit">Login</button>
+            <a class="small" href="{% url 'account_reset_password' %}" style="margin-top: 5px; margin-bottom: 20px;">Forgot your password?</a>
+          </div>
+        </form>
+        <p class="or">OR</p>
+        <!-- <hr class="login-hr"> -->
+        <div class="row">
+          <div class="col google-login">
+            <a class="btn btn-outline-dark" href="{% provider_login_url 'google' %}" role="button"
+              style="text-transform:none; width:100%;">
+              <img width="20px" style="margin-bottom:3px; margin-right:5px;" alt="Google sign-in"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+              Login with Google
+            </a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col fb-login">
+            <a href="{% provider_login_url "facebook" method="oauth2" %}"  class="btn btn-outline-dark" href="#" role="button" style="text-transform:none; width:100%;">
+              <img width="20px" style="margin-bottom:3px; margin-right:5px;" alt="Facebook sign-in"
+                src="{%static 'cake-977/img/fb.svg'%}" />
+              Login with Facebook
+            </a>
+          </div>
+        </div>
+        <p class="small" style="font-weight: 600; text-align: center;">Don't have account?<span>&nbsp;<a
+              href="{% url 'accounts:signup'%}">create a new account</a></span></p>
+      </div>
+    </div> 
+
+    </main>
+
+
+
+{%include 'client/cake-977/partials/newsletter.html'%}
+
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+
+
+{%endblock%}

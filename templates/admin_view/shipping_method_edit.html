@@ -1,0 +1,308 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block title %}Edit Shipping Method | Admin{% endblock title %}
+{% block extra_css %}
+<!-- Plugins css-->
+<link href="{% static 'admin_view/assets/libs/select2/select2.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/multiselect/multi-select.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/summernote/summernote-bs4.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/dropzone/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/dropify/dropify.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- App css -->
+<link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/icons.min.css' %} " rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+{% block page_content %}
+
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <!-- ============================================================== -->
+   <!-- Start Page Content here -->
+   <!-- ============================================================== -->
+   <div class="content-page">
+      <div class="content">
+
+         <!-- Start Content-->
+         <div class="container-fluid">
+
+
+            <!-- start page title -->
+            <div class="row">
+               <div class="col-12">
+                  <div class="page-title-box">
+                     <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                           <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                           <li class="breadcrumb-item active">Edit Shipping Method</li>
+                        </ol>
+                     </div>
+                     <h4 class="page-title">Edit Shipping Method</h4>
+                  </div>
+               </div>
+            </div>
+            <!-- end page title -->
+            <form method="POST" action="{% url 'settings:edit-shipping-method' shipping_method.id %}" enctype="multipart/form-data">
+               {% csrf_token %}
+            <div class="card-box"
+               style="padding-left:12px !important; padding-right:12px !important; padding-top: 15px;">
+               <h5 class="text-uppercase mt-0 mb-3 bg-light p-2">General</h5>
+
+               <div class="row">
+                  <div class="col-lg-3">
+                     <div class="form-group mb-3">
+                        <label for="name">Name <span class="text-danger">*</span></label>
+                        <input type="text" name="shipping_method_name" class="form-control" required="" placeholder="Enter Shipping method name" autocomplete="off" value="{{shipping_method.name}}"> 
+                    </div>
+                  </div>
+
+                  <div class="col-lg-3">
+                     <div class="form-group mb-3">
+                        <label for="price">Price <span class="text-danger">*</span></label>
+                        <input type="number" name="shipping_method_price" class="form-control" required="" placeholder="Enter Shipping method price" autocomplete="off" value="{{shipping_method.price}}"> 
+                    </div>
+                  </div>
+
+                  <div class="col-lg-3">
+                     <div class="form-group mb-3">
+                        <label for="price">Display Order <span class="text-danger">*</span></label>
+                        <input type="number" name="display_order_shipping" class="form-control" required="" autocomplete="off" value="{{shipping_method.display_order}}"> 
+                    </div>
+                  </div>
+
+                  <div class="col-lg-3 mt-4">
+                     <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input mt-3" {% if shipping_method.is_active %}checked {% endif %} name="shipping_method_active" id="shipping_method_active">
+                        <label class="custom-control-label" for="shipping_method_active">&nbsp;</label>is Active
+                     </div>
+                  </div>
+               </div>
+               <h5 class="text-uppercase mt-0 bg-light p-2">Time Configuration</h5>
+              
+
+              
+                  <div class="tab-content">
+
+
+                     <div class="table-responsive">
+                        <table id="demo-foo-filtering" class="table  toggle-circle mb-0">
+                           <thead>
+                              <tr>
+
+
+                                 <th class="text-center" width="35%"><span class="text-danger">*</span> Time (from)</th>
+                                 <th class="text-center" width="35%"><span class="text-danger">*</span> Time (to)</th>
+                                 <th class="text-center">is Active</th>
+                                 <th class="text-center">Action</th>
+
+                              </tr>
+                           </thead>
+                           <tbody id="forms">
+
+                              
+                              {% for item in shipping_method.get_all_shipping_time  %}
+
+
+                              <tr id="{{item.id}}">
+                                 <td class="text-center"><input type="time" name="shipping_time_from" class="form-control"
+                                       value="{{item.time_from|time:'H:i'}}" required=""> </td>
+                                 
+                                 <td class="text-center"><input type="time" name="shipping_time_to" class="form-control"
+                                 value="{{item.time_to|time:'H:i'}}" required=""> </td>
+
+                                 <td class="text-center">
+                                    <input type="number" name="display_order_time" class="form-control" required="" autocomplete="off" value="{{item.display_order}}"> 
+                                 </td>
+                                 
+                                 <td class="text-center">
+                                    <div class="custom-control custom-checkbox">
+                                       <input type="checkbox" onchange="checkbox('{{item.id}}');" class="custom-control-input" id="check-{{item.id}}" {% if item.is_active %} checked{% endif %} >
+                                       <label class="custom-control-label" for="check-{{item.id}}">&nbsp;</label>
+                                    </div>
+                                             
+                                       <input type="hidden" id="active-{{item.id}}" name="shipping_time_active" value="True">
+                                 </td>
+
+                                 <td class="text-center"><a href="#" title="Delete" onclick="deletethis('{{item.id}}');" class="action-icon"> <i
+                                          class="mdi mdi-delete"></i></a></td>
+                                 
+                                 
+
+
+                              </tr>
+                              
+                                 
+                              {% endfor %}
+                                 
+
+                           </tbody>
+
+                        </table>
+                     </div>
+
+                     <button type="button" class="btn btn-danger waves-effect waves-light ml-3 mt-2"
+                        onclick="add_table_row();">Add Time</button>
+
+                     <script>
+
+
+
+                        function add_table_row() {
+
+                           var timestamp = parseInt(Date.now() + Math.random());
+                           var final_content = `
+      
+                              <tr id="${timestamp}">
+                                 <input type="hidden" name="varient_id"  class="form-control"
+                                          value="99999999" required="" >
+                              
+
+                                 <td class="text-center"><input type="time" name="shipping_time_from" class="form-control"
+                                       value="09:30" required=""> </td>
+                                 
+                                 <td class="text-center"><input type="time" name="shipping_time_to" class="form-control"
+                                 value="09:30" required=""> </td>
+
+                                 <td class="text-center"><input type="number" name="display_order_time" class="form-control"
+                                 value="1" required=""> </td>
+                                 
+                                 <td class="text-center">
+                                    <div class="custom-control custom-checkbox">
+                                       <input type="checkbox" onchange="checkbox('${timestamp}');" class="custom-control-input" id="check-${timestamp}" checked >
+                                       <label class="custom-control-label" for="check-${timestamp}">&nbsp;</label>
+                                    </div>
+                                             
+                                       <input type="hidden" id="active-${timestamp}" name="shipping_time_active" value="True">
+                                 </td>
+
+                                 <td class="text-center"><a href="#" title="Delete" onclick="deletethis(${timestamp});" class="action-icon"> <i
+                                          class="mdi mdi-delete"></i></a></td>
+                                 
+                                 
+
+
+                              </tr>
+                              `
+
+                           $("#forms").append(final_content)
+
+                        }
+
+
+
+                        function deletethis(div_id) {
+                           $(`#${div_id}`).remove()
+                        }
+                     </script>
+
+                     <script>
+                        function checkbox(item_id) {
+                           if ($(`#check-${item_id}`).is(':checked')) {
+                              $(`#active-${item_id}`).val("True")
+                           }
+                           else {
+                              $(`#active-${item_id}`).val("False")
+
+                           }
+                        }
+                     </script>
+
+
+
+                  </div>
+
+                  <div class="col-12 mb-4">
+                     <div class="mr-2" style="float: right;">
+                        <button type="button" class="btn w-sm btn-light waves-effect"><a href="{%url 'settings:shipping-method-list'%}">Cancel</a></button>
+                        <!-- <button type="button" class="btn w-sm btn-danger waves-effect waves-light">Delete</button> -->
+                        <button type="submit" class="btn w-sm btn-success waves-effect waves-light">Save</button>
+
+                     </div>
+                  </div> <!-- end col -->
+              
+            </div>
+            <!-- end card-box-->
+         </form>
+         </div> <!-- container -->
+
+      </div> <!-- content -->
+  
+
+
+
+      <!-- Footer Start -->
+      <footer class="footer">
+         <div class="container-fluid">
+            <div class="row">
+               <div class="col-md-6">
+                  2015 - 2019 &copy; UBold theme by <a href="">Coderthemes</a>
+               </div>
+               <div class="col-md-6">
+                  <div class="text-md-right footer-links d-none d-sm-block">
+                     <a href="javascript:void(0);">About Us</a>
+                     <a href="javascript:void(0);">Help</a>
+                     <a href="javascript:void(0);">Contact Us</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </footer>
+      <!-- end Footer -->
+
+   </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- End Page content -->
+<!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+<script type="text/javascript">
+
+   function save() {
+      $("#abc").submit();
+   }
+</script>
+<!-- App js -->
+<script src="{% static 'admin_view/assets/js/vendor.min.js' %}"></script>
+<script src="{% static 'admin_view/assets/libs/multiselect/jquery.multi-select.js' %}"></script>
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+ -->
+<!-- App js -->
+<script src="{% static 'admin_view/assets/js/vendor.min.js' %}"></script>
+
+
+<!-- Summernote js -->
+<script src="{% static 'admin_view/assets/libs/summernote/summernote-bs4.min.js' %}"></script>
+<!-- Select2 js-->
+<script src="{% static 'admin_view/assets/libs/select2/select2.min.js' %}"></script>
+<!-- Dropzone file uploads-->
+<script src="{% static 'admin_view/assets/libs/dropzone/dropzone.min.js' %}"></script>
+
+<script src="{% static 'admin_view/assets/libs/dropify/dropify.min.js' %}"></script>
+
+<!-- Init js-->
+<script src="{% static 'admin_view/assets/js/pages/form-fileuploads.init.js' %}"></script>
+
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/form-advanced.init.js' %} "></script>
+
+<!-- <script>
+    var uploadField = document.getElementById("id_image");
+    
+    uploadField.onchange = function() {
+        if(this.files[0].size > 2200000){
+           alert("File is too big!");
+           this.value = "";
+        };
+    };
+    </script> -->
+{% endblock %}

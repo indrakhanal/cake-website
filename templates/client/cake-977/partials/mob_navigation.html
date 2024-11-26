@@ -1,0 +1,215 @@
+{%load static%}
+
+ <div class="wrapper mobile-navigation">
+      <div class="secondary_nav">
+        <input type="checkbox" id="menu" name="menu" class="m-menu__checkbox">
+        <label class="m-menu__toggle" for="menu">
+          <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#E3323A" stroke-width="2" stroke-linecap="butt"
+           stroke-linejoin="arcs">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </label>
+        <label class="m-menu__overlay" for="menu"></label>
+        <div class="m-menu">
+          <div class="m-menu__header">
+            <label class="m-menu__toggle" for="menu">
+              <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#E3323A" stroke-width="2" stroke-linecap="butt" 
+              stroke-linejoin="arcs">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </label>
+            <span>Categories</span>
+          </div>
+          <ul>
+            <li>
+              <label class="a-label__chevron" for="item-2">Cakes</label>
+              <input type="checkbox" id="item-2" name="item-2" class="m-menu__checkbox">
+              <div class="m-menu">
+                <div class="m-menu__header">
+                  <label class="m-menu__toggle" for="item-2">
+                    <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke=" #E3323A" stroke-width="2" stroke-linecap="butt" 
+                    stroke-linejoin="arcs">
+                      <path d="M19 12H6M12 5l-7 7 7 7"/>
+                    </svg>
+                  </label>
+                  <span>Select Cake by</span>
+                </div>
+                <ul>
+                <!-- <li>
+                    <label class="a-label__chevron" for="item-2-3">Price</label>
+                    <input type="checkbox" id="item-2-3" name="item-2" class="m-menu__checkbox">
+                    <div class="m-menu">
+                      <div class="m-menu__header">
+                        <label class="m-menu__toggle" for="item-2-3">
+                          <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#E3323A" stroke-width="2" stroke-linecap="butt" 
+                          stroke-linejoin="arcs">
+                            <path d="M19 12H6M12 5l-7 7 7 7"/>
+                          </svg>
+                        </label>
+                        <span>Price</span>
+                      </div>
+                      <ul>
+                        <li><a href="{%url 'client:price-range-product-lists'%}?min_price=0&max_price=977"><label>Under 977</label></a></li>
+                        <li><a href="{%url 'client:price-range-product-lists'%}?min_price=0&max_price=500"><label>Under 500</label></a></li>
+                        <li><a href="{%url 'client:price-range-product-lists'%}?min_price=978&max_price=1500"><label>978 - 1500</label></a></li>
+                        <li><a href="{%url 'client:price-range-product-lists'%}?min_price=1500&max_price=2500"><label>1500 - 2500</label></a></li>
+                        <li><a href="{%url 'client:price-range-product-lists'%}?min_price=2500&max_price=3500"><label>2500 - 3500</label></a></li>
+                        <li><a href="{%url 'client:price-range-product-lists'%}?min_price=3500&max_price=4500"><label>3500 - 4500</label></a></li>
+                        <li><a href="{%url 'client:price-range-product-lists'%}?min_price=4500&max_price=45000"><label>Above 4500</label></a></li>
+                      </ul>                
+                </li>       -->          
+                  <li>
+                    <label class="a-label__chevron" for="item-2-4">Flavour</label>
+                    <input type="checkbox" id="item-2-4" name="item-2" class="m-menu__checkbox">
+                    <div class="m-menu">
+                      <div class="m-menu__header">
+                        <label class="m-menu__toggle" for="item-2-4">
+                          <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#E3323A" stroke-width="2" stroke-linecap="butt"
+                           stroke-linejoin="arcs">
+                            <path d="M19 12H6M12 5l-7 7 7 7"/>
+                          </svg>
+                        </label>
+                        <span>Flavour</span>
+                      </div>
+                      <ul>
+                        {%for i in flavour%}
+                        <li><a href="{{i.get_absolute_url}}"><label>{{i.name|title}}</label></a></li>
+                        {%endfor%}
+                      </ul>                
+                  </li>
+                  {%for i in category%}
+                  {%if i.get_children%}
+                  {%if i.is_available%}
+                  <li>
+                    <label class="a-label__chevron" for="item-2-5-{{i.id}}">{{i.name|title}}</label>
+                    <input type="checkbox" id="item-2-5-{{i.id}}" name="item-2" class="m-menu__checkbox">
+                    <div class="m-menu">
+                      <div class="m-menu__header">
+                        <label class="m-menu__toggle" for="item-2-5-{{i.id}}">
+                          <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#E3323A" stroke-width="2" stroke-linecap="butt" 
+                          stroke-linejoin="arcs">
+                            <path d="M19 12H6M12 5l-7 7 7 7"/>
+                          </svg>
+                        </label>
+                        <span>{{i.name|title}}</span>
+                      </div>
+                      <ul>
+                        {%if i.get_children%}
+                      {%for a in i.get_children%}
+                      {%if a.is_available%}
+                        <li><a href="{{i.get_absolute_url}}"><label>{{a.name|title}}</label></a></li>
+                        {%endif%}
+                        {%endfor%}
+                        {%endif%}
+                      </ul>                
+                  </li>
+                  {%endif%}
+                  {%else%}
+                  <li><a href="{{i.get_absolute_url}}"><label>{{i.name|title}}</label></a></li>
+                  {%endif%}
+                  {%endfor%}
+                  
+              </div>
+            </li>
+            {%if occasion%}
+            <li>
+              <label class="a-label__chevron" for="item-3">Occasions</label>
+              <input type="checkbox" id="item-3" name="item-3" class="m-menu__checkbox">
+              <div class="m-menu">
+                <div class="m-menu__header">
+                  <label class="m-menu__toggle" for="item-3">
+                    <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke=" #E3323A" stroke-width="2" stroke-linecap="butt" 
+                    stroke-linejoin="arcs">
+                      <path d="M19 12H6M12 5l-7 7 7 7"/>
+                    </svg>
+                  </label>
+                  <span>Select Cake by</span>
+                </div>
+                <ul>
+                {%for i in occasion.get_children%}
+                {%if i.is_available%}
+                
+                  <li>
+                    <label class="a-label__chevron" for="item-2-8-{{i.id}}">{{i.name|title}}</label>
+                    <input type="checkbox" id="item-2-8-{{i.id}}" name="item-3" class="m-menu__checkbox">
+                    <div class="m-menu">
+                      <div class="m-menu__header">
+                        <label class="m-menu__toggle" for="item-2-8-{{i.id}}">
+                          <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#E3323A" stroke-width="2" stroke-linecap="butt" 
+                          stroke-linejoin="arcs">
+                            <path d="M19 12H6M12 5l-7 7 7 7"/>
+                          </svg>
+                        </label>
+                        <span>{{i.name|title}}</span>
+                      </div>
+                      <ul>
+                        <li><a href="{{i.get_absolute_url}}"><label>All {{i.name|title}}</label></a></li>
+                        {%for a in i.get_children%}
+                        {%if a.is_available%}
+                        
+                        <li><a href="{{a.get_absolute_url}}"><label>{{a.name|title}}</label></a></li>
+                       
+                        {%endif%}
+                        {%endfor%}
+                      </ul>                
+                  </li> 
+                  {%endif%} 
+                {%endfor%}         
+                  
+              </div>
+            </li>
+            {%endif%}
+                      <!--   <li><a href="http://cake977blog.com/
+                          "><label>Blog</label></a></li>
+ -->
+
+
+
+                           
+          </ul>  
+        </div>
+      </div>
+      {%if settings.outlet_logo%}
+      <div class="logo-mob">
+        <a href="{%url 'client:catalog'%}"><img src="{{settings.outlet_logo.url}}"></a>
+      </div>
+      {%endif%}
+      <div class="right_head-mob">          
+        <ul class="rightmost-mob">
+          <!-- <li>
+            <div class="shop-cart">
+              <a href="{%url 'client:client-cart'%}"><span><i class="fas fa-shopping-cart"></i>&nbsp;&nbsp;</span></a>
+              <span class="badge badge-warning-mob" id="cart_count_mobile">{{cart_count}}</span>
+            </div>     
+          </li> -->
+          {%if user.is_authenticated%}
+          <li>
+            <div class="login">
+              <a href="{%url 'client:client-profile'%}"><span><i class="fas fa-user"></i>&nbsp;&nbsp;</span></a>
+            </div>
+          </li>
+
+          <li>
+             <form id="logout" action="{% url 'account_logout' %}" method="post">
+                   {% csrf_token %}
+            <div class="login-out">
+              <a href="javascript:{};" onclick="document.getElementById('logout').submit();"><span><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;</span></a>
+            </div>
+             <input type="hidden" name="next" value="/login/" /> 
+           </form>
+          </li>  
+
+          {%else%}
+          <li>
+            <div class="login">
+              <a href="{%url 'accounts:login'%}"><span><i class="fas fa-user"></i>&nbsp;&nbsp;</span></a>
+            </div>
+          </li>
+          {%endif%} 
+
+        </ul>
+      </div>
+    </div> 

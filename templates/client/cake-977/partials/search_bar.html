@@ -1,0 +1,33 @@
+{% load custom_tag %}
+<section class="search-bar">
+      <form class="select-form" action="{%url 'client:catalog'%}">
+        <div class="city">
+          <select id="select-city" name="store_locations" onchange="this.form.submit()" class="form-control">
+            <!-- <option id="placeholder" selected disabled value="">&nbsp;&nbsp;&nbsp;Select the city</option> -->
+            {% with slug=request|get_current_location_slug %}
+            <option value="{{slug}}">&nbsp;&nbsp;&nbsp;{{ request|get_current_location_name|title }}</option>
+            {%for i in store_locations%}
+            
+            {% if not i.slug == slug %}
+              <option value="{{i.slug}}" {% if i.slug == location_slug %}selected{%endif%}>&nbsp;&nbsp;&nbsp;{{i.name|title}}</option>
+            {% endif %}
+            {%endfor%}
+            {% endwith %}
+          </select>
+        </div>
+      </form> 
+      <form class="search-form" method="get" action="{%url 'client:product-search'%}">
+        <div class="search">
+          <div class="input-group">
+            <!-- <input type="text" name="keywords" id="search-auto" autocomplete> -->
+            <input type="text" class="form-control" placeholder="Search for cakes, bakeries, props..." name="keywords" {%if keywords%}value="{{keywords}}"{%endif%} required id="search-auto" autocomplete="off">
+            <div class="input-group-append">
+              <button class="btn btn-success" type="submit">Search</button>
+            </div>
+          </div>
+        </div>
+        <div id='abcd'>
+          
+        </div>
+      </form> 
+    </section>

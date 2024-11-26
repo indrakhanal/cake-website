@@ -1,0 +1,398 @@
+{% extends "admin_view/base.html" %} 
+{% load static %}
+{% load custom_tag %}
+{% load crispy_forms_tags %}
+{% block title %}Order | Admin{% endblock title %}
+{% block extra_css %}
+<style type="text/css">
+    .asteriskField {
+    color: red;
+}
+</style>
+<link href="{% static 'admin_view/assets/libs/select2/select2.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Bootstrap Tables css -->
+    
+<link href="{%static 'admin_view/assets/libs/summernote/summernote-bs4.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/libs/dropzone/dropzone.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/css/style.css'%}" rel="stylesheet" type="text/css" id="app-custom-stylesheet" />
+{% endblock %}
+{% block page_content %}
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %} 
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <!-- ============================================================== -->
+   <!-- Start Page Content here -->
+   <!-- ============================================================== -->
+
+        <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Order</a></li>
+                                            <li class="breadcrumb-item active">Order Edit</li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title">Add / Edit Order</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <div class="row">
+                            {% include 'admin_view/partials/_alerts.html' %}
+                            <div class="col-lg-7">
+                                <div class="card-box">
+                                    <h5 class="text-uppercase bg-light p-2 mt-0 mb-3">Add Custom Order</h5>
+                                    <form action="{%url 'sales:custom-create-order'%}" id="form-container" class="needs-validation" method="post" enctype='multipart/form-data'>
+                                        {% csrf_token %}
+                                        {{custom_order_formset.management_form}}
+                                        {% for form in custom_order_formset %}
+                                        <div class="bird-form">
+                                        {{form|crispy}}
+                                        </div>
+                                        {% endfor %}  
+                                         <button id="add-form" type="button">Add Another Product</button>         
+                                </div> <!-- end card-box -->
+
+                                <div class="card-box">
+                                    <div class="row ml-0 mr-0 bg-light mb-3">
+                                        <div class="col-lg-6 pl-0 pr-0">
+                                            <h5 class="text-uppercase mt-0 mb-0 p-2">Delivery Information</h5>
+                                        </div>                                    
+                                    </div>                                    
+
+                                    <div class="form-group mb-3">
+                                        <label for="delivery-type">Delivery Type <span class="text-danger">*</span></label>
+                                        <select class="form-control select2" id="delivery-type" name="delivery-type" required="required">
+                                            <option value="" selected disabled hidden>Choose here</option>
+                                            {%for i in deliveryMethod%}
+                                            <option value="{{i.id}}">{{i.name|title}}</option>
+                                            {%endfor%}                                         
+                                        </select>
+                                    </div>
+
+                                    <div class="row ml-0 mr-0">
+                                        <div class="col-lg-6 pl-0 pr-0">
+                                            <div class="form-group mb-3">
+                                                <label for="delivery-date">Delivery Date <span class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" name="delivery-date" id="delivery-date" required="required">
+                                            </div>
+                                        </div>
+    
+                                        <div class="col-lg-6 pr-0">
+                                            <div class="form-group mb-3">
+                                                <label for="delivery-time">Delivery Time <span class="text-danger">*</span></label>
+                                                <select class="form-control select2" id="delivery-time" name="delivery-time" required="required">
+
+                                                                                            
+                                                </select>
+                                            </div>
+                                        </div>  
+                                    </div>                                                                      
+
+                                    <div class="form-group mb-0">
+                                        {{payment_form|crispy}}
+                                    </div>
+                                </div> <!-- end card-box -->
+                            </div> <!-- end col -->
+
+                            <div class="col-lg-5">
+
+                                <div class="card-box">
+                                    <h5 class="text-uppercase mt-0 mb-3 bg-light p-2">Customer Information</h5>
+
+                                    <div class="form-group mb-3">
+                                        {{address_form.sender_fullname|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        {{address_form.sender_email|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        {{address_form.contact_number|as_crispy_field}}
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        {{address_form.sender_address|as_crispy_field}}
+                                    </div>
+
+                                     <div class="form-group mb-3">
+                                        {{address_form.social_media_handler|as_crispy_field}}
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        {{address_form.source|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        {{address_form.type_of_cake|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-0">
+                                        <div class="custom-controls-stacked d-block">
+                                            <label class="custom-control material-checkbox">
+                                            {{address_form.i_am_receiver|as_crispy_field}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div> <!-- end card-box -->
+
+                                <div class="card-box">
+                                    <h5 class="text-uppercase mt-0 mb-3 bg-light p-2">Receiver Information</h5>
+
+                                    <div class="form-group mb-3">
+                                {{address_form.receiver_fullname|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                       {{address_form.receiver_email|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        {{address_form.receiver_contact_number1|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        {{address_form.receiver_contact_number2|as_crispy_field}}
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="region">Region <span class="text-danger">*</span></label>
+                                        <div class="mb-0">                            
+                                            <select name="location" class="custom-select" id="region" required="required">
+                                                <option>Select</option>
+                                                {%for location in locations%}
+                                                <option value="{{location.id}}">{{location.name|title}}</option>
+                                                {%endfor%}
+                                            </select>                                            
+                                        </div> 
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="city">City <span class="text-danger">*</span></label>
+                                        <div class="mb-0">                            
+                                            <select name="receiver_city" class="custom-select" id="city" required="required">
+                                               <!-- <option value="{{city.id}}">{{city.name|title}}</option>      -->
+
+                                            </select>                                            
+                                        </div> 
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="area">Area <span class="text-danger">*</span></label>
+                                        <div class="mb-0">                            
+                                            <select name="receiver_area" class="custom-select" id='area' required="required">
+                                            </select>                                            
+                                        </div> 
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <!-- <label for="receiver-address">Address<span class="text-danger">*</span></label> -->
+                                {{address_form.receiver_delivery_address|as_crispy_field}}
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group mb-3 col">
+                                            <!-- <label for="landmark">Landmark<span class="text-danger">*</span></label> -->
+                                            {{address_form.receiver_landmark|as_crispy_field}}
+                                        </div>
+                                        <div class="form-group mb-3 col">
+                                           <!--  <label for="occasion">Ocassion <span class="text-danger">*</span></label> -->
+                                            <div class="mb-0">                            
+                                                {{address_form.occasion|as_crispy_field}}                                            
+                                            </div> 
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-3 row">
+                                        <label class="col-lg-6 mb-0">Delivery Address Type : &nbsp;&nbsp;</label>
+                                        <div class="form-check-inline col">
+                                            <label class="form-check-label">
+                                              <input type="radio" class="form-check-input" name="receiver_address_type" value="Home" checked="checked">Home
+                                            </label>
+                                        </div>
+                                        <div class="form-check-inline col">
+                                            <label class="form-check-label">
+                                              <input type="radio" value="Office" class="form-check-input" name="receiver_address_type">Office
+                                            </label>
+                                        </div>                                    
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="receiver-info">
+                                            <div class="custom-controls-stacked d-block">
+                                                <label class="custom-control material-checkbox">
+                                                <input type="checkbox" class="material-control-input" name="hide_info_from_receiver">
+                                                <span class="material-control-indicator"></span>
+                                                <span class="material-control-description">Hide info from Receiver</span>
+                                                </label>
+                                            </div>  
+                                        </div>
+                                    </div>
+                                    
+                                </div> <!-- end card-box -->
+
+                            </div> <!-- end col-->
+                        </div>
+                        <!-- end row -->
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="text-center mb-3">
+                                    <a href="{%url 'sales:order-list'%}" type="button" class="btn w-sm btn-light waves-effect">Cancel</a>
+                                    <button type="submit"  class="btn w-sm btn-success waves-effect waves-light">Save</button>
+                                  <!--   <button type="button" class="btn w-sm btn-danger waves-effect waves-light">Delete</button>
+ -->                                </div>
+                            </div> <!-- end col -->
+                        </div>
+                        <!-- end row -->
+                    </form>
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+
+
+
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+
+
+
+
+<!-- App js -->
+<script src="{%static 'admin_view/assets/js/vendor.min.js'%}"></script>
+<!-- Summernote js -->
+<script src="{%static 'admin_view/assets/libs/summernote/summernote-bs4.min.js'%}"></script>
+<script src="{% static 'admin_view/assets/libs/select2/select2.min.js' %}"></script>
+<!-- Dropzone file uploads-->
+<script src="{%static 'admin_view/assets/libs/dropzone/dropzone.min.js'%}"></script>
+
+<!-- Init js-->
+<script src="{%static 'admin_view/assets/js/pages/form-fileuploads.init.js'%}"></script>
+
+ <!-- Init js -->
+ <script src="{% static 'admin_view/assets/js/pages/add-product.init.js' %}"></script>
+<!-- App js -->
+<script src="{%static 'admin_view/assets/js/app.min.js'%}"></script>
+
+
+<script>
+        let birdForm = document.querySelectorAll(".bird-form")
+        let container = document.querySelector("#form-container")
+        let addButton = document.querySelector("#add-form")
+        let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+
+        let formNum = birdForm.length-1
+        addButton.addEventListener('click', addForm)
+
+        function addForm(e){
+            e.preventDefault()
+
+            let newForm = birdForm[0].cloneNode(true)
+            let formRegex = RegExp(`form-(\\d){1}-`,'g')
+
+            formNum++
+            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
+            container.insertBefore(newForm, addButton)
+            
+            totalForms.setAttribute('value', `${formNum+1}`)
+        }
+    </script>
+<script type="text/javascript">
+    $("#delivery-type").change(function(){
+    var delivery_type=this.value;
+        $.ajax({
+            url: '{%url 'sales:get-time'%}',
+            data: {
+              'delivery_type': delivery_type,
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('#delivery-time').empty();
+                  var delivery_time=data['time'];
+                  console.log(delivery_time)
+                  for(var i=0; i < delivery_time.length; i++ ){
+                    $('#delivery-time').append(`<option value="${delivery_time[i]['id']}">${delivery_time[i]['time_from']}-${delivery_time[i]['time_to']}</option>
+                        `);
+                  }
+            }
+          });
+});
+</script>
+<script type="text/javascript">
+    
+$("#region").change(function(){
+    var region=this.value;
+        $.ajax({
+            url: '{%url 'client:get-city'%}',
+            data: {
+              'region': region,
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('#city').empty();
+                $('#city').append(`<option>Select</option>`);
+                  var city=data['city'];
+                  for(var i=0; i < city.length; i++ ){
+                    $('#city').append(`<option value="${city[i]['id']}">${city[i]['name']}</option>
+                        `);
+                  }
+            }
+          });
+});
+
+$("#city").change(function(){
+    var city=this.value;
+        $.ajax({
+            url: '{%url 'client:get-city-area'%}',
+            data: {
+              'city': city,
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('#area').empty();
+                $('#area').append(`<option>Select</option>`);
+                  var area=data['area'];
+                  for(var i=0; i < area.length; i++ ){
+                    $('#area').append(`<option value="${area[i]['name']}">${area[i]['name']}</option>
+                        `);
+                  }
+            }
+          });
+});
+
+
+</script>
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>  
+
+<script type="text/javascript">
+ $("#id_i_am_receiver").change(function(event){
+    if (this.checked){
+        document.getElementById('id_receiver_fullname').value=document.getElementById('id_sender_fullname').value
+        document.getElementById('id_receiver_email').value=document.getElementById('id_sender_email').value
+        document.getElementById('id_receiver_contact_number1').value=document.getElementById('id_contact_number').value
+    } else {
+        document.getElementById('id_receiver_fullname').value=' ';
+        document.getElementById('id_receiver_email').value=' ';
+        document.getElementById('id_receiver_contact_number1').value=' ';
+    }
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,728 @@
+{% extends "admin_view/base.html" %} 
+{% load static %}
+{% load custom_tag %}
+{% block title %}Order -{{order.order_number}} | Admin{% endblock title %}
+{% block extra_css %}
+<link href="{% static 'admin_view/assets/libs/select2/select2.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Bootstrap Tables css -->
+<link href="{% static 'admin_view/assets/libs/bootstrap-table/bootstrap-table.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block page_content %}
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %} 
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <!-- ============================================================== -->
+   <!-- Start Page Content here -->
+   <!-- ============================================================== -->
+
+
+
+<div class="content-page">
+<div class="content">
+
+    <!-- Start Content-->
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">Order</a></li>
+                            <li class="breadcrumb-item active">Order Detail</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Order Detail <a type="button" title="copy link to customer" onclick="copyTextToClipboard('{{order.customerOrderLink}}')"><i class="fas fa-copy"></i></a></h4>
+                </div>
+            </div>
+        </div>     
+        <!-- end page title --> 
+
+        <div class="row">
+            <div class="col-12 mb-3 d-flex align-items-center">
+                <span>
+                    <a class="d-flex align-items-baseline mr-4 mt-0 d-print-none" href="javascript:window.print()" download><b>Download Order</b>&nbsp;
+                        <i class="mdi mdi-download h4 active m-0" style="color: #6658dd;"></i>
+                    </a>
+                </span>
+                <span>
+                    <a href="{%url 'sales:invoice-order' order.id%}" target="_blank"><b>Print Invoice</b>&nbsp;
+                        <i class="mdi mdi-download h4 active m-0" style="color: #6658dd;"></i>
+                    </a>
+                </span>
+
+                <span style="margin-left:40px;">
+                    <a href="{%url 'sales:export-order-log'%}?order_id={{order.id}}"><b>Export Log</b>&nbsp;
+                        <i class="mdi mdi-export h4 active m-0" style="color: #6658dd;"></i>
+                    </a>
+                </span>
+            </div>                            
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-0">
+                    <div class="card-body" style="background-color: #1abc9c; padding: 1rem; border-radius: 2px;">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <h5 class="mt-0 mb-0" style="color: #ffffff;">Order ID: <span>#{{order.order_number}}</span></h5>
+                            </div>
+                            <div class="col-lg-3 text-right">
+                                <h5 class="mt-0 mb-0" style="color: #ffffff;">Created By: <span>{{order.created_by.first_name|title}} {{order.created_by.last_name|title}}</span></h5>
+                            </div>
+                            <div class="col-lg-3 text-right">
+                                <h5 class="mt-0 mb-0" style="color: #ffffff;">Updated By: <span>{{order.updated_by.first_name|title}} {{order.updated_by.last_name|title}}</span></h5>
+                            </div>
+                            <div class="col-lg-3 text-right">
+                                <h5 class="mt-0 mb-0" style="color: #ffffff;">Placed on: <span>{{order.created_on_nepal_time}}</span></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>        
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">  
+                        <div class="row">                                      
+                            <div class="col-lg-3 d-flex align-items-baseline">
+                                <div class="mb-0 mr-2">
+                                    <h5 class="mt-0">Order Status:</h5>
+                                </div>                                      
+                                <div class="mb-0">
+                                    {%if perms.sales.change_order%}
+                                        <select class="custom-select" id="status-select-order" >
+                                            <option selected hidden="hidden" value="{{order.order_status}}">{{order.order_status}}</option>
+                                            <option value="Unconfirmed">Unconfirmed</option>
+                                            <option value="Confirmed">Confirmed</option>
+                                            <option value="Processing">Processing</option>
+
+                                            <option value="Complete">Complete</option>
+                                            <option value="Cancelled">Cancelled</option>
+
+
+                                        </select>
+                                    {%else%}
+                                    <select class="custom-select">
+                                            <option selected hidden="hidden" value="{{order.order_status}}">{{order.order_status}}</option>
+                                        </select>
+                                    {%endif%}
+                                </div>                                            
+                            </div>
+                            <div class="col-lg-3 d-flex align-items-baseline">                                            
+                                <div class="mb-0 mr-2">
+                                    <h5 class="mt-0">Payment Status:</h5>
+                                </div>                                         
+                                <div class="mb-0">
+                                            {%if perms.sales.change_order%}
+                                            <select class="custom-select" id="status-select-payment"
+                                                >
+                                                <option selected hidden="hidden" value="{{order.get_payment_status_display}}">{{order.get_payment_status_display}}</option>
+                                                <option value="Awaiting Payment">Awaiting Payment</option>
+                                                <option value="Paid">Paid</option>
+                                                <option value="Refunded">Refunded</option>
+                                                <option value="Partially Refunded">Partially Refunded</option>
+                                            </select>
+                                            {%else%}
+                                             <select class="custom-select" id="status-select-payment"
+                                                >
+                                                <option selected hidden="hidden" value="{{order.get_payment_status_display}}">{{order.get_payment_status_display}}</option>
+                                            </select>
+                                            {%endif%}
+                                    
+                                </div>                                            
+                            </div>
+                            <div class="col-lg-3 d-flex align-items-baseline">                                            
+                                <div class="mb-0 mr-2">
+                                    <h5 class="mt-0">Delivery Status:</h5>
+                                </div>                                         
+                                <div class="mb-0">
+                                    {%if perms.sales.change_order%}
+                                    <select class="custom-select" id="status-select-delivery"
+                                        >
+                                        <option selected hidden="hidden" value="{{order.get_delivery_status_display}}">{{order.get_delivery_status_display}}</option>
+                                        <option value="New">New</option>
+                                        <option value="Accepted">Accepted</option>
+                                        <option value="Picked">Picked</option>
+                                        <option value="Complete">Complete</option>
+                                        <option value="Cancel">Cancel</option>
+                                    </select>
+                                    {%else%}
+                                    <select class="custom-select"
+                                        >
+                                        <option selected hidden="hidden" value="{{order.get_delivery_status_display}}">{{order.get_delivery_status_display}}</option>
+                                    </select>
+                                    {%endif%}
+                                </div>                                            
+                            </div>
+
+                            <div class="col-lg-3 d-flex align-items-baseline">
+                                <a type="button" href="{%url 'sales:order-update' order.id %}" class="btn btn-danger">Update</a>
+                            </div>
+
+
+
+                        </div>    
+                    </div>
+                </div>        
+            </div>
+        </div>
+
+        <div class="row">                            
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mb-3">Items from Order #{{order.order_number}}</h4>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-centered mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th style="width:30%">Order Items</th>
+                                        
+                                        <th>Add-ons</th>  
+                                        <th style="width:20%">Price <br><span style="font-size: 10px;"> (inc. Eggless, Sugarless and Addons)</span></th>                                                      
+                                        <th>Total <span style="font-size: 10px;"> (inc. Shipping Cost)</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {%for i in order.items.all%}
+                                    <tr>
+                                        <td>
+                                            {%if i.product.product.image%}
+                                            <a href="{{i.product.product.image.url}}" target="_blank"><img src="{{i.product.product.image.url}}" alt="product-img" height="40"></a>
+                                            {%endif%}
+
+                                            {%if i.photo_cake_image%}
+                                            <a href="{{i.photo_cake_image.url}}" target="_blank"><img src="{{i.photo_cake_image.url}}" alt="product-img" height="40" style="margin-top: 5px;"></a>
+                                            {%endif%}
+
+                                        </td>
+                                        <td scope="row">
+                                            <p class="mb-0"><b><a href="{{i.product.product.get_absolute_url}}" target="_blank">{{i.name|title}}</a>  </b></p>
+                                            <p class="mb-0"><small>Quantity : {{i.quantity}}</small></p>
+                                            {%if i.is_sugerless%}
+                                            <p class="mb-0"><small>Sugarless : Yes</small></p>
+                                            {%else%}
+                                            <p class="mb-0"><small><small>Sugarless : No</small></p>
+                                            {%endif%}
+                                            {%if i.is_eggless%}
+                                            <p class="mb-0"><small><small>Eggless : Yes</small></p>
+                                            {%else%}
+                                            <p class="mb-0"><small><small>Eggless : No</small></p>
+                                            {%endif%}
+                                            <p class="mb-0"><small><small>Pound : {{i.pound}}</small></p>
+                                            <p class="mb-0"><small><small>Flavour : {{i.flavour}}</small></p>
+                                            <p class="mb-0"><small><small>Store : {{i.product.product.store.name|title}} </small></p>
+                                        </td> 
+                                        <td>
+                                            {%for addon in i.orderitem_addons.all%}
+                                            <p class="mb-0">{{addon.addons.name|title}} x({{addon.quantity}}) : {{ request.user|currency_symbol }}.{{addon.price}} </p>
+                                            {%empty%}
+                                            <p class="mb-0">No any addons.</p>
+                                            {%endfor%}
+                                        </td>    
+                                        <td>{{ request.user|currency_symbol }}.{{i.sub_total}}</td>                                                       
+                                                                                            
+                                        <td>{{ request.user|currency_symbol }}. {{i.total}}</td>
+                                    </tr>
+
+                                     <tr>
+                                        <th scope="row" colspan="2" class="text-center">Special Request :</th>
+                                        <td colspan="3">
+                                            {% if i.special_instruction %}
+
+                                            <div>{{i.special_instruction}}</div>
+                                            {%else%}
+                                        
+                                            <div>No message</div>
+                                            {%endif%}
+
+                                        </td>
+                                    </tr>
+                                    {%endfor%}
+                                   
+                                    {% if order.coupon %}
+                                     <tr>
+                                        <th scope="row" colspan="4" class="text-right">Coupon Code :</th>
+                                        <td><div class="font-weight-bold">{{order.coupon}}</div></td>
+                                    </tr>
+                                    {%endif%}
+                                    {%if order.discount%}
+                                    <tr>
+                                        <th scope="row" colspan="4" class="text-right">Discount :</th>
+                                        <td><div class="font-weight-bold">{{ request.user|currency_symbol }}.{{order.discount}}</div></td>
+                                    </tr>
+                                    {%endif%}
+                                    <tr>
+                                        <th scope="row" colspan="4" class="text-right">Sub Total :</th>
+                                        <td><div class="font-weight-bold">
+
+                                    {%if order.discount%}
+                                       {{ request.user|currency_symbol }}.<span
+                            id="sub_total">{{order.sub_total_order}} <strike>{{order.undiscounted_sub_total}} </strike> </span></span>
+                            {%else%}
+                            {{ request.user|currency_symbol }}.<span
+                            id="sub_total">{{order.sub_total_order}}</span></span>
+                            {%endif%}
+
+
+                                    </div></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" colspan="4" class="text-right">Delivery Charge :</th>
+                                        <td> {{ request.user|currency_symbol }}. {{order.shipping_cost}}</td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <th scope="row" colspan="4" class="text-right">VAT% Charge :</th>
+                                        <td>Rs. 12</td>
+                                    </tr> -->
+                                    <tr>
+                                        <th scope="row" colspan="4" class="text-right">Total :</th>
+                                        <td><div class="font-weight-bold">{{ request.user|currency_symbol }}. {{order.total}}</div></td>
+                                    </tr>                                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    
+                </div>
+                {%comment%}
+                <div class="card">
+                    <div class="card-body">  
+                        <h4 class="header-title mb-3">Order Activity #{{order.order_number}}</h4>
+                        <div class="row">                                      
+                            {%if order.created_by%}
+                            <table>
+                                <tr>
+                                    <h5>Created By:</h5>
+                                    <p><i class="fa fa-user" aria-hidden="true"></i>{{order.created_by}} </p> 
+                                </tr>
+                            </table>
+                            {%endif%}
+                            </div>
+                        <div class="row">                                      
+
+                            {%if order.updated_by%}
+                            <table style="color: green; background:pink;">
+                                <th style="width: 200px;">Updated By:</th>
+                                <th style="width: 200px;">Updated At:</th>
+                                <tr>
+                                    <td>
+                                    <p>{{order.updated_by}} </p> 
+                                    </td>
+                                    <td>
+                                        {{order.updated_on}}
+                                     </td>
+                                </tr>
+                            </table>
+                            {%endif%}
+                        </div>    
+                    </div>
+                </div> 
+                {%endcomment%}    
+<!--                 <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body d-flex">
+                                <div class="col-lg-4">
+                                    <button type="button" class="btn w-sm btn-danger waves-effect waves-light mb-1 w-100">Delete This Order</button>
+                                </div>
+                                <div class="col-lg-8">
+                                    <textarea class="form-control" rows="1" placeholder="Tell us why you are deleting this order..."></textarea>
+                                </div>                                                
+                            </div>
+                        </div>
+                    </div>                            
+                </div> -->
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <i class="mdi mdi-account-circle h1 text-muted" style="float: right; margin-top: -8px;"></i>
+                        <h4 class="header-title mb-3">Customer Information</h4>                                       
+                        <div class="mb-3">
+                            <p class="mb-1" style="color: #333;"><b>{{order.delivery_address.sender_fullname}}</b></p>
+                            <p class="mb-1"><i class="mdi mdi-email-outline p text-muted"></i>&nbsp;<span class="font-weight-semibold">Email :</span> {{order.delivery_address.sender_email}}</p>
+                            <p class="mb-0"><i class="mdi mdi-phone-outline p text-muted"></i>&nbsp;<span class="font-weight-semibold">Phone :</span> {{order.delivery_address.contact_number}}</p>
+                            <p class="mb-0"><i class="mdi mdi-phone-outline p text-muted"></i>&nbsp;<span class="font-weight-semibold">Address :</span> {{order.delivery_address.sender_address}}</p>
+                             <p class="mb-0"><i class="mdi mdi-phone-outline p text-muted"></i>&nbsp;<span class="font-weight-semibold">Social media Handler :</span> 
+                                <a target = '_blank' href="{{order.delivery_address.social_media_handler}}">{{order.delivery_address.social_media_handler}}</a>
+                             </p>
+                             <p>
+                                 &nbsp;<span class="font-weight-semibold">Source:</span> {{order.delivery_address.source}}
+                             </p>
+                             <p>
+                                 &nbsp;<span class="font-weight-semibold">Type of cake:</span> {{order.delivery_address.type_of_cake}}
+                             </p>
+                        </div>
+
+                        <hr/>
+
+                        <h4 class="header-title mb-2">Delivery Information</h4>
+                        <div class="mb-3">
+                            <!-- <p class="mb-1"><span class="font-weight-semibold">Delivery Type :</span></p> -->
+                            <p class="mb-1"><span class="font-weight-semibold">Delivery Date :</span>  {{order.date}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Delivery Time :</span> {{order.time.time_from}}-{{order.time.time_to}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Payment Method :</span> {{order.get_payment_method_display}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Vendor :</span> {{order.vendor.name|title}}</p>
+                            <p class="mb-3"><span class="font-weight-semibold">Reference No. :</span> {{order.reference}}</p>
+                        </div>
+
+                        <hr/>
+
+                        <h4 class="header-title mb-2">Receiver Information</h4>
+                        <div class="mb-3">
+                            <p class="mb-1"><span class="font-weight-semibold">Recipient Name :</span> {{order.delivery_address.receiver_fullname}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Recipient Number :</span> {{order.delivery_address.receiver_contact_number1}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Recipient Alt Number :</span> {{order.delivery_address.receiver_contact_number2}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Email :</span> {{order.delivery_address.receiver_email}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">City :</span> {{order.delivery_address.receiver_city|title}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Area :</span> {{order.delivery_address.receiver_area|title}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Address :</span> {{order.delivery_address.receiver_delivery_address}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Landmark :</span>                 {{order.delivery_address.receiver_landmark}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Delivery Address Type :</span>                     {{order.delivery_address.receiver_address_type}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Occasion :</span> {{order.delivery_address.occasion}}</p>
+                            <p class="mb-1"><span class="font-weight-semibold">Hide Info from Receiver :</span>
+                            {%if order.delivery_address.hide_info_from_receiver%}
+                            Yes
+                            {%else%}
+                            No
+                            {%endif%}</p>
+                                        <p class="mb-1"><span class="font-weight-semibold">is Receiver :</span>                 {%if order.delivery_address.i_am_receiver%}
+                            Yes
+                            {%endif%}</p>
+                        </div>
+                        <h4 class="header-title mb-2">Remarks</h4>
+                        <div class="mb-3">
+                            <p>{{order.remarks}}</p>
+                        </div>
+                    </div>
+                </div>        
+            </div>
+
+           
+
+        </div>
+        <!-- end row --> 
+                   
+      
+
+    </div> <!-- container -->
+
+</div> <!-- content -->
+
+<!-- Footer Start -->
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                2015 - <script>document.write(new Date().getFullYear())</script> &copy; UBold theme by <a href="">Coderthemes</a> 
+            </div>
+            <div class="col-md-6">
+                <div class="text-md-right footer-links d-none d-sm-block">
+                    <a href="javascript:void(0);">About Us</a>
+                    <a href="javascript:void(0);">Help</a>
+                    <a href="javascript:void(0);">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- end Footer -->
+
+</div>
+
+<!-- ============================================================== -->
+<!-- End Page content -->
+<!-- ============================================================== -->
+
+ <!-- ============================================================== -->
+   <!-- End Page content -->
+   <!-- ============================================================== -->
+</div>
+
+
+
+
+
+<div id="cancelled-remarks" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Are you sure ?</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body p-4">
+                    
+                    Are you sure, you want to cancel order ?<br><br>
+                    <label>Remarks</label>
+                    <input type="text" class='form-control' name="cancelled-remarks" id="cancelled-remarks-order">
+                    
+                </div>
+                <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                        <button type="button" onclick="CancelledOrderStatusUpdate();" class="btn btn-info waves-effect waves-light">Cancel Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+
+
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> -->
+
+<script src="{% static 'admin_view/assets/libs/multiselect/jquery.multi-select.js' %}"></script>
+
+
+<script src="{% static 'admin_view/assets/libs/select2/select2.min.js' %}"></script>
+
+
+
+ <!-- Tost-->
+ <script src="{% static 'admin_view/assets/libs/jquery-toast/jquery.toast.min.js' %}"></script>
+
+ <!-- toastr init js-->
+ <script src="{% static 'admin_view/assets/js/pages/toastr.init.js' %}"></script>
+
+<!-- Bootstrap Tables js -->
+<script src="{% static 'admin_view/assets/libs/bootstrap-table/bootstrap-table.min.js' %}"></script>
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/bootstrap-tables.init.js' %}"></script>
+
+<script src="   https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script>
+<script src="{% static 'admin_view/custom.js' %}"></script>
+
+ <!-- Init js -->
+ <script src="{% static 'admin_view/assets/js/pages/form-advanced.init.js' %} "></script>
+
+
+ <!-- Init js -->
+ <script src="{% static 'admin_view/assets/js/pages/add-product.init.js' %}"></script>
+
+<script src="   https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script>
+
+
+
+
+
+<script type="text/javascript">
+   function recalculate(count,shipping_cost){
+     var sub_total=0;
+ 
+    
+   for(i=1;i<=count;i++){
+     
+ 
+     var price=document.getElementById('price-'+i).value;
+ 
+     var quantity=document.getElementById('quantity-'+i).value;
+     
+     var indTotal=price*quantity;
+     
+     document.getElementById('total_product_price-'+i).innerText=indTotal;
+     sub_total=sub_total+indTotal;
+ 
+   }
+ 
+   grand_total=parseFloat(shipping_cost)+parseFloat(sub_total);
+   document.getElementById('sub_total').innerText=sub_total;
+   document.getElementById('grand_total').innerText=grand_total;
+   }
+ 
+ </script>
+ 
+
+ <script type="text/javascript">
+   
+   function saveChanges(count){
+     document.getElementById('order-item').submit();
+   }
+ 
+ </script>
+
+
+<script>
+   function update_quantity(order_id,order_item_id,quantity){
+      $.blockUI({ message: null }); 
+
+      $.ajax({
+                type: "GET",
+                url: "{% url 'sales:order-quantity-update' %}",
+                data: {'order_id':order_id, 'order_item_id':order_item_id,'quantity':quantity},
+                success: function (data) {
+                  $.unblockUI();
+                  // window.location.reload(true); 
+                  $("#refresh").load(" #refresh > *");
+                  $("#refresh-invoice").load(" #refresh-invoice > *");
+                  $("#refresh-packing").load(" #refresh-packing > *");
+                }
+            });
+             
+   }
+</script>
+
+
+ <script>
+    $("#status-select-order").change(function () {
+      var status = $(this).val();
+      if(status == 'Cancelled'){
+            $("#cancelled-remarks").modal('show');
+        }else{
+      
+          var id={{order.id}};
+
+          $.ajax({
+            url: '{%url 'sales:order-status-update'%}',
+            data: {
+              'order_status': status,
+              'order_number':{{order.id}},
+            },
+            dataType: 'json',
+            success: function (data) {
+              
+
+                send_email(data['id'],data['status']);
+
+             
+             (window.jQuery),
+                function (i) {
+                   "use strict";
+                   i.NotificationApp.send("Update !", `Order Status Updated`, "top-right", "#3b98b5", "info")
+
+                }(window.jQuery);
+              document.getElementById('order_status_').innerText=data['status'];
+            }
+          });
+
+        }
+
+    });
+
+
+    function CancelledOrderStatusUpdate(){
+        var remarks = document.getElementById('cancelled-remarks-order').value
+        var status = 'Cancelled'
+        $.ajax({
+            url: '{%url 'sales:order-status-update'%}',
+            data: {
+              'order_status': status,
+              'order_number':{{order.id}},
+              'remarks': remarks,
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#cancelled-remarks").modal('hide');
+              
+
+                send_email(data['id'],data['status']);
+
+             
+             (window.jQuery),
+                function (i) {
+                   "use strict";
+                   i.NotificationApp.send("Update !", `Order Status Updated`, "top-right", "#3b98b5", "info")
+
+                }(window.jQuery);
+              document.getElementById('order_status_').innerText=data['status'];
+            }
+          });
+
+    }
+
+     function send_email(order_number,status){
+        $.ajax({
+            type: "GET",
+            url: "{% url 'sales:send-email-order-status' %}",
+            data: {'order_number':order_number,'status':status},
+            success: function (data) {
+                
+            }
+        });
+                
+    }
+  </script>
+
+
+
+<script>
+    $("#status-select-payment").change(function () {
+      var status = $(this).val();
+
+      $.ajax({
+        url: '{%url 'sales:payment-status-update'%}',
+        data: {
+          'payment_status': status,
+          'order_number':{{order.id}},
+        },
+        dataType: 'json',
+        success: function (data) {
+         (window.jQuery),
+            function (i) {
+               "use strict";
+               i.NotificationApp.send("Update !", `Payment Status Updated`, "top-right", "#3b98b5", "info")
+
+            }(window.jQuery);
+        }
+      });
+
+    });
+</script>
+<script>
+    $("#status-select-delivery").change(function () {
+      var status = $(this).val();
+
+      $.ajax({
+        url: '{%url 'sales:order-delivery-status-update'%}',
+        data: {
+          'delivery_status': status,
+          'order_id':{{order.id}},
+        },
+        dataType: 'json',
+        success: function (data) {
+         (window.jQuery),
+            function (i) {
+               "use strict";
+               i.NotificationApp.send("Update !", `Delivery Status Updated`, "top-right", "#3b98b5", "info")
+
+            }(window.jQuery);
+        }
+      });
+
+    });
+</script>
+
+
+<script type="text/javascript">
+    function copyTextToClipboard(link) {
+         if (!navigator.clipboard) {
+            fallbackCopyTextToClipboard(link);
+            return;
+          }
+          navigator.clipboard.writeText(link).then(function() {
+            console.log('Async: Copying to clipboard was successful!');
+          }, function(err) {
+            console.error('Async: Could not copy text: ', err);
+          });
+  
+  }
+</script>
+
+
+
+{% endblock %}
+

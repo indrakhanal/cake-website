@@ -1,0 +1,22 @@
+$('.slider').owlCarousel({
+    loop:false,
+    margin:8,
+    nav:false,
+    responsive:{
+        0:{
+            items:1,
+            loop:false,
+            nav:false
+        },
+        600:{
+            items:4,
+            loop:false,
+            nav:false
+        },
+        1000:{
+            items:4,
+            loop:false,
+            nav:false
+        }
+    }
+})

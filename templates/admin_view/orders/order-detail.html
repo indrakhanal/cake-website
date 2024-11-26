@@ -1,0 +1,383 @@
+{% extends "admin_view/base.html" %} 
+{% load static %}
+{% block title %}Order -{{order.order_number}} | Admin{% endblock title %}
+{% block extra_css %}
+<link href="{% static 'admin_view/assets/libs/select2/select2.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Bootstrap Tables css -->
+<link href="{% static 'admin_view/assets/libs/bootstrap-table/bootstrap-table.min.css' %}" rel="stylesheet" type="text/css" />
+<style>
+   .select2-container--default .select2-selection--multiple .select2-selection__choice {
+      background-color: #6658dd;
+      color: white;
+   }
+   .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+      color: white;
+   }
+
+   .tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+</style>
+{% endblock %}
+{% block page_content %}
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %} 
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <!-- ============================================================== -->
+   <!-- Start Page Content here -->
+   <!-- ============================================================== -->
+   <div class="content-page">
+      <div class="content">
+         <!-- Start Content-->
+         <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+               <div class="col-12">
+                  <div class="page-title-box">
+                     <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                           <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                           <li class="breadcrumb-item active"><a href="javascript: void(0);">Orders</a></li>
+                           <li class="breadcrumb-item active">{{order.order_number}}</a>
+                        </ol>
+                     </div>
+                     <h4 class="page-title">Order Detail</h4>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+              
+               <div class="col-xl-12">
+                 
+
+                  <div class="row">
+                     <div class="col-xl-12">
+                      {% include 'admin_view/partials/_alerts.html' %}
+                        <div class="card-box">
+                        <div class="row mb-3 ml-1">
+                           <div class="col-xl-10">
+                           
+                              <h5 class="page-title">Order ID: {{order.order_number}}</h5>
+                              <!-- <p>Placed On: {{order.placed_on}}</p> -->
+
+                           </div>
+
+                           <div class="col-xl-2">
+                              <h5 class="page-title">Placed on:  {{order.placed_on}}</h5>
+                           
+                           </div>
+
+                        </div>
+                           <ul class="nav nav-tabs nav-bordered">
+                              <li class="nav-item">
+                                 <a href="#sales-today" data-toggle="tab" aria-expanded="false" class="nav-link active d-print-none">
+                                 GENERAL
+                                 </a>
+                              </li>
+
+                               <li class="nav-item">
+                                 <a href="#delivery-details" data-toggle="tab" aria-expanded="true" class="nav-link d-print-none">
+                                    DELIVERY DETAILS
+                                 </a>
+                              </li>
+
+
+
+
+
+
+                              {% comment %} <li class="nav-item">
+                                 <a href="#sales-week" data-toggle="tab" aria-expanded="false" class="nav-link d-print-none">
+                                 PACKING SLIP
+                                 </a>
+                              </li> {% endcomment %}
+                              <li class="nav-item">
+                                 <a href="#message-order" data-toggle="tab" aria-expanded="false" class="nav-link d-print-none">
+                                 MESSAGES
+                                 </a>
+                              </li>
+
+                              
+
+                                <li class="nav-item">
+                                 <a href="#sales-yesterday" data-toggle="tab" aria-expanded="true" class="nav-link d-print-none">
+                                 INVOICE
+                                 </a>
+                              </li>
+                             
+                            
+                           </ul>
+                           <div class="tab-content">
+
+                              <div class="tab-pane active" id="sales-today">
+                                 {% include 'admin_view/partials/orders/_order_details_information.html' %}
+                              </div>
+
+                              <div class="tab-pane" id="delivery-details">
+                                 {% include 'admin_view/partials/orders/_delivery_details.html' %}
+                              </div>
+
+
+                              {% comment %} <div class="tab-pane" id="sales-week">
+                                 {% include 'admin_view/partials/orders/packing-slip.html' %}
+                              </div> {% endcomment %}
+
+                              <div class="tab-pane" id="message-order">
+                                 {% include 'admin_view/partials/orders/messages.html' %}
+                              </div>
+
+                                <div class="tab-pane" id="sales-yesterday">
+                                 {% include 'admin_view/partials/orders/invoice.html' %}
+                              </div>
+
+
+                              
+                              
+                                 
+                           
+
+
+                            
+                           </div>
+                        </div>
+                        <!-- end card-box-->
+                     </div>
+                     <!-- end col -->
+                  </div>
+               </div>
+            </div>
+            <!-- end page title --> 
+         </div>
+         <!-- container -->
+      </div>
+      <!-- content -->
+   </div>
+   <!-- ============================================================== -->
+   <!-- End Page content -->
+   <!-- ============================================================== -->
+</div>
+
+
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+
+
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> -->
+
+<script src="{% static 'admin_view/assets/libs/multiselect/jquery.multi-select.js' %}"></script>
+
+
+<script src="{% static 'admin_view/assets/libs/select2/select2.min.js' %}"></script>
+
+
+
+ <!-- Tost-->
+ <script src="{% static 'admin_view/assets/libs/jquery-toast/jquery.toast.min.js' %}"></script>
+
+ <!-- toastr init js-->
+ <script src="{% static 'admin_view/assets/js/pages/toastr.init.js' %}"></script>
+
+<!-- Bootstrap Tables js -->
+<script src="{% static 'admin_view/assets/libs/bootstrap-table/bootstrap-table.min.js' %}"></script>
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/bootstrap-tables.init.js' %}"></script>
+
+<script src="   https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script>
+<script src="{% static 'admin_view/custom.js' %}"></script>
+
+ <!-- Init js -->
+ <script src="{% static 'admin_view/assets/js/pages/form-advanced.init.js' %} "></script>
+
+
+ <!-- Init js -->
+ <script src="{% static 'admin_view/assets/js/pages/add-product.init.js' %}"></script>
+
+<script src="   https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script>
+
+
+
+
+
+<script type="text/javascript">
+   function recalculate(count,shipping_cost){
+     var sub_total=0;
+ 
+    
+   for(i=1;i<=count;i++){
+     
+ 
+     var price=document.getElementById('price-'+i).value;
+ 
+     var quantity=document.getElementById('quantity-'+i).value;
+     
+     var indTotal=price*quantity;
+     
+     document.getElementById('total_product_price-'+i).innerText=indTotal;
+     sub_total=sub_total+indTotal;
+ 
+   }
+ 
+   grand_total=parseFloat(shipping_cost)+parseFloat(sub_total);
+   document.getElementById('sub_total').innerText=sub_total;
+   document.getElementById('grand_total').innerText=grand_total;
+   }
+ 
+ </script>
+ 
+
+ <script type="text/javascript">
+   
+   function saveChanges(count){
+     document.getElementById('order-item').submit();
+   }
+ 
+ </script>
+
+
+<script>
+   function update_quantity(order_id,order_item_id,quantity){
+      $.blockUI({ message: null }); 
+
+      $.ajax({
+                type: "GET",
+                url: "{% url 'sales:order-quantity-update' %}",
+                data: {'order_id':order_id, 'order_item_id':order_item_id,'quantity':quantity},
+                success: function (data) {
+                  $.unblockUI();
+                  // window.location.reload(true); 
+                  $("#refresh").load(" #refresh > *");
+                  $("#refresh-invoice").load(" #refresh-invoice > *");
+                  $("#refresh-packing").load(" #refresh-packing > *");
+                }
+            });
+             
+   }
+</script>
+
+
+ <script>
+    $("#status-select-order").change(function () {
+      var status = $(this).val();
+      var id={{order.id}};
+
+      $.ajax({
+        url: '{%url 'sales:order-status-update'%}',
+        data: {
+          'order_status': status,
+          'order_number':{{order.id}},
+        },
+        dataType: 'json',
+        success: function (data) {
+          
+
+            send_email(data['id'],data['status']);
+
+         
+         (window.jQuery),
+            function (i) {
+               "use strict";
+               i.NotificationApp.send("Update !", `Order Status Updated`, "top-right", "#3b98b5", "info")
+
+            }(window.jQuery);
+          document.getElementById('order_status_').innerText=data['status'];
+        }
+      });
+
+    });
+
+
+     function send_email(order_number,status){
+        $.ajax({
+            type: "GET",
+            url: "{% url 'sales:send-email-order-status' %}",
+            data: {'order_number':order_number,'status':status},
+            success: function (data) {
+                
+            }
+        });
+                
+    }
+  </script>
+
+
+
+<script>
+    $("#status-select-payment").change(function () {
+      var status = $(this).val();
+
+      $.ajax({
+        url: '{%url 'sales:payment-status-update'%}',
+        data: {
+          'payment_status': status,
+          'order_number':{{order.id}},
+        },
+        dataType: 'json',
+        success: function (data) {
+         (window.jQuery),
+            function (i) {
+               "use strict";
+               i.NotificationApp.send("Update !", `Payment Status Updated`, "top-right", "#3b98b5", "info")
+
+            }(window.jQuery);
+        }
+      });
+
+    });
+</script>
+<script>
+    $("#status-select-delivery").change(function () {
+      var status = $(this).val();
+
+      $.ajax({
+        url: '{%url 'sales:order-delivery-status-update'%}',
+        data: {
+          'delivery_status': status,
+          'order_id':{{order.id}},
+        },
+        dataType: 'json',
+        success: function (data) {
+         (window.jQuery),
+            function (i) {
+               "use strict";
+               i.NotificationApp.send("Update !", `Delivery Status Updated`, "top-right", "#3b98b5", "info")
+
+            }(window.jQuery);
+        }
+      });
+
+    });
+</script>
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{% load socialaccount %}
+{% providers_media_js %}
+{%block title%}
+    <title>{{page_title}}</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+<section class="bg-white">
+            <div class="container">
+                
+                <div class="row justify-content-center">
+
+                    <div class="col-lg-5 col-md-7">
+                    		<h2>Login Cancelled</h2>
+                    		<p>You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to <a href="{%url 'accounts:login'%}">sign in</a>.</p>
+                                                   	                      
+                    </div>
+                    	
+                    </div>
+                </div>
+
+            </div> <!-- container -->
+ </section>
+
+
+
+{%include 'client/cake-977/partials/newsletter.html'%}
+
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+
+
+{%endblock%}

@@ -1,0 +1,25 @@
+{%load static%}
+{%if popular_flavour%}
+<!-- Most Popular Flavours -->
+      <section class="most-popular-flavours">
+        <h2>Most Popular</h2>
+        <h4 class="most-popular-flavours-subtitle">Flavours</h4>
+        <div class="most-popular-flavours-cards">
+          <!-- First Row -->
+          <div class="row most-popular-flavours-rows">
+            {%for i in popular_flavour%}
+            <div class="col-md-3">
+              <div class="card"  >
+                <div class="image-box">
+                  <a href="{{i.flavour.get_absolute_url}}"><img class="card-img-top" {%if i.image %} src="{{i.image_thumbnail.url}}"{%else%}src="{%static 'cake-977/def_img/Cake977-255X255px-02.png'%}"{%endif%} alt="{{i.name|title}}"></a>
+                </div>
+                <div class="card-body">
+                  <a href="{{i.flavour.get_absolute_url}}" class="card-title">{{i.flavour.name|title}}</a>
+                </div>
+              </div>
+            </div>
+            {%endfor%}
+          </div>
+        </div>
+      </section>
+{%endif%}

@@ -1,0 +1,113 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+    <title>{{settings.outlet_name}}</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+
+<!--Login Section-->
+    <div class="account-login" id="account-login">
+        <div class="form-container sign-up-container">
+          {%if signupform.errors %} 
+    {% for field in signupform %} 
+    {% for error in field.errors %}
+    <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %} 
+    {% endfor %} 
+    {% for error in signupform.non_field_errors %}
+    <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %} 
+    {% endif %}
+        
+        <form method="post" action="{% url 'accounts:signup1' %}">
+          {%csrf_token%}
+            <h1>Create a new account</h1>
+            <p class="small">Create your account to easily place orders and keep track of them.</p>
+            <label><b>Full Name</b></label><br>
+            <div class="row">
+                <div class="col Fname">
+                {{signupform.first_name}}
+                </div>
+                <div class="col Lname">
+                {{signupform.last_name}}
+                </div>
+            </div>            
+            <label><b>Email Address</b></label>
+            {{signupform.email}}
+            <label><b>Phone Number</b></label>
+            {{signupform.phone_number}}
+            <label><b>Password</b></label>
+            {{signupform.password1}}
+            <label><b>Confirm Password</b></label>
+            {{signupform.password2}}
+
+
+
+            {%if redirect_field_value%}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {%else%}
+            <input type="hidden" name="next" value="/client/profile/" />
+            {%endif%}
+
+            <button class="btn btn-primary">Create Account</button> 
+        </form>
+        </div>
+        <div class="form-container sign-in-container">
+          {%if form.errors %} 
+    {% for field in form %} 
+    {% for error in field.errors %}
+    <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %} 
+    {% endfor %} 
+    {% for error in form.non_field_errors %}
+    <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %} 
+    {% endif %}
+        <form method="post" action="{% url 'accounts:login1' %}">
+          {%csrf_token%}
+            <h1>Login to your account</h1> 
+            <p class="small">Enter your username and password to login to your account</p> 
+
+            {{form.login}}
+            {{form.password}}
+            {%if redirect_field_value%}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {%else%}
+             <input type="hidden" name="next" value="/client/profile/" />
+            {%endif%}
+            <button class="btn btn-primary">Login</button>
+        </form>
+        <a href="{% url 'account_reset_password' %}" class="password">Forget Password?</a> 
+        <span class="or">OR</span> 
+        <hr class="login-hr"> 
+        <div class="social-container">
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        </div>     
+    </div>
+    </div>
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+
+
+{%endblock%}

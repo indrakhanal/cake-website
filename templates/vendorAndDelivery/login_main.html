@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{%static 'cake-977/login-vendor-delivery/css/style-for-main.css'%}" type="text/css">
+    <link rel="stylesheet" href="{%static 'cake-977/login-vendor-delivery/css/reponsive.css'%}" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <title>App Login</title>
+</head>
+<body>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light ">
+        <a class="navbar-brand" href="#">
+          <div class="logo">
+            <a href="#"><img src="{%static 'cake-977/ohologo.png'%}"></a>
+          </div>
+        </a>
+        <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button> -->
+          
+    </nav>
+    <div class="main-login-as">
+        <div class="left">
+            <img src="{%static 'cake-977/login-vendor-delivery/img/login.png'%}" width="500px" style="text-align: center;">
+        </div>
+        <div class="right">
+            <div class="logo">
+                <a href="#"><img src="{%static 'cake-977/ohologo.png'%}"></a>
+            </div>
+            <p class="text">A place for cakes around Nepal.</p>
+            
+            <a href="{%url 'vendorAndDelivery:login-as-vendor'%}" class="btn btn-primary">Login as Baker</a>
+            <a href="{%url 'vendorAndDelivery:login-as-delivery-boy'%}" class="btn btn-primary">Login as Delivery Boy</a>
+            <a href="{%url 'vendorAndDelivery:login-as-dispatcher'%}" class="btn btn-primary">Login as Dispatcher</a>
+            <a href="{%url 'vendorAndDelivery:login-as-production'%}" class="btn btn-primary">Login as Production Manager</a>
+
+            <!-- <p class="small" style="font-weight: 600; text-align: center;">Don't have account?<span>&nbsp;<a
+                href="./Login-signup.html">create a new account</a></span></p> -->
+        </div>
+    </div>
+</body>
+</html>

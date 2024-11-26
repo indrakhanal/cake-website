@@ -1,0 +1,387 @@
+{%load static%}
+<style type="text/css">
+	
+/*****************globals*************/
+
+body {
+  font-family: 'open sans';
+  overflow-x: hidden;
+  background-color: rgba(228,114,119,0.1)!important;
+}
+
+img {
+  max-width: 100%; }
+
+.preview {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column; }
+  @media screen and (max-width: 996px) {
+    .preview {
+      margin-bottom: 20px; } }
+
+.preview-pic {
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1; }
+
+.preview-thumbnail.nav-tabs {
+  border: none;
+  margin-top: 15px; }
+  .preview-thumbnail.nav-tabs li {
+    width: 18%;
+    margin-right: 2.5%; }
+    .preview-thumbnail.nav-tabs li img {
+      max-width: 100%;
+      display: block; }
+    .preview-thumbnail.nav-tabs li a {
+      padding: 0;
+      margin: 0; }
+    .preview-thumbnail.nav-tabs li:last-of-type {
+      margin-right: 0; }
+
+.tab-content {
+  overflow: hidden; }
+  .tab-content img {
+    width: 100%;
+    -webkit-animation-name: opacity;
+            animation-name: opacity;
+    -webkit-animation-duration: .3s;
+            animation-duration: .3s; }
+
+.card {
+  margin-top: 50px;
+  padding: 3em;
+  line-height: 1.5em; }
+
+@media screen and (min-width: 997px) {
+  .wrapper {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex; } }
+
+.details {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column; }
+
+
+.product-title, .price,{
+  text-transform: UPPERCASE;
+  font-weight: bold; }
+
+.checked, .price span {
+  color: #ff9f1a; }
+
+.product-title, .rating, .product-description, .price, .vote, {
+  margin-bottom: 15px; }
+
+.product-title {
+  margin-top: 0; }
+
+
+.add-to-cart, .like {
+  background: #ff9f1a;
+  padding: 1.2em 1.5em;
+  border: none;
+  text-transform: UPPERCASE;
+  font-weight: bold;
+  color: #fff;
+  -webkit-transition: background .3s ease;
+          transition: background .3s ease; }
+  .add-to-cart:hover, .like:hover {
+    background: #b36800;
+    color: #fff; }
+
+.not-available {
+  text-align: center;
+  line-height: 2em; }
+  .not-available:before {
+    font-family: fontawesome;
+    content: "\f00d";
+    color: #fff; }
+
+.orange {
+  background: #ff9f1a; }
+
+.green {
+  background: #85ad00; }
+
+.blue {
+  background: #0076ad; }
+
+.tooltip-inner {
+  padding: 1.3em; }
+
+.heading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+} 
+.rec-details {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 2rem;
+}
+.rec-details td {
+  border: 1px solid #ddd;
+  padding: 12px;
+} 
+.main {
+  background-color: #ffffff!important;
+  margin: 0 5rem;
+}
+.container {
+  padding-left: 3rem!important;
+  padding-right: 3rem!important;
+  padding-bottom: 3rem!important;
+}
+.footer-end {
+  padding: 3rem 0;
+}
+.footer-end h4 {
+  text-align: center;
+  color: #E3323A;
+}
+
+.footer-end ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-left: 0;
+}
+
+.footer-end ul li {
+  list-style-type: none;
+}
+
+.footer-end ul li a {
+  color: #333!important;
+}
+
+.fa-facebook-square, .fa-instagram {
+  font-size: 24px;
+}
+
+.mob-order-details {
+  display: none;
+}
+
+@-webkit-keyframes opacity {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(3);
+            transform: scale(3); }
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+            transform: scale(1); } }
+
+@keyframes opacity {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(3);
+            transform: scale(3); }
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+            transform: scale(1); } }
+
+@media only screen and (max-width: 900px) {
+  .mob-order-details {
+    display: block;
+    margin-top: 2rem;
+  }
+
+  .rec-details {
+    display: none;
+  }
+
+  .mob-order-details div {
+    margin-bottom: 1.5rem;
+  }
+
+  .card .container {
+    padding-left: 0!important;
+    padding-right: 0!important;
+  }
+
+}
+
+/*# sourceMappingURL=style.css.map */
+</style>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Order-Detail</title>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@300&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+		<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+		<!------ Include the above in your HEAD tag ---------->
+
+  </head>
+
+  <body>
+  
+  <div class="heading">
+    <a href="https://ohocake.com/"><img src="{%static 'cake-977/ohologo.png'%}"></a>
+  </div>  
+  <div class="main">
+	<div class="container web-order-details">
+		<h3>Order number {{orders.order_number}} detail info.</h3>
+      <table class="rec-details">
+        <tr>
+          <td><strong>Receiver Name: </strong></td>
+          <td>{{orders.delivery_address.receiver_fullname|title}}</td>
+        </tr>
+        <tr>
+          <td><strong>Receiver Contact Number: </strong></td>
+          <td>{{orders.delivery_address.receiver_contact_number1}}</td>
+        </tr>
+        <tr>
+          <td><strong>Receiver Location: </strong></td>
+          <td>{{orders.delivery_address.receiver_delivery_address}}</td>
+        </tr>
+        <tr>
+          <td><strong>Delivery Date: </strong></td>
+          <td>{{orders.date}}</td>
+        </tr>
+        <tr>
+          <td><strong>Delivery Time: </strong></td>
+          <td>{{orders.time.time_from}}-{{orders.time.time_to}}</td>
+        </tr>
+        <tr>
+          <td><strong>Remarks: </strong></td>
+          <td>{{orders.remarks}}</td>
+        </tr>
+      </table> 
+      
+      <div class="mob-order-details">
+        <div>
+          <h4>Receiver Name:</h4>
+          <p>{{orders.delivery_address.receiver_fullname|title}}</p>
+        </div>
+        <div>
+          <h4>Receiver Contact Number:</h4>
+          <p>{{orders.delivery_address.receiver_contact_number1}}</p>
+        </div>
+        <div>
+          <h4>Receiver Location:</h4>
+          <p>{{orders.delivery_address.receiver_delivery_address}}</p>
+        </div>
+        <div>
+          <h4>Delivery Date:</h4>
+          <p>{{orders.date}}</p>
+        </div>
+        <div>
+          <h4>Delivery Time:</h4>
+          <p>{{orders.time.time_from}}-{{orders.time.time_to}}</p>
+        </div>
+        <div>
+          <h4>Remarks:</h4>
+          <p>{{orders.remarks}}</p>
+        </div>
+      </div> 
+    </div> 
+
+		{%for i in orders.items.all%}
+		<div class="container card">
+			<div class="container">
+				<div class="wrapper row">
+					<div class="col-md-6">
+						 {%include 'vendorAndDelivery/image-carosoul.html'%}
+						 <p style="color: red;">Click on Image </p>
+					</div>
+					<div class="details col-md-6">
+						<h4 class="product-title">{{i.name|title}}</h4>
+
+						{%if i.flavour%}
+						<h5 class="flavour">Flavour: <span>{{i.flavour}}</span></h5>
+						{%endif%}
+						<h5 class="flavour">Pound: <span>{{i.pound}}</span></h5>
+						<h5 class="flavour">Quantity: <span>{{i.quantity}}</span></h5>
+						<h5 class="flavour">Is Eggless: <span>{%if i.is_eggless%}Yes{%else%}No{%endif%}</span></h5>
+						<h5 class="flavour">Is Sugarless: <span>{%if i.is_sugerless%}Yes{%else%}No{%endif%}</span></h5>
+						<h5>Addons:{%for addon in i.orderitem_addons.all%}<span>{{addon.name|title}}</span><br>{%empty%}No addons{%endfor%}</h5>
+						{%if i.special_instruction%}
+						<h5>Message:<span>{{i.special_instruction}}</span></h5>
+						{%endif%}
+					</div>
+				</div>
+			</div>
+		</div>
+		{%endfor%}
+    <div class="container">
+      <table class="rec-details">
+        <tr>
+          <td><strong>Sub Total: </strong></td>
+          <td>{{orders.sub_total_order}}</td>
+        </tr>
+        <tr>
+          <td><strong>Delivery Charge: </strong></td>
+          <td>{{orders.shipping_cost}}</td>
+        </tr>
+        <tr>
+          <td><strong>Total: </strong></td>
+          <td>{{orders.total}}</td>
+        </tr>
+      </table> 
+      <div class="mob-order-details">
+        <div>
+          <h4>Sub Total:</h4>
+          <p>{{orders.sub_total_order}}</p>
+        </div>
+        <div>
+          <h4>Delivery Charge:</h4>
+          <p>{{orders.shipping_cost}}</p>
+        </div>
+        <div>
+          <h4>Total:</h4>
+          <p>{{orders.total}}</p>
+        </div>
+      </div>  
+    </div>
+  </div>
+	</div>
+  <div class="footer-end">
+    <h4>Get in touch with us</h4>
+      <ul>
+        <li><a href="mailto:info@cakes.com"><span></span>ohocakenepal@gmail.com</a></li>
+        <li><a href="tel:+977-014345678"><span></span>9886049922</a></li>
+        <li><a href="https://goo.gl/maps/3hQyjCQHoidJ6GXt5"><span></span>Aloknagar, Kathmandu</a></li>
+        <li>Find us at: </li>
+        <li>
+          <span><a href="https://www.facebook.com/OhoCakeNepal"><i class="fab fa-facebook-square"></i></a></span>
+          <span><a href="https://www.instagram.com/oho.cake/?hl=en">&nbsp;&nbsp;<i class="fab fa-instagram"></i></a></span>
+        </li>
+      </ul>
+  </div>
+
+  </body>
+
+</html>

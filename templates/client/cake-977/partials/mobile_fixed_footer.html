@@ -1,0 +1,18 @@
+<!-- Mobile view footer fixed menu -->
+    <div class="mobile-menu">
+      
+      <div class="home">
+          <a {%if not '/profile/' in request.path and not '/cart/' in request.path%} class="mob-link active"{%else%}class="mob-link"{%endif%} href="{%url 'client:catalog'%}"><div class="home-img"><p>Home</p></div></a>
+      </div>
+      <div class="categories">
+          <a class="mob-link" href="#" onclick="openNav()"><div class="categories-img"><p>Categories</p></div></a>
+      </div>
+      <div class="location">
+        <a {%if '/cart/' in request.path%} class="mob-link active"{%else%} class="mob-link"  {%endif%} href="{%url 'client:client-cart'%}"  ><div class="location-img">
+          <span class="badge badge-warning" id="cart_count_mobile">{{cart_count}}</span>
+          <p>Cart</p></div></a>
+      </div>
+      <div class="profile">
+          <a {%if '/profile/' in request.path%} class="mob-link active"{%else%} class="mob-link"  {%endif%} {%if user.is_authenticated%} href="{%url 'client:mob-profile-nav'%}" {%else%} href="{%url 'accounts:login'%}" {%endif%}><div class="profile-img"><p>Profile</p></div></a>
+      </div>
+    </div>

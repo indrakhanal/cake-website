@@ -1,0 +1,162 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block title %}Customers | Admin{% endblock title %}
+
+{% block extra_css %}
+<link href="{% static 'admin_view/assets/libs/footable/footable.core.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Custom box css -->
+<link href="{% static 'admin_view/assets/libs/custombox/custombox.min.css' %}" rel="stylesheet">
+<link href="{% static 'admin_view/assets/libs/dropify/dropify.min.css' %}" rel="stylesheet" type="text/css" />
+
+<link href="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- App css -->
+<link href="{%static 'admin_view/assets/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/icons.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/app.min.css'%}" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+
+{% block page_content %}
+<div id="wrapper">
+    {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+    {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start Content-->
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active">Customers</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Our Customers</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card-box">
+
+                            <div class="mb-3">
+                                <form method="get" action="{%url 'dashboard:customers'%}">
+                                <div class="row">
+                                    <div class="col-12 text-sm-center form-inline">
+                                        <div>
+                                            <input id="product_keyword"  name="customer_keyword" 
+                                            {% if keyword %}
+                                                value = {{keyword}}
+                                            {% endif %}
+                                                 type="text" placeholder="Keyword (name,mobile)"
+                                            class="form-control" autocomplete="on" >
+                                        </div>
+
+
+                                        <div style="margin-left: 20px;">
+                                            <button type="submit"
+                                            class="btn btn-dark waves-effect waves-light">Search
+                                        </button>
+                                        </div>
+                                   </form>        
+
+                                    
+                                           
+                                    </div>
+                                   
+                                </div>
+
+                            </div>
+                          
+                            <div class="table-responsive">
+                                <table id="demo-foo-filtering" class="table  toggle-circle mb-0" data-page-size="20" style=" table-layout: fixed; word-wrap: break-word;">
+                                    <thead>
+                                        <tr>
+                                        
+                                            <th class="text-center">Name</th>
+                                            <th class="text-center">Mobile</th>
+                                            <!-- <th class="text-center">Orders</th> -->
+                                            <!-- <th class="text-center">Value</th> -->
+                                            <th class="text-center">Last Order</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <form id="dell" >
+                                        {%csrf_token%}
+                                        {%for i in orders %}
+                                        
+
+
+                                        <tr>
+
+                                           
+                                            <td class="text-center">{{i.delivery_address.sender_fullname}}</td>
+                                            <td class="text-center">{{i.delivery_address.contact_number}}</td>
+                                           <td class="text-center">{{i.created_on}}</td>
+                                           
+                                            
+                                        </tr>
+
+                                        {%endfor%}
+                                        </form>
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="active">
+                                            <td colspan="3">
+                                                <div class="text-right">
+                                                    <ul
+                                                        class="pagination pagination-rounded justify-content-end footable-pagination m-t-10 mb-0">
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div> <!-- end .table-responsive-->
+                        </div> <!-- end card-box -->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+
+            </div> <!-- container -->
+
+        </div> <!-- content -->
+
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- END wrapper -->
+
+
+
+    {% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+    {% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+    {% block extra_javascript %}
+
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+        <script src="{% static 'admin_view/assets/libs/footable/footable.all.min.js' %}"></script>
+        
+        <script src="{% static 'admin_view/custom.js' %}"></script>
+            <!-- Init js -->
+        <script src="{% static 'admin_view/assets/js/pages/foo-tables.init.js' %}"></script>
+
+
+
+    {% endblock %}

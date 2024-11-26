@@ -1,0 +1,405 @@
+{% load custom_tag %}
+
+
+
+<div id="refresh">
+    <form id="order-item" method="post" action="{%url 'sales:order-item-update'%}" class="form-inline mb-2">
+        {%csrf_token%}
+        <input type="hidden" name="counter" value="{{order.items.all.count}}">
+        <input type="hidden" name="order" value="{{order.id}}">
+
+
+        <div class="col-12 mt-2" style="margin-left:-8px;">
+
+            <div class="row">
+                <div class="col-sm-4">
+
+                        <div class="form-group">
+                            <label for="status-select" style="margin-right: 20px;" class="font-14">Order Status</label>
+
+
+                            <select class="custom-select" id="status-select-order" >
+                                <option selected hidden="hidden" value="{{order.order_status}}">{{order.order_status}}</option>
+                                <option value="Unconfirmed">Unconfirmed</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Processing">Processing</option>
+
+                                <option value="Complete">Complete</option>
+                                <option value="Cancelled">Cancelled</option>
+
+
+                            </select>
+                        </div>
+
+
+                </div>
+
+                <div class="col-sm-4">
+                    <!-- <form class="form-inline mb-2"> -->
+                        <div class="form-group">
+
+                            <label for="status-select" style="margin-right: 20px;" class="font-14">Payment Status</label>
+
+                            <select class="custom-select" id="status-select-payment"
+                                >
+                                <option selected hidden="hidden" value="{{order.get_payment_status_display}}">{{order.get_payment_status_display}}</option>
+                                <option value="Awaiting Payment">Awaiting Payment</option>
+                                <option value="Paid">Paid</option>
+                                <option value="Refunded">Refunded</option>
+                                <option value="Partially Refunded">Partially Refunded</option>
+                            </select>
+                        </div>
+                    <!-- </form> -->
+
+
+                </div>
+                <div class="col-sm-4">
+                    <!-- <form class="form-inline mb-2"> -->
+                        <div class="form-group">
+
+                            <label for="status-select" style="margin-right: 20px;" class="font-14">Delivery Status</label>
+
+                            <select class="custom-select" id="status-select-delivery"
+                                >
+                                <option selected hidden="hidden" value="{{order.get_delivery_status_display}}">{{order.get_delivery_status_display}}</option>
+                                <option value="New">New</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Picked">Picked</option>
+                                <option value="Complete">Complete</option>
+                                <option value="Cancel">Cancel</option>
+                            </select>
+                        </div>
+                    <!-- </form> -->
+
+
+                </div>
+
+                {% if latest_activity %}
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+
+                            <label for="status-select" style="margin-right: 20px;" class="font-14">Delivery Status: </label>
+                            <span class="badge label-table badge-success">{{latest_activity}}</span>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+
+            </div>
+        </div> <!-- end col -->
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="col-12 mt-2" style="margin-left:-8px;">
+                    <span>Delivery Date: {{order.date}}</span><br>
+                    <span>Delivery Time: {{order.time.time_from}}-{{order.time.time_to}}</span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="col-12 mt-2" style="margin-left:-8px;">
+                    <span>Payment Method:{{order.get_payment_method_display}}</span><br>
+                    <span>Reference Number:{{order.reference}}</span><br>
+                </div>
+            </div>
+        </div>
+
+
+         <form id="order-item" method="post" action="{%url 'sales:order-item-update'%}" class="form-inline mb-2">
+        {%csrf_token%}
+        <input type="hidden" name="counter" value="{{order.items.all.count}}">
+        <input type="hidden" name="order" value="{{order.id}}">
+
+
+
+
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table mt-4 table-centered">
+                            <thead>
+                                <tr>
+                                    <th>Order Items</th>
+                                    <th>Weight</th>
+                                    <th >Price</th>
+                                    <th >Quantity</th>
+                                     <th>Sugarless</th>
+                                    <th>Eggless</th>
+                                    <th>Sub Total</th>
+                                    <th >Total</th>
+                                    <!-- <th>Action</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                                {%for item in order.items.all%}
+
+                                    <tr>
+                                        <input type="hidden" name="item_id-{{forloop.counter}}" value="{{item.id}}">
+
+                                        <td>
+
+                                            {% if item.product.image %}
+                                                <img src="{{item.product.image.url}}" height="40" width="30" class="mr-1">
+                                                {%else%}
+                                                <img src="https://image.shutterstock.com/image-vector/picture-vector-icon-no-image-260nw-1350441335.jpg" height="40" width="40" class="mr-1">
+                                            {% endif %}
+
+                                            <a href="{%url 'catalog:product-update' item.product.product.id item.product.product.store.slug%}"> {{item.name|title}}<br>
+                                                <span style="margin-left: 50px;font-size: smaller;">Addons:{%if not item.orderitem_addons.all %} N/A {%endif%}</span>
+                                                    {%for i in item.orderitem_addons.all%}
+                                                        <span style="font-size: smaller;">( {{i.addons.name|title}} : {{ request.user|currency_symbol }}.{{i.addons.price}} )</span>
+                                                    {%endfor%}
+                                            </a><br>
+                                            
+                                            <p style="margin-left: 50px; font-size: smaller;">Store: {{item.product.product.store.name|title}}<br>
+                                           
+                                            
+                                            {% if item.photo_cake_image %}
+                                            <a href="{{item.photo_cake_image.url}}" target="_blank">Preview Image</a>
+                                            {% endif %}</p><br>
+                                                
+                                            <!-- <a href="">{{item.product.varient_name|title}}</a><br> -->
+
+                                        </td>
+                                        <td>{{item.pound}}</td>
+
+                                        {% comment %} <td>{{ request.user|currency_symbol }}. <input min="1" class="input-small" id="price-{{forloop.counter}}" name="price-{{forloop.counter}}" type="number" value="{{item.price}}" readonly></td> {% endcomment %}
+                                        <td>{{ request.user|currency_symbol }}.{{item.price}}</td>
+
+                                        <!-- <td><input min="1" class="input-small" name="quantity-{{forloop.counter}}" id="quantity-{{forloop.counter}}" type="number" value="{{item.quantity}}" onchange="update_quantity('{{order.id}}','{{item.id}}',this.value);">
+                                        </td> -->
+                                        <td>{{item.quantity}}</td>
+
+
+                                            <td>
+                                                <p class="ml-2">{%if item.is_sugerless%}Yes {% else %} No {%endif%}</p>
+    
+                                                </div>
+                                            </td>
+    
+                                             <td>
+                                                <p class="ml-2">{%if item.is_eggless%}Yes {% else %}No{%endif%}</p>
+                                            </td>
+<!--                                          <td class="text-center">
+                                              <div class="custom-control custom-checkbox hide-info small mt-2 ml-3">
+                                                 <input type="checkbox" class="custom-control-input" id="sugarless" name="example1" {%if item.is_sugerless%}checked{%endif%}>
+                                                  <label class="custom-control-label" for="sugarless"></label>
+
+                                            </div>
+                                        </td> -->
+
+                                         <!-- <td>
+                                              <div class="custom-control custom-checkbox hide-info small mt-2 ml-3">
+                                                 <input type="checkbox" class="custom-control-input" id="eggless" name="example1" {%if item.is_eggless%}checked{%endif%}>
+                                                  <label class="custom-control-label" for="eggless"></label>
+
+                                            </div>
+                                        </td> -->
+
+
+                                    <td>Rs.<span id="sub_product_price-{{forloop.counter}}">{{item.sub_total}}</span>
+                                        </td>
+                                        <td>{{ request.user|currency_symbol }}.<span id="total_product_price-{{forloop.counter}}">{{item.total}}</span>
+                                        </td>
+                                        <!-- <td>
+                                            <a href="#con-close-modal" data-toggle="modal"
+                                                    data-target="#con-close-modal-{{item.id}}"
+                                                    class="action-icon"> <i
+                                                            class="mdi mdi-delete"></i></a>
+                                        </td> -->
+
+
+                                    </tr>
+
+
+
+
+                                {%endfor%}
+
+
+
+                            </tbody>
+                        </table>
+
+                    </div> <!-- end table-responsive -->
+                </div> <!-- end col -->
+
+    </form>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="clearfix pt-5">
+
+            </div>
+        </div> <!-- end col -->
+        <div class="col-sm-6">
+
+            <div class="float-right">
+
+
+
+                {% if order.coupon %}
+                <h5><b>Coupon Code:</b> <span class="ml-5 float-right"><span> {{order.coupon}}</span></span></h5>
+                {% endif %}
+                {%if order.discount%}
+            <h5><b>Discount:</b> <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                            id="discount">{{order.discount}} </span></span></h5>
+
+
+                {%endif%}
+
+                {%if order.discount%}
+                <h5><b>Sub Total:</b> <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                            id="sub_total">{{order.sub_total_order}} <strike>{{order.undiscounted_sub_total}} </strike> </span></span></h5>
+                {%else%}
+                <h5><b>Sub Total:</b> <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                            id="sub_total">{{order.sub_total_order}}</span></span></h5>
+                {%endif%}
+
+                <h5>Delivery Cost: <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                                id='sub_total'>{{order.shipping_cost}}</span></span></h5>
+
+            <div class="tax-vat">
+                {% for charge in order.order_charge.all  %}
+
+                <h5 id="{{charge.name|slugify}}">{{charge.name}} ({{charge.rate}}%): <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span id="{{charge.name|slugify}}-total">{{charge.total}}</span></span></h5>
+                {% endfor %}
+            </div>
+    {% comment %} --------------------
+            <div class="tax-vat">
+                {% for charge in order.tax_rate  %}
+            {{charge}}
+                <h5 id="{{charge.name|slugify}}">{{charge.name}} ({{charge.rate}}%): <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span id="{{charge.name|slugify}}-total">{{charge.value}}</span></span></h5>
+                {% endfor %}
+            </div>
+    ---------------- {% endcomment %}
+
+                <h5><b>Grand Total:</b> <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                            id="grand_total">{{order.total}}</span></span></h5>
+                <!-- {%if order.discount%}
+                <h5><b>Grand Total:</b> <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                            id="grand_total">{{order.discount_total}}</span></span></h5>
+                {%else%}
+                <h5><b>Grand Total:</b> <span class="ml-5 float-right">{{ request.user|currency_symbol }}.<span
+                            id="grand_total">{{order.total}}</span></span></h5>
+                {%endif%} -->
+
+            </div>
+            <div class="clearfix"></div>
+        </div> <!-- end col -->
+    </div>
+</div>
+
+<div class="mt-4 mb-1">
+    <div class="clearfix pt-2 float-right">
+        <!-- <a href="#myModal" class="btn btn-danger waves-effect waves-light"
+        data-toggle="modal"><i
+        class="mdi mdi-plus-circle mr-1"></i> Add Product</a> -->
+        {% comment %} <button type="button" class="btn btn-primary waves-effect waves-light" onclick="recalculate('{{order.items.all.count}}','{{order.shipping_cost}}')">RECALCULATE</button> 
+        <button type="button" class="btn btn-success waves-effect waves-light" onclick="saveChanges()">SAVE CHANGES</button>
+        {% endcomment %}
+    </div>
+    <div class="clearfix pt-2">
+        <!-- <button type="button" class="btn btn-success waves-effect waves-light" onclick="saveChanges()">SAVE CHANGES</button> -->
+    </div>
+
+
+</div>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+         <h4 class="modal-title">Add Product</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+      </div>
+      <div class="modal-body">
+
+        <form method="post" action="{% url 'sales:order-item-create' %}">
+            {% csrf_token %}
+
+            <div class="form-group mb-3">
+                <label for="product-category">Product Varient <span class="text-danger">*</span></label>
+                <select class="form-control select2" id="product-category" name="product">
+                    <!-- <option selected disabled>Select</option> -->
+
+
+                    {%for i in product%}
+                      <option value="{{i.id}}" >{{i.varient_name|title}}</option>
+                    {%endfor%}
+
+
+                    </optgroup>
+
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input min="1" type="number" class="form-control" id="quantity" name="quantity" placeholder="Quantity" value="1"
+                    required="required">
+            </div>
+
+
+
+            <input type="hidden" name="order" value="{{order.id}}">
+
+      </div>
+      <div class="modal-footer">
+        <div class="text-right">
+                <button type="submit" class="btn btn-success waves-effect waves-light">Save</button>
+            </div>
+      </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+
+{%for i in order.items.all%}
+    <div id="con-close-modal-{{i.id}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Delete Item ?</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body p-4">
+                        Are you sure want to delete this Item ?
+                    </div>
+                    <div class="modal-footer">
+                        <form method="post" action="{% url 'sales:order-item-delete' i.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" id="order" name="order" value="{{order.id}}">
+                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-info waves-effect waves-light">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+{%endfor%}
+<!-- Modal -->
+
+
+
+
+
+
+
+
+<style>
+    .input-small {
+        width: 5em;
+        text-align: center;
+    }
+</style>

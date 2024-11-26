@@ -1,0 +1,226 @@
+{% load humanize %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+ <script src="https://khalti.com/static/khalti-checkout.js"></script>
+   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<style>
+body {
+    margin-top: 50px;
+    background:#455a64;
+}
+</style>
+<div class="container">
+    <div class="row">
+        <div class="well col-xs-10 col-sm-10 col-md-6 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <address>
+                        <strong>{{order.delivery_address.full_name|title}}</strong>
+                        <br>
+                        
+                        {% if order.delivery_address.delivery_address %}
+                            {{order.delivery_address.delivery_address|title}}
+                        {% else %}
+                            Pickup: {{order.delivery_address.pickup_time}}
+                        {% endif %}
+                        
+                        <br>
+                        <abbr title="Phone">Contact:</abbr> {{order.delivery_address.contact_number}}
+                    </address>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                    {% comment %} <p>
+                        <em>Date: 1st November, 2013</em>
+                    </p> {% endcomment %}
+                    <p>
+                        Reference Number: #{{order.order_number}}
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="text-center" style="margin-bottom: 30px;">
+                    <h2>Pay Now</h2>
+                </div>
+                </span>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Items</th>
+                            <th class="text-center">Price</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for item in order.items.all%}
+                            <tr>
+                                
+                                <td class="text-center">
+                                    {{item.product.varient_name|title}}
+                                        {%if item.addons.all%}
+                                            {%for i in item.addons.all%}
+                                            ({{i.name}}:Rs.{{i.price}})
+                                            {%endfor%}
+                                        {%endif%}
+                                </td>
+                                <td class="text-center">{{item.price}}</td>
+                                <td class="text-center">{{item.quantity}}</td>
+                                <td class="text-center">{{item.total}}</td>
+                            
+                            </tr>
+                        {% endfor %}
+
+                      
+                       
+                        <tr>
+                            
+                            <td> </td>
+                            <td></td>
+                            
+                            <td class="text-right">
+                           </td>
+                            <td class="text-center">
+                                <div class="float-right">
+                                    {% if order.coupon %}
+                                    <h5><b>Coupon Code:</b> <span class="ml-5 float-right"><span
+                                        > {{order.coupon}}</span></span></h5>
+                                    {% endif %}
+                        
+                                    <h5>Sub Total: <span class="ml-5 float-right">Rs.<span
+                                                id='sub_total'>{{order.sub_total}}</span></span></h5>
+                                    <h5>Delivery Cost: <span class="ml-5 float-right">Rs.<span
+                                                    id='sub_total'>{{order.shipping_cost}}</span></span></h5>
+                                    {%if order.discount%}
+                                   <h5>Discount:<span class="ml-5 float-right">Rs.<span
+                                                id="discount">{{order.discount}} </span></span></h5>
+                                    
+                                               
+                                    {%endif%}
+                                    {%if order.discount%}
+                                    <h5><b>Grand Total:</b> <span class="ml-5 float-right">Rs.<span
+                                                id="grand_total"><strike>{{order.total}}</strike> {{order.discount_total}}</span></span></h5>
+                                    {%else%}
+                                    <h5><b>Grand Total:</b> <span class="ml-5 float-right">Rs.<span
+                                                id="grand_total">{{order.total}}</span></span></h5>
+                                    {%endif%}
+                        
+                                </div>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+                {% if khalti.is_active %}
+                    <button type="button" style="color:#ffffff; background:#621abe; margin-bottom: 10px;" class="btn btn-success btn-lg btn-block" id="khalti-payment">
+                        Pay with Khalti 
+                    </button>
+                {% endif %}
+            
+                {% if esewa.is_active %}
+                    <form action="https://esewa.com.np/epay/main" method="POST">
+                        {% csrf_token %}
+                        <div class="step-actions">
+
+                        <input value="{{ order.discount_total }}" name="tAmt" type="hidden">
+                        <input value="{{ order.discount_total }}" name="amt" type="hidden">
+                        <input value="0" name="txAmt" type="hidden">
+                        <input value="0" name="psc" type="hidden">
+                        <input value="0" name="pdc" type="hidden">
+                        <input value="{{esewa.service_code}}" name="scd" type="hidden">
+                        <input value="{{ order.order_number }}" name="pid" type="hidden">
+                        <input id="success-url" type="hidden" name="su">
+                        <input id="failure-url" type="hidden" name="fu">
+                        <!-- <button
+                            class="waves-effect waves-dark btn btn-primary btn-block btn-lg payment-button next-step">Pay
+                        Rs.500 Now</button> -->
+                        <input style="background-color: #41a124; color: #FFF;"
+                            class="waves-effect waves-dark btn btn-primary btn-block btn-lg my-4 blue"
+                            value="PAY NOW (eSewa)" type="submit">
+
+                        </div>
+                    </form>
+                {% endif %}
+            </td>
+            </div>
+        </div>
+    </div>
+
+{% if khalti.is_active %}
+    <script>   
+    var getUrl = window.location;
+    var baseUrl = getUrl.protocol + "//" + getUrl.host + "";
+    productName = "abc";
+    productSku = "abc";
+    productUrl = baseUrl;
+    $("#success-url").val(baseUrl)
+    $("#failure-url").val(baseUrl)
+
+    var config = {
+    // replace the publicKey with yours
+    "publicKey": "{{khalti.public_key}}",
+    "productIdentity": productSku,
+    "productName": productName,
+    "productUrl": productUrl,
+    "eventHandler": {
+        onSuccess(payload) {
+            run(payload);
+        },
+        onError(error) {
+        },
+        onClose() {
+        }
+    }
+    };
+
+    var checkout = new KhaltiCheckout(config);
+    var btn = document.getElementById("khalti-payment");
+    btn.onclick = function () {
+        var amount = {{order.discount_total}};
+        checkout.show({ amount: amount * 100 });
+        }
+    
+
+
+    function run(payload) {
+        var getUrl = window.location;
+        var baseUrl = getUrl.protocol + "//" + getUrl.host + "";
+
+        $.ajax({
+        type: 'POST',
+        url: `${baseUrl}/khalti`,
+        data: {
+            'token': payload.token,
+            'amount': payload.amount,
+            'reference': '{{order.order_number}}',
+            'csrfmiddlewaretoken': '{{csrf_token}}'
+
+        },
+        dataType: 'json',
+
+        success: function (json) {
+
+            if (json['status'] === 200) {
+                alert("success")
+            //   window.location.replace(`${baseUrl}`);
+            }
+        },
+        error: function (xhr, errmsg, err) {
+            console.log(xhr,err,errmsg)
+            alert("Failed")
+        //    window.location.replace(`${baseUrl}`);
+        }
+        });
+
+
+    }
+
+    </script>
+{% endif %}

@@ -1,0 +1,20 @@
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+  	{% if user.has_other_pages %}
+     {% if user.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ user.previous_page_number }}{%if user_keywords%}&user_keywords={{keywords}}{%endif%}{%if user_type %}&user_type={{user_type}}{%endif%}">Previous</a></li>
+    {%endif%}
+
+    {%for counter in user.paginator.page_range%}
+    {% if user.number == counter %}
+    <li class="page-item active"><a class="page-link" >{{counter}}</a></li>
+    {%else%}
+    <li class="page-item"><a class="page-link" href="?page={{ counter }}{%if user_keywords%}&user_keywords={{user_keywords}}{%endif%}{%if user_type %}&user_type={{user_type}}{%endif%}">{{counter}}</a></li>
+    {%endif%}
+    {%endfor%}
+    {%if user.has_next%}
+    <li class="page-item"><a class="page-link" href="?page={{ user.next_page_number }}{%if user_keywords%}&user_keywords={{user_keywords}}{%endif%}{%if user_type %}&user_type={{user_type}}{%endif%}">Next</a></li>
+    {%endif%}
+    {%endif%}
+  </ul>
+</nav>

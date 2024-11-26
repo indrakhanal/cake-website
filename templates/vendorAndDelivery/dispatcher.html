@@ -1,0 +1,848 @@
+{%load static%}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" type="text/css" /> -->
+
+    <link rel="stylesheet" href="{%static 'cake-977/vendor-app/libs/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{%static 'cake-977/vendor-app/libs/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{%static 'cake-977/vendor-app/css/dispatch.css'%}" type="text/css">
+    <link rel="stylesheet" href="{%static 'cake-977/vendor-app/css/responsive.css'%}" type="text/css">
+    <link rel="stylesheet" href="{%static 'cake-977/vendor-app/css/tabview.css'%}" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <!-- Vendor CSS -->
+    <link rel="stylesheet"  href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" type="text/css">
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700" rel="stylesheet">
+
+    <title>Cake977-Dispatcher-app</title>
+  </head>
+  <body id="home2">
+    <header>
+        <div class="container header___ row">
+            <div class="col-lg-10 col-md-10 col-10 head__heading_">
+                <a href="{%url 'vendorAndDelivery:dispatcher-page' %}" style="text-decoration: none;">{%if factory%}<h3>Dispatch Order-{{factory}}</h3>{%else%}<h3>Dispatch Order</h3>{%endif%}</a>
+            </div>
+            <div class="left__header col-lg-2 col-md-2 col-2 d-flex justify-content-end">
+                <span class="notification">
+                    <i class="fa fa-bell"></i>
+                    <a href="#" class="badge badge-notify">{{total_count}}</a>
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container nav-tabs">
+        <div class="dispatch__assign_delivery d-flex">
+            <div class="assign__delivery d-flex">
+                <div class="pr-2">
+                    <div id="exTab2" class="container">
+                        <ul class="nav ">
+                            <li>
+                                <a href="#1" class="active" data-toggle="tab">Dispatch Order</a>
+                            </li>
+                            <li>
+                                <a href="#2" data-toggle="tab">Assign To</a>
+                            </li>
+                            {%if factory_list%}
+                            <li>
+                                <a href="#3" data-toggle="tab">Factory</a>
+                            </li>
+                            {%endif%}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="container" style="overflow-x: auto;">
+
+        <div class='context-menu'>
+            <form id="send_req">
+            <ul>
+                <li><a onclick="RequestValue('Dispatched')"><span class='Dispatched'></span>&nbsp;<span>Dispatched </span></a></li>
+                <li><a onclick="RequestValue('Processing')"><span class='Processing'></span>&nbsp;<span>Processing</span></a></li>
+                <li><a onclick="RequestValue('Completed')"><span class='Completed'></span>&nbsp;<span>Completed</span></a></li>
+                <input type="hidden" id="status_id" name="status", value="">
+            </ul>
+            </form>
+        </div>
+
+        <div class='context-menu-new'>
+            <form id="send_req_time">
+            <ul>
+                <li><a onclick="RequestValueTime('ascending')"><span class='Dispatched'></span>&nbsp;<span>Ascending </span></a></li>
+                <li><a onclick="RequestValueTime('descending')"><span class='Processing'></span>&nbsp;<span>Descending</span></a></li>
+                <input type="hidden" id="status_id_new" name="status_time", value="">
+            </ul>
+            </form>
+        </div>
+
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="1" >
+        <table id="horizontalTable" class="table table-striped table-bordered table-sm display" cellspacing="0"
+            width="100%">
+            <div class="dispatch__check_day d-flex">
+                <div class="assign__checkbox d-flex">
+                    <div class="pr-2">
+                        Show unassigned
+                    </div>
+                    <form>
+                    <label class="switch d-flex">
+                        <input type="checkbox" {%if assign == True%} checked {%endif%} onclick="this.form.submit();" name="assign" value="assign">
+                        <span class="slider round"></span>
+                    </label>
+                    </form>
+                </div>
+                <div class="dispatch__day_form pl-3">
+                    <form>
+                        <div class="form-group">
+                            <select name="date" id="date" onchange="this.form.submit()" class="form-control day__">
+                                <option value="today" {%if date_day == 'today'%}selected{%endif%}>Today</option>
+                                <option value="yesterday" {%if date_day == 'yesterday'%}selected{%endif%}>Yesterday</option>
+                                <option value="tomorrow" {%if date_day == 'tomorrow'%}selected{%endif%}>Tomorrow</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <thead>
+
+                <tr>
+                    <th id="status_menu">
+                        status
+                    </th>
+                    <th id="order__">Order Number</th>
+                    <th>Factory</th>
+                    <th>Price</th>
+                    <th id="planned__">Planned at</th>
+                    <th id="customer__">Customer Name</th>
+                    <th id="address__">Address</th>
+                    <th id="city__">City</th>
+                    <th id="contact__">Contact Number</th>
+                    <th id="assigned__">Assigned To</th>
+                    <th id="payment__">Payment Method</th>
+                    <th id="created__">Created By</th>
+                    <th id="unfreeze__">On Freeze</th>
+                    <th id="addons__theads">Addons</th>
+                    <th id="remarks__">Remarks</th>
+                    <th>Action</th>
+                    <th>Assign</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for order in orders%}
+                <tr>
+                    {%if order.order_status == 'Complete'%}
+                    <td style="color: green;">
+                       {{order.order_status}}
+                    </td>
+                    {%elif order.order_status == 'Dispatched'%}
+                    <td style="color: blue;">Ready to Dispatch</td>
+                    {%else%}
+                    <td style="color:red;">
+                        {{order.order_status}}
+                    </td>
+                    {%endif%}
+                    <td>{{order.order_number}}</td>
+                    <td>{{order.delivery_order.factory.name}} </td>
+                    <td>Rs.{{order.total}} </td>
+                    {%if order.delivery_order %}
+                    <td>{{order.delivery_order.expected_delivery_time}}</td>
+                    {%else%}
+                    <td>Not Assigned</td>
+                    {%endif%}
+                    <td>{{order.delivery_address.sender_fullname|title}}</td>
+                    <td>{{order.delivery_address.sender_address}}</td>
+                    <td>{{order.delivery_address.receiver_city}}</td>
+                    <td>{{order.delivery_address.receiver_contact_number1}}</td>
+                    {%if order.delivery_order.user%}
+                    <td>{{order.delivery_order.user.first_name}} {{order.delivery_order.user.last_name}}</td>
+                    {%else%}
+                    <td>Not Assigned</td>
+                    {%endif%}
+                    <td>{{order.payment_method}}</td>
+                    <td>{{order.created_by}}</td>
+                    {%if order.order_status == 'Complete' %}
+                    
+                    <td> {{order.dispatched_on}} </td>
+                    {%else%}
+                    <td 
+                    {% if order.define_color_freeze_time == 'blue' %} 
+                    style="color: blue;" 
+                    {%elif order.define_color_freeze_time == 'green'%} 
+                    style="color:green"
+                    {%elif order.define_color_freeze_time == 'red'%}
+                    style="color:red"{%endif%}>
+                        {{order.dispatched_on}}
+                    </td>
+                    {%endif%}
+                
+                    <td class="addons__">
+                        <ul>
+                        {%for i in order.items.all%}
+                        {%for addon in i.orderitem_addons.all%}
+                        <li class="mb-0">{{addon.addons.name|title}} x({{addon.quantity}}) : RS.{{addon.price}} </li>
+                        {%empty%}
+                        <p class="mb-0">No any addons.</p>
+                        {%endfor%}
+                        {%endfor%}
+                    </ul>
+                    </td>
+                 
+              
+                 
+                    {%if order.remarks%}
+                    <td class="remarks__text">{{order.remarks}}</td>
+                    {%else%}
+                    <td>-</td>
+                    {%endif%}
+                    <td>
+                        <a type="button" onclick="openModal('{{order.order_number}}');">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                    <td>
+                    <a type="button" onclick ="GetDeliveryUser('{{order.id}}','{{order.delivery_order.user.id}}' )" {%if order.delivery_order.user%}style="color: green;"{%else%}style="color: red;"{%endif%} class="fa fa-user-plus"></a>
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" id="2" style="margin-top:24px;">
+       <!--  -->
+       <div class="assign_group__list">
+        <div class="assign__list">
+            <ul>
+                {%for i in user_info%}
+                <li>
+                    <a onclick="myFunction('{{i.user__id}}')" class="assign__a">
+                        <span class="cake-chevron">
+                            <i class="fa fa-angle-right"></i>
+                        </span>
+                        {{i.user__username}}
+                    </a>
+                </li>
+                <table id="assignTab-{{i.user__id}}" class="assign__tab table table-striped" cellspacing="0">
+                    
+                    
+                </table>
+                {%endfor%}
+            </ul>
+        </div>
+    </div>
+
+   
+    </div>
+    {%if factory_list%}
+     <div class="tab-pane" id="3" style="margin-top:24px;">
+        <!--  -->
+        <div class="assign_group">
+         <div class="assign">
+             <ul>
+                <h5>Order Count in Each Factory</h5>
+                 {% comment %}  {% endcomment %}
+                 <ul>
+                 {%for i in factory_list%}
+                    <li>{{i.factory_name}}: &nbsp;&nbsp; {{i.order_count}}</li>
+                    {%endfor%}
+                </ul>
+             </ul>
+         </div>
+     </div>
+
+    </div>
+    {%endif%}
+</section>
+
+    {%for order in orders%}
+    <!--ACTION MODAL START-->
+    <div class="modal quickModal" id="quickModal-{{order.order_number}}" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Order #: {{order.order_number}}</h4>
+                    <button type="button" style="outline: none;" class="close" id="delete-{{order.order_number}}" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <section id="product-detail">
+
+                        <div class="order__cake_ breadcrumb-bg">
+                            <div class="breadcrumb ">
+                                <ol>
+                                    <li>Pickup Date/Time: {{order.pickup_date}},{{order.pickup_time}}</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="cake-slider row">
+                            {%for i in order.items.all%}
+                            <div class="col-md-5 col-lg-5 col-12  center mb-3">
+                                {%include 'vendorAndDelivery/image-dispatcher.html'%}
+                            </div>
+                            <div class="col-md-7 col-lg-7 col-12">
+                                <div class="order__cake_detail">
+                                    <div class="order_cake">
+                                        <div class="cake__header ">
+                                            <strong>{{i.product.varient_name|title}}</strong>
+                                        </div>
+                                        <div class="options has-border mt-1">
+                                            <table class="table table-striped">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="des_title">Quantity</td>
+                                                        <td class="description__title">{{i.quantity}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="des_title">Pound</td>
+                                                        <td class="description__title">{{i.pound}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sugarless</td>
+                                                        {%if i.is_sugarless%}
+                                                        <td class="description-title">Yes</td>
+                                                        {%else%}
+                                                        <td class="description-title">No</td>
+                                                        {%endif%}
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Eggless</td>
+                                                        {%if i.is_eggless%}
+                                                        <td class="description-title">Yes</td>
+                                                        {%else%}
+                                                        <td class="description-title">No</td>
+                                                        {%endif%}
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Message</td>
+                                                        {%if i.special_instruction%}
+                                                        <td class="description-title">{{i.special_instruction}}
+                                                        </td>
+                                                        {%else%}
+                                                               <td class="description-title">No any message</td>
+                                                        {%endif%}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            {%endfor%}
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6 col-lg-6 col-12">
+                                <div class="order__cake_remark breadcrumb-bg">
+                                    <div class="breadcrumb ">
+                                        <h6>Remarks</h6>
+                                    </div>
+                                    <ol>
+                                        <li>{{order.remarks}}</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 col-12">
+                                <div class="order__cake_remark breadcrumb-bg">
+                                    <div class="breadcrumb ">
+                                        <h6>Customer Detail ( Sender )</h6>
+                                    </div>
+                                    <div class="row" style="padding-left: 16px; display:inline-block !important;">
+                                        <div class="user__name">
+                                            <label for="">Name: &nbsp;</label>
+                                            <span>{{order.delivery_address.sender_fullname|title}}</span>
+                                        </div>
+                                    
+                                    <div class="user__email" style="padding-left: 16px;">
+                                        <label for="">Email:&nbsp;</label>
+                                        <span>{{order.delivery_address.sender_email}}</span>
+                                    </div>
+                                    <div class="user__address" style="padding-left: 16px;">
+                                        <label for="">Address:&nbsp;</label>
+                                        <span>{{order.delivery_address.sender_address}}</span>
+                                    </div>
+                                    <div class="user__contact" style="padding-left: 16px;">
+                                        <label for="">Contact:&nbsp;</label>
+                                        <span>{{order.delivery_address.contact_number}}</span>
+                                    </div>
+                                    <div class="receiver__hide" style="padding-left: 16px;">
+                                        <label for="">Hide from Receiver:&nbsp;</label>
+                                        <span> {%if order.delivery_address.hide_info_from_receiver%} Yes{%else%} No{%endif%}</span>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--ACTION MODAL END -->
+    {%endfor%}
+
+
+    <!--ACTION MODAL START-->
+    <div class="modal" id="statusModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="true">
+       
+
+    </div>
+    <!--ACTION MODAL END -->
+
+
+
+
+    <!-- Vendor JS -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script> -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js" defer></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{%static 'cake-977/vendor-app/libs/jquery/jquery.min.js'%}"></script>
+    <script src="{%static 'cake-977/vendor-app/libs/bootstrap/js/bootstrap.min.js'%}"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('table#horizontalTable').DataTable({
+                "searching": true,
+                "paging": true,
+                "order": [[3, "asc"]],
+                "ordering": true,
+                "columnDefs": [{
+                    "targets": [13],
+                    "orderable": false
+                }]
+            })
+
+            $('table#assignTable').DataTable({
+                "searching": true,
+                "paging": true,
+                "order": [[3, "asc"]],
+                "ordering": true,
+                "columnDefs": [{
+                    "targets": [0],
+                    "orderable": true
+                }]
+            })
+
+
+
+
+            // disable right click and show custom context menu
+            $("#status_menu").bind('contextmenu', function (e) {
+                var id = this.id;
+                $("#txt_id").val(id);
+
+                var top = e.pageY + 5;
+                var left = e.pageX;
+
+                // Show contextmenu
+                $(".context-menu").toggle(100).css({
+                    top: top + "px",
+                    left: left + "px"
+                });
+
+                // disable default context menu
+                return false;
+            });
+
+            // Hide context menu
+            $(document).bind('contextmenu click', function () {
+                $(".context-menu").hide();
+                $("#txt_id").val("");
+            });
+
+            // disable context-menu from custom menu
+            $('.context-menu').bind('contextmenu', function () {
+                return false;
+            });
+
+            // Clicked context-menu item
+            $('.context-menu li').click(function () {
+                var className = $(this).find("span:nth-child(1)").attr("class");
+                var titleid = $('#txt_id').val();
+                $("#" + titleid).css("background-color", className);
+                $(".context-menu").hide();
+            });
+
+
+        // disable right click and show custom context menu
+        $("#planned__").bind('contextmenu', function (e) {
+                var id = this.id;
+                $("#txt_id").val(id);
+
+                var top = e.pageY + 5;
+                var left = e.pageX;
+
+                // Show contextmenu
+                $(".context-menu-new").toggle(100).css({
+                    top: top + "px",
+                    left: left + "px"
+                });
+
+                // disable default context menu
+                return false;
+            });
+
+            // Hide context menu
+            $(document).bind('contextmenu click', function () {
+                $(".context-menu-new").hide();
+                $("#txt_id").val("");
+            });
+
+            // disable context-menu from custom menu
+            $('.context-menu-new').bind('contextmenu', function () {
+                return false;
+            });
+
+            // Clicked context-menu item
+            $('.context-menu-new li').click(function () {
+                var className = $(this).find("span:nth-child(4)").attr("class");
+                var titleid = $('#txt_id').val();
+                $("#" + titleid).css("background-color", className);
+                $(".context-menu-new").hide();
+            });
+
+
+        })
+
+        
+        function myFunction(id) {
+            var x = document.getElementById("assignTab-"+id);
+            if (x.style.display === "block") {
+                x.style.display = "none";
+
+            } else {
+                x.style.display = "block";
+            }
+            $('#assignTab-'+id).empty()
+            var head = `<thead>
+                        <tr>
+                            <th class="status">status</th>
+                            <th class="order__">Order Number</th>
+                            <th class="customer__">Customer Name</th>
+                            <th class="address__">Address</th>
+                            <th class="city__">City</th>
+                            <th class="contact__">Contact Number</th>
+                            <th class="payment__">Payment Method</th>
+                            <th class="customer__">Delivered At</th>
+                        </tr>
+                    </thead>`
+            var select = document.getElementById('date');
+            var value = select.options[select.selectedIndex].value;
+            if (value === null){
+                value = "today"
+            }
+            $.ajax({
+            url: '{%url 'vendorAndDelivery:get-order-user'%}',
+			method:'GET',
+            data: {
+                "user_id":id,
+                "date":value
+            },
+        
+			// data:form,
+		    success:function(data){
+			if(data['status']===200){
+                var table_row = ""
+                for(i=0; i<data['data'].length; i++){
+                    var status = data['data'][i]['status']
+                    var order_number = data['data'][i]['order_number']
+                    var costumer_name = data['data'][i]['costumer_name']
+                    var address = data['data'][i]['address']
+                    var city = data['data'][i]['city']
+                    var contact = data['data'][i]['contact']
+                    var payment_method =data['data'][i]['payment_method']
+                    var delivered_at = data['data'][i]['delivered_at']
+                    
+                    table_row += 
+                    `<tr>
+                            <td>${status}</td>
+                            <td>${order_number}</td>
+                            <td>${costumer_name}</td>
+                            <td>${address}</td>
+                            <td>${city}</td>
+                            <td>${contact}</td>
+                            <td>${payment_method}</td>
+                            <td>${delivered_at}</td>
+
+                        </tr>`
+                }
+                $('#assignTab-'+id).append(
+                    `
+                    ${head}
+                    <tbody>
+                        ${table_row}
+                    </tbody>
+                    `
+                )
+			}
+			if(data['error']){
+				alert(data['error'])
+			}
+		}
+
+		});
+		
+
+        }
+
+        function myAssign() {
+            var x = document.getElementById("assignTab1");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+
+<script>
+    function send_delivery_on_confirmed(id){
+        $("#order_id").val(id);
+        $('#statusModal').modal('show');
+    }
+
+    function openModal(order_no){
+        $('#quickModal-'+order_no).modal('show')
+    
+        
+    $('#delete-'+order_no).click(function(){
+        $('#quickModal-'+order_no).modal('hide')
+    })
+}
+
+</script>
+
+<script>
+   function RequestValue(dis){
+   var status_id = document.getElementById('status_id').value = dis
+   var form_id = document.getElementById('send_req')
+   form_id.submit();
+   }
+
+   function RequestValueTime(dis){
+    var status_id = document.getElementById('status_id_new').value = dis
+   var form_id = document.getElementById('send_req_time')
+   form_id.submit();
+   }
+</script>
+
+
+    
+<script>
+	function assignDeliveryBoy(){
+		
+		var form=$('#delivery-boy').serialize();
+		var token = '{{csrf_token}}';
+        console.log(form, "*********")
+		$.ajax({
+			url:'{%url 'sales:ajax-assign-delivery-boy'%}',
+            headers: { "X-CSRFToken": token },
+			method:'POST',
+            data: form,
+            
+			// data:form,
+		success:function(data){
+			if(data['status']===200){
+				// $('#assign-delivery-boy').modal('hide');
+				location.reload()
+			}
+			if(data['status']===400){
+				alert(data['error'])
+			}
+		}
+
+		});
+		
+	}
+</script>
+
+<script>
+
+function GetDeliveryUser(order_id, user){
+     var id = order_id;
+     var user = user;
+     $('#statusModal').empty()
+     if (user){
+        $.ajax({
+        method:'GET',
+        url: '{%url 'vendorAndDelivery:get-delivery-user'%}',
+        data: {
+        'user':user,
+        'order_id':order_id
+        },
+        dataType: 'json',
+        success: function (data) {
+            var username = data['username']
+            var user_id = data['id']
+            var delivery_time = data['pickup_time']
+            var delivery_date = data['pickup_date']
+            var remarks = data['remarks']
+            var expected_time = data['expected_time']
+            var factory = data['factory']
+            $('#statusModal').append(
+            ` <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Assign Delivery Boy</h4>
+                    <button type="button" id="delete-status" onclick="Closebtn();" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="assign_form">
+                    <form method="post" action="{% url 'sales:ajax-assign-delivery-boy' %}" id="delivery-boy">
+                            {% csrf_token %}
+                    <div class="modal-body p-4">
+                    <div class="form-group">
+                        <label for="name">Select Delivery Person</label>
+                       {{form.user}}
+                    </div>
+                    {% comment %} <div class="form-group">
+                        <label for="name">Factory</label>
+                       {{form.factory}}
+                    </div> {% endcomment %}
+                    <div class="form-group">
+                        <label for="date"> Delivery Date*</label>
+                       {{form.pickup_date}}
+                    </div>
+                   <div class="form-group">
+                        <label for="date"> Delivery Time*</label>
+                        {{form.pickup_time}}
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Expected Delivery Time*</label>
+                        {{form.expected_delivery_time}}
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Remarks*</label>
+                        {{form.remarks}}
+                    </div>
+                    <input type="hidden" name="order" id="order_id">
+                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary waves-effect waves-light" onclick="assignDeliveryBoy();">Assign</button>
+                    </div>
+                </form>
+                    </div>
+                </div>
+            </div>
+        </div>`
+            )
+            var user_info = document.getElementById("id_user")
+            var opt = document.createElement("option")
+            opt.text = username
+            opt.value = user_id
+            user_info.add(opt, user_info[0])
+            user_info.getElementsByTagName('option')[0].selected ='selected' 
+            $('#id_pickup_date').val(delivery_date)
+            $('#id_pickup_time').val(delivery_time)
+
+            // var pickup_date_ = document.getElementById("id_pickup_date")
+            // pickup_date_.value = delivery_date
+            // var pickup_time_ = document.getElementById("id_pickup_time")
+            // pickup_time_.value = delivery_time
+            {% comment %} if (factory){
+                var store_info = document.getElementById("id_factory")
+                var opt = document.createElement("option")
+                opt.text = factory
+                opt.value = factory
+                user_info.add(opt, store_info[0])
+                store_info.getElementsByTagName('option')[0].selected ='selected' 
+            } {% endcomment %}
+            // var expected_time_ = document.getElementById('id_expected_delivery_time')
+            // expected_time_.value = expected_time
+            // var remarks_ =  document.getElementById('id_remarks')
+            // remarks_.value  = remarks
+            $('#id_expected_delivery_time').val(expected_time)
+            $('#id_remarks').val(remarks)
+
+            send_delivery_on_confirmed(id)
+            location.href()
+        }
+        });
+    }else{
+        $('#statusModal').append(
+                ` <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Assign Delivery Boy</h4>
+                    <button type="button" id="delete-status" onclick="Closebtn();" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="assign_form">
+                    <form method="post" action="{% url 'sales:ajax-assign-delivery-boy' %}" id="delivery-boy">
+                            {% csrf_token %}
+                    <div class="modal-body p-4">
+                    <div class="form-group">
+                        <label for="name">Select Delivery Person</label>
+                       {{form.user}}
+                    </div>
+                    {% comment %} <div class="form-group">
+                        <label for="name">Factory</label>
+                       {{form.factory}}
+                    </div> {% endcomment %}
+                    <div class="form-group">
+                        <label for="date"> Delivery Date*</label>
+                       {{form.pickup_date}}
+                    </div>
+                   <div class="form-group">
+                        <label for="date"> Delivery Time*</label>
+                        {{form.pickup_time}}
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Expected Delivery Time*</label>
+                        {{form.expected_delivery_time}}
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Remarks*</label>
+                        {{form.remarks}}
+                    </div>
+                    <input type="hidden" name="order" id="order_id">
+                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary waves-effect waves-light" onclick="assignDeliveryBoy();">Assign</button>
+                    </div>
+                </form>
+                    </div>
+                </div>
+            </div>
+        </div>`)
+    send_delivery_on_confirmed(id)
+    location.href()
+    }
+ }
+ function Closebtn(){
+    $('#statusModal').modal('hide')
+ }
+
+</script>
+
+
+</body>
+</html>

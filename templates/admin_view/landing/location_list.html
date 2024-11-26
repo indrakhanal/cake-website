@@ -1,0 +1,158 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block title %}Locations | Admin{% endblock title %}
+
+{% block extra_css %}
+<link href="{% static 'admin_view/assets/libs/footable/footable.core.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Custom box css -->
+<link href="{% static 'admin_view/assets/libs/custombox/custombox.min.css' %}" rel="stylesheet">
+<link href="{% static 'admin_view/assets/libs/dropify/dropify.min.css' %}" rel="stylesheet" type="text/css" />
+
+<link href="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- App css -->
+<link href="{%static 'admin_view/assets/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/icons.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/app.min.css'%}" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+
+{% block page_content %}
+<div id="wrapper">
+    {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+    {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start Content-->
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active">Locations</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Select Locations</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-12">
+                        {% include 'admin_view/partials/_alerts.html' %}
+                        <div class="card-box">
+                        
+
+                            <div class="table-responsive" >
+                                <table id="demo-foo-filtering" class="table  toggle-circle mb-0" data-page-size="20" style=" table-layout: fixed; word-wrap: break-word; margin-top: 20px;">
+                                    <thead>
+                                        <tr>
+                                            
+                                            <th class="text-center">Name</th>
+                                            <!-- <th class="text-center">Status</th> -->
+                                           
+                                            <!-- <th class="text-center"  data-sort-ignore="true">Actions</th> -->
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                        {%for i in location%}
+
+                                        <tr>
+                                           
+                                           {%with urls=next_url%}
+                                            <td class="text-center"><a href="{%url urls i.slug%}">{{i.name|title}}</a></td>
+                                            {%endwith%}
+<!--                                             {%if i.is_active%}
+                                            <td class="text-center">Active</td>
+                                            {%else%}
+                                             <td class="text-center">In Active</td>
+                                            {%endif%} -->
+
+
+                                
+                                           <!--  <td class="text-center">
+                                                <a href="" title="Edit" id="abc-{{i.id}}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a> 
+                                            </td>
+                                            -->
+                                            
+                                        </tr>
+                                        {%endfor%}
+                                        
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="active">
+                                            <td colspan="1">
+                                                <div class="text-right">
+                                                    <ul
+                                                        class="pagination pagination-rounded justify-content-end footable-pagination m-t-10 mb-0">
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div> <!-- end .table-responsive-->
+                        </div> <!-- end card-box -->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+
+            </div> <!-- container -->
+
+        </div> <!-- content -->
+
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- END wrapper -->
+
+   
+    {% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+    {% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+    {% block extra_javascript %}
+
+
+<script src="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.js' %}"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+
+    <!-- Vendor js -->
+    <!-- <script src="{% static 'admin_view/assets/js/vendor.min.js' %}"></script> -->
+    
+    <!-- Footable js -->
+
+    <script src="{% static 'admin_view/assets/libs/footable/footable.all.min.js' %}"></script>
+    <!-- Modal-Effect -->
+    <script src="{% static 'admin_view/assets/libs/custombox/custombox.min.js' %}"></script>
+
+    <script src="{% static 'admin_view/custom.js' %}"></script>
+    <!-- Init js -->
+    <script src="{% static 'admin_view/assets/js/pages/foo-tables.init.js' %}"></script>
+
+    <!-- Init js -->
+    <script src="{% static 'admin_view/assets/js/pages/form-advanced.init.js' %} "></script>
+
+
+    <!-- Tost-->
+    <script src="{% static 'admin_view/assets/libs/jquery-toast/jquery.toast.min.js' %}"></script>
+    <!-- toastr init js-->
+    <script src="{% static 'admin_view/assets/js/pages/toastr.init.js' %}"></script>
+
+    {% endblock %}

@@ -1,0 +1,169 @@
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin_view/css/jquery.tagsinput.css' %}" />
+<script type="text/javascript" src="{% static 'admin_view/js/xojquerymin.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin_view/js/jquery.tagsinput.js' %}"></script>
+
+{% endblock extra_css %}
+
+<div class="row">
+   <div class="col-lg-6">
+      <select id="attribute_name_1" class="select-attr form-control" name="attribute_name_1" style="height: 50px;">
+         
+         {% for item  in attributes  %}
+         {%if item.name == 'Weight' or item.name == 'Quantity'%}
+         <option {%if item.name == 'Weight' %} selected {%endif%}>{{item.name}}</option>
+         {%endif%}
+         {% endfor %}
+      </select>
+   </div>
+   <div class="col-lg-6">
+      <input  name="tags_attr" id="tags_attr" value="" />
+   </div>
+</div>
+
+<div class="row mt-2">
+   <div class="col-lg-6">
+      <select id="attribute_name_2" class="select-attr form-control" name="attribute_name_2" style="height: 50px;">
+         <option></option>
+         {% for item  in attributes  %}
+         {%if item.name == 'Flavour'%}
+         <option>{{item.name}}</option>
+         {%endif%}
+         {% endfor %}
+      </select>
+   </div>
+   <div class="col-lg-6">
+      <input name="tags2_attr" id="tags2_attr" value="" />
+
+   </div>
+</div>
+<div class="center">
+   <button type="button" onclick="generate_matrix();"
+      class="btn w-sm btn-success waves-effect waves-light center">Generate</button>
+
+</div>
+
+
+
+
+<script>
+
+   var a1_value = $('#tags_attr').tagsInput();
+   var a2_value = $('#tags2_attr').tagsInput();
+
+   function generate_matrix() {
+      a1 = a1_value.val()
+      a2 = a2_value.val()
+      var attr_name_1 = $("#attribute_name_1").val()
+      var attr_name_2 = $("#attribute_name_2").val()
+      var product_name = $("#id_name").val()
+
+      if (attr_name_1.trim() === "" && attr_name_2.trim() === "") {
+         alert("Select Attribute")
+         return;
+      }
+      if (a1.trim() === "" && a2.trim() === "") {
+         alert("Add Valid Attribute Value")
+         return;
+      }
+      if (product_name.trim() === "") {
+         alert("Enter Product Name")
+         return;
+      }
+
+      var array = a1.split(',');
+      var array2 = a2.split(',');
+
+      $("#forms").empty()
+      for (let index = 0; index < array.length; index++) {
+         for (let index2 = 0; index2 < array2.length; index2++) {
+            var sku = convertToSlug(`${product_name} ${array[index]} ${array2[index2]}`)
+            $("#forms").append(`
+                 
+            <tr id="${sku}">
+              <td> <input type="text" style="font-weight: bold;" name="variesnt" class="form-control" value="${array[index]} &#183; ${array2[index2]}" required="" placeholder="Enter varient name" disabled></td>
+            
+               <td> <input type="text" name="product_code" class="form-control" placeholder="Enter varient sku" value="${sku}" readonly></td>
+               <td><input type="number" id="quantity" name="quantity" class="form-control" value=""  placeholder="In Stock quantity"></td>
+               <td><input type="number" id="old_price" name="old_price" class="form-control" placeholder="Enter varient standard price" value=""></td>
+               <td><input type="number" id="price" name="price" class="form-control" placeholder="Enter varient discounted price" value=""></td>
+               <td><input type="number" id="cost_price" name="cost_price" class="form-control" placeholder="Enter varient cost price" value=""></td>
+               
+               <td><input type="number" id="display_order_varient" name="display_order_varient" class="form-control" value="${index+1}"></td>
+               <td class="text-center"><a href="#" title="Delete"
+                  class="action-icon"> <i class="mdi mdi-delete" onclick=remove_tr("${sku}")></i></a></td>
+               <input type="hidden" name="attribute_value_1" class="form-control" value="${array[index]}">
+               <input type="hidden" name="attribute_value_2" class="form-control" value="${array2[index2]}">
+               <input type="hidden" name="attribute_name_1" class="form-control" value="${attr_name_1.trim()}">
+               <input type="hidden" name="attribute_name_2" class="form-control" value="${attr_name_2.trim()}">
+
+            </tr>
+
+           
+
+                  `)
+         }
+
+      }
+
+   }
+
+
+   function remove_tr(sku) {
+      $(`#${sku}`).remove()
+   }
+
+   function convertToSlug(Text) {
+      return Text
+         .toLowerCase()
+         .replace(/ /g, '-')
+         .replace(/[^\w-]+/g, '')
+         ;
+   }
+
+   function copyValues(){
+      var in_stock = $("#quantity").val()
+      var old_price = $("#old_price").val()
+      var price = $("#price").val()
+      var cost_price = $("#cost_price").val()
+
+      $("input[name=quantity]").val(in_stock)
+      $("input[name=old_price]").val(old_price)
+      $("input[name=price]").val(price)
+      $("input[name=cost_price]").val(cost_price)
+   }
+
+</script>
+
+
+<div id="whole_div">
+   <h5 class="mt-0  bg-light p-2" style="margin: 15px;">VARIENTS</h5>
+
+   <div class="mr-2" style="float: right;">
+      <button type="button" class="btn w-sm btn-light waves-effect" onclick="copyValues()">Copy first values</button>
+  </div>
+
+   <div class="table-responsive">
+
+      <table id="demo-foo-filtering" class="table  toggle-circle" style="margin: 10px 10px 10px 0px">
+         <thead>
+            <tr>
+               <th class="text-center"><span class="text-danger">*</span> Varient</th>
+               <th class="text-center"><span class="text-danger">*</span> SKU</th>
+               <th class="text-center"><span class="text-danger">*</span> In Stock</th>
+               <th class="text-center"><span class="text-danger">*</span> Standard Price</th>
+               <th class="text-center"><span class="text-danger"></span> Discounted Price</th>
+               <th class="text-center"><span class="text-danger"></span> Cost Price</th>
+               <th class="text-center"><span class="text-danger"></span> Display Order</th>
+               <th class="text-center"><span class="text-danger"></span></th>
+            </tr>
+         </thead>
+         <tbody id="forms">
+
+         </tbody>
+
+      </table>
+   </div> <!-- end .table-responsive-->
+</div>
+<hr>

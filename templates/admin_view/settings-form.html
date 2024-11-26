@@ -1,0 +1,369 @@
+{% extends "admin_view/base.html" %} 
+{% load static %}
+{% block title %}Edit Settings | Admin{% endblock title %}
+{% block extra_css %}
+<link href="{% static 'admin_view/assets/libs/select2/select2.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/multiselect/multi-select.css' %}" rel="stylesheet" type="text/css" />
+
+
+<!-- --------------------------------------------------- -->
+
+<!-- Plugins css-->
+<link href="{% static 'admin_view/assets/libs/dropzone/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css' %}" rel="stylesheet"
+   type="text/css" />
+<link href="{% static 'admin_view/assets/libs/dropify/dropify.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- App css -->
+<link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/icons.min.css' %} " rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css" />
+
+
+{% endblock %}
+{% block page_content %}
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %} 
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <!-- ============================================================== -->
+   <!-- Start Page Content here -->
+   <!-- ============================================================== -->
+   <div class="content-page">
+      <div class="content">
+         <!-- Start Content-->
+         <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+               <div class="col-12">
+                  <div class="page-title-box">
+                     <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                           <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                           <li class="breadcrumb-item active">Settings</li>
+                        </ol>
+                     </div>
+                     <h4 class="page-title">Edit Settings</h4>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+              
+               <div class="col-xl-12">
+                 
+
+                  <div class="row">
+                     <div class="col-xl-12">
+                        {%if form.errors %}
+                        {% for field in form %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                           <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">
+                           <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        {%if parent_error%}
+                        <div class="alert alert-danger">
+                           <strong>{{ parent_error }}</strong>
+                        </div>
+                        {%endif%}
+                        
+                        <div class="card-box">
+                      
+                           <ul class="nav nav-tabs nav-bordered nav-justified">
+                              <li class="nav-item">
+                                 <a href="#general-settings" data-toggle="tab" aria-expanded="false" class="nav-link active d-print-none">
+                                 GENERAL
+                                 </a>
+                              </li>
+                              <li class="nav-item">
+                                 <a href="#image-settings" data-toggle="tab" aria-expanded="true" class="nav-link d-print-none">
+                                 IMAGES
+                                 </a>
+                              </li>
+                           
+                             
+                            
+                           </ul>
+                        <form method="POST" action="{%url 'settings:create'%}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                           
+                           <div class="tab-content">
+                              <div class="tab-pane active" id="general-settings">
+                                 {% include 'admin_view/partials/settings/_general.html' %}
+                              </div>
+                              <div class="tab-pane" id="image-settings">
+                                 {% include 'admin_view/partials/settings/_images.html' %}
+                              </div>
+                            
+                           </div>
+
+                           <div class="col-12 mb-5 mt-4" >
+                              <div class="mr-2" style="float: right;">
+                                 <button onclick="location.href = '{%url 'settings:settings-view'%}'"
+                                       class="btn w-sm btn-light waves-effect mr-1">Cancel</button>
+                                    <button type="submit" class="btn w-sm btn-success waves-effect waves-light">Save</button>
+                   
+                              </div>
+                          </div> <!-- end col -->
+
+                        </form>
+                        
+                        </div>
+                        <!-- end card-box-->
+                     </div>
+                     <!-- end col -->
+                  </div>
+               </div>
+            </div>
+            <!-- end page title --> 
+         </div>
+         <!-- container -->
+      </div>
+      <!-- content -->
+   </div>
+   <!-- ============================================================== -->
+   <!-- End Page content -->
+   <!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+<script>
+$(document).ready(function(){
+   $('.slectOne').on('change', function() {
+      $('.slectOne').not(this).prop('checked', false);
+      $('#result').html($(this).data( "id" ));
+      if($(this).is(":checked"))
+         $('#result').html($(this).data( "id" ));
+      else
+         $('#result').html('Empty...!');
+   });
+   });
+</script>
+
+<!-- App js -->
+<script src="{% static 'admin_view/assets/js/vendor.min.js' %}"></script>
+
+<script src="{% static 'admin_view/assets/libs/flatpickr/flatpickr.min.js' %}"></script>
+
+<script src="{% static 'admin_view/assets/libs/flatpickr/flatpickr.min.js' %}"></script>
+
+<script src="{% static 'admin_view/assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js' %}"></script>
+
+<!-- Init js-->
+<script src="{% static 'admin_view/assets/js/pages/form-pickers.init.js' %}"></script>
+
+<!-- Init js-->
+<script src="{% static 'admin_view/assets/js/pages/form-pickers.init.js' %}"></script>
+
+<!-- Dropzone file uploads-->
+<script src="{% static 'admin_view/assets/libs/dropzone/dropzone.min.js' %}"></script>
+
+<script src="{% static 'admin_view/assets/libs/dropify/dropify.min.js' %}"></script>
+
+
+
+{% if settings.outlet_logo %}
+<script>
+   $('#id_outlet_logo').dropify({
+      tpl: {
+         wrap: '<div class="dropify-wrapper has-preview"></div>',
+         loader: '<div class="dropify-loader"></div>',
+         message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop image here or click</p></div>',
+         preview: '<div class="dropify-preview" style="display: block;"><span class="dropify-render"><img src="{{settings.outlet_logo.url}}" style="max-height: 300px;"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message"></p></div></div></div>',
+         filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner">{{settings.outlet_logo.name}}</span></p>',
+         clearButton: '<button type="button" class="dropify-clear">Remove</button>',
+         errorLine: '<p class="dropify-error">Error</p>',
+         errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+      }
+   });
+
+
+</script>
+
+{% endif %}
+
+{% if settings.banner_image %}
+<script>
+   $('#id_banner_image').dropify({
+      tpl: {
+         wrap: '<div class="dropify-wrapper has-preview"></div>',
+         loader: '<div class="dropify-loader"></div>',
+         message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop image here or click</p></div>',
+         preview: '<div class="dropify-preview" style="display: block;"><span class="dropify-render"><img src="{{settings.banner_image.url}}" style="max-height: 300px;"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message"></p></div></div></div>',
+         filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner">{{settings.banner_image.name}}</span></p>',
+         clearButton: '<button type="button" class="dropify-clear">Remove</button>',
+         errorLine: '<p class="dropify-error">Error</p>',
+         errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+      }
+   });
+
+
+</script>
+
+{% endif %}
+
+{% if settings.banner_image_2 %}
+<script>
+   $('#id_banner_image_2').dropify({
+      tpl: {
+         wrap: '<div class="dropify-wrapper has-preview"></div>',
+         loader: '<div class="dropify-loader"></div>',
+         message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop image here or click</p></div>',
+         preview: '<div class="dropify-preview" style="display: block;"><span class="dropify-render"><img src="{{settings.banner_image_2.url}}" style="max-height: 300px;"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message"></p></div></div></div>',
+         filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner">{{settings.banner_image_2.name}}</span></p>',
+         clearButton: '<button type="button" class="dropify-clear">Remove</button>',
+         errorLine: '<p class="dropify-error">Error</p>',
+         errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+      }
+   });
+
+
+</script>
+
+{% endif %}
+
+{% if settings.banner_image_3 %}
+<script>
+
+   $('#id_banner_image_3').dropify({
+      tpl: {
+         wrap: '<div class="dropify-wrapper has-preview"></div>',
+         loader: '<div class="dropify-loader"></div>',
+         message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop image here or click</p></div>',
+         preview: '<div class="dropify-preview" style="display: block;"><span class="dropify-render"><img src="{{settings.banner_image_3.url}}" style="max-height: 300px;"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message"></p></div></div></div>',
+         filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner">{{settings.banner_image_3.name}}</span></p>',
+         clearButton: '<button type="button" class="dropify-clear">Remove</button>',
+         errorLine: '<p class="dropify-error">Error</p>',
+         errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+      }
+   });
+
+
+</script>
+
+{% endif %}
+
+{% if settings.aggregator_image %}
+<script>
+   $('#id_aggregator_image').dropify({
+      tpl: {
+         wrap: '<div class="dropify-wrapper has-preview"></div>',
+         loader: '<div class="dropify-loader"></div>',
+         message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop image here or click</p></div>',
+         preview: '<div class="dropify-preview" style="display: block;"><span class="dropify-render"><img src="{{settings.aggregator_image.url}}" style="max-height: 300px;"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message"></p></div></div></div>',
+         filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner">{{settings.aggregator_image.name}}</span></p>',
+         clearButton: '<button type="button" class="dropify-clear">Remove</button>',
+         errorLine: '<p class="dropify-error">Error</p>',
+         errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+      }
+   });
+
+
+</script>
+
+{% endif %}
+
+<script>
+   var drEvent = $('#id_banner_image').dropify();
+
+   drEvent.on('dropify.afterClear', function (event, element) {
+      document.getElementById("image-banner").checked = true;
+   });
+   
+  
+
+   function uploadedBanner() {
+      if (document.getElementById("id_banner_image").files.length == 0) {
+         document.getElementById("image-banner").checked = true;
+      } else {
+         document.getElementById("image-banner").checked = false;
+      }
+   }
+
+   var drEvent = $('#id_banner_image_2').dropify();
+
+   drEvent.on('dropify.afterClear', function (event, element) {
+      document.getElementById("banner_image_2-clear_id").checked = true;
+   });
+
+   function uploadedBanner2() {
+      if (document.getElementById("id_banner_image_2").files.length == 0) {
+         document.getElementById("banner_image_2-clear_id").checked = true;
+      } else {
+         document.getElementById("banner_image_2-clear_id").checked = false;
+      }
+   }
+
+    
+
+   var drEvent = $('#id_banner_image_3').dropify();
+
+   drEvent.on('dropify.afterClear', function (event, element) {
+      document.getElementById("banner_image_3-clear_id").checked = true;
+   });
+
+   function uploadedBanner3() {
+      if (document.getElementById("id_banner_image_3").files.length == 0) {
+         document.getElementById("banner_image_3-clear_id").checked = true;
+      } else {
+         document.getElementById("banner_image_3-clear_id").checked = false;
+      }
+   }
+
+   
+</script>
+
+<script>
+   var drEvent = $('#id_aggregator_image').dropify();
+
+   drEvent.on('dropify.afterClear', function (event, element) {
+      document.getElementById("image-aggregator").checked = true;
+   });
+
+   function uploadedAggregator() {
+      if (document.getElementById("id_aggregator_image").files.length == 0) {
+         document.getElementById("image-aggregator").checked = true;
+      } else {
+         document.getElementById("image-aggregator").checked = false;
+      }
+   }
+</script>
+
+<script>
+   var drEvent = $('#id_outlet_logo').dropify();
+
+   drEvent.on('dropify.afterClear', function (event, element) {
+      document.getElementById("image-logo").checked = true;
+   });
+
+   function uploadedLogo() {
+      if (document.getElementById("id_outlet_logo").files.length == 0) {
+         document.getElementById("image-logo").checked = true;
+      } else {
+         document.getElementById("image-logo").checked = false;
+      }
+   }
+</script>
+
+<!-- Init js-->
+<script src="{% static 'admin_view/assets/js/pages/form-fileuploads.init.js' %}"></script>
+
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/add-product.init.js' %}"></script>
+
+
+<script src="{% static 'admin_view/assets/libs/select2/select2.min.js' %}"></script>
+
+
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/form-advanced.init.js' %} "></script>
+
+{% endblock %}

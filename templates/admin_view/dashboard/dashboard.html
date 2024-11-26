@@ -1,0 +1,266 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block title %}Dashboard | Admin{% endblock title %}
+{% block extra_css %}
+<!-- Bootstrap Tables css -->
+<link href="{% static 'admin_view/assets/libs/bootstrap-table/bootstrap-table.min.css' %}" rel="stylesheet"
+    type="text/css" />
+{% endblock %}
+{% block page_content %}
+<div id="wrapper">
+    {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+    {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active">Dashboard</a>
+                                    </li>
+                                </ol>
+                            </div>
+                            <h2 class="page-title"><b>Dashboard</b></h2>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    {% include 'admin_view/partials/_alerts.html' %}
+                    <div class="col-xl-6">
+
+                        <div class="card-box"
+                            style="padding-left:12px !important; padding-right:12px !important; padding-top: 10px;">
+                            
+
+                            <div class="row" style="margin-bottom: -10px;">
+                                <div class="col-6">
+                                <h5>Last Orders</h5>
+
+                                </div>
+                                {%if perms.sales.view_order%}
+                                <div class="col-6">
+                                    <a href="{% url 'sales:order-list'%}" style="float: right;" class="btn btn-light waves-effect">View All</a>
+                                </div>
+                                {%endif%}
+
+
+                            </div>
+
+                            <table data-toggle="table" data-search="false" data-show-refresh="false" data-sort-name="id"
+                                data-page-list="[5, 10, 20]" data-page-size="5" data-pagination="false"
+                                data-show-pagination-switch="false" class="table-borderless mt-3">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th data-align="center">
+                                            ID
+                                        </th>
+                                        <th data-align="center">STATUS
+                                        </th>
+                                        <th data-align="center">CUSTOMER</th>
+                                        <th data-align="center">
+                                            ITEMS
+                                        </th>
+                                        <th data-align="center">AMOUNT
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in recent_orders %}
+                                    <tr>
+                                        <td data-align="center">{%if perms.sales.view_order%}<a
+                                                 href="{% url 'sales:view-order' order.id %}" >{{ order.order_number }}</a>{%else%}{{ order.order_number }}{%endif%}
+                                        </td>
+                                        <td data-align="center">{{ order.order_status }}</td>
+                                        <td data-align="center">
+                                                {{order.delivery_address.sender_fullname|title}}
+                                               
+                                                    
+                                                 </td>
+                                        <td data-align="center">{{ order.items.count }}</td>
+                                        <td data-align="center">{{ order.total }}</td>
+                                    </tr>
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                           
+
+                        </div>
+                        <!-- end card-box-->
+
+                        <!-- end col-->
+
+                        <!-- end row-->
+
+
+                        <div class="card-box"
+                            style="padding-left:12px !important; padding-right:12px !important; padding-top: 15px;">
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-6">
+                                    <h5>Customers</h5>
+                                </div>
+                                <!-- <div class="col-6">
+                                    <a href="{% url 'dashboard:customers' %}" style="float: right;" class="btn btn-light waves-effect">View All</a>
+                                </div> -->
+
+
+                            </div>
+                            <ul class="nav nav-tabs nav-bordered nav-justified">
+
+                                <li class="nav-item">
+                                    <a href="#customer-new" data-toggle="tab" aria-expanded="true"
+                                        class="nav-link active">
+                                        New
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#customer-most-orders" data-toggle="tab" aria-expanded="true"
+                                        class="nav-link">
+                                        Most Orders
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#customer-highest-value" data-toggle="tab" aria-expanded="false"
+                                        class="nav-link">
+                                        Highest Value
+                                    </a>
+                                </li>
+
+                            </ul>
+                            <div class="tab-content">
+
+                                <div class="tab-pane active" id="customer-new">
+                                    {% include 'admin_view/partials/dashboard/customer/_dashboard_customer_new.html' %}
+                                </div>
+
+                                <div class="tab-pane" id="customer-most-orders">
+                                    {% include 'admin_view/partials/dashboard/customer/_dashboard_customer_most_orders.html' %}
+                                </div>
+                                <div class="tab-pane" id="customer-highest-value">
+                                    {% include 'admin_view/partials/dashboard/customer/_dashboard_customer_highest_value.html' %}
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- end card-box-->
+
+
+                    </div>
+
+
+                    <div class="col-xl-6">
+
+
+                        <div class="card-box" style="padding-left:12px !important; padding-right:12px !important; padding-top: 15px;">
+                            <div class="row" style="margin-bottom: 10px;">
+                                <div class="col-6">
+                                <h5>Sales</h5>
+
+                                </div>
+                                {%if perms.sales.view_order%}
+                                <div class="col-6">
+                                    <a href="{%url 'sales:order-list'%}" style="float: right;" class="btn btn-light waves-effect">View All</a>
+                                </div>
+                                {%endif%}
+
+
+                            </div>
+                            <ul class="nav nav-tabs nav-bordered nav-justified">
+                                <li class="nav-item">
+                                    <a href="#sales-today" data-toggle="tab" aria-expanded="false"
+                                        class="nav-link active">
+                                        Today
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#sales-yesterday" data-toggle="tab" aria-expanded="true" class="nav-link">
+                                        Yesterday
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#sales-week" data-toggle="tab" aria-expanded="false" class="nav-link">
+                                        Week
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#sales-month" data-toggle="tab" aria-expanded="false" class="nav-link">
+                                        Month
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#sales-year" data-toggle="tab" aria-expanded="false" class="nav-link">
+                                        Year
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="sales-today">
+                                    {% include 'admin_view/partials/dashboard/sales/_dashboard_sales_today.html' %}
+                                </div>
+                                <div class="tab-pane" id="sales-yesterday">
+                                    {% include 'admin_view/partials/dashboard/sales/_dashboard_sales_yesterday.html' %}
+                                </div>
+                                <div class="tab-pane" id="sales-week">
+                                    {% include 'admin_view/partials/dashboard/sales/_dashboard_sales_week.html' %}
+                                </div>
+                                <div class="tab-pane" id="sales-month">
+                                    {% include 'admin_view/partials/dashboard/sales/_dashboard_sales_month.html' %}
+                                </div>
+                                <div class="tab-pane" id="sales-year">
+                                    {% include 'admin_view/partials/dashboard/sales/_dashboard_sales_year.html' %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end card-box-->
+
+
+                    </div>
+
+
+
+                </div>
+                <!-- end page title -->
+            </div>
+            <!-- container -->
+        </div>
+        <!-- content -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+<!-- Bootstrap Tables js -->
+<script src="{% static 'admin_view/assets/libs/bootstrap-table/bootstrap-table.min.js' %}"></script>
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/bootstrap-tables.init.js' %}"></script>
+
+{% if messages %}
+<script>
+    (window.jQuery),
+        function (i) {
+            "use strict";
+            i.NotificationApp.send("Welcome!", "Logged in Successfully!", "top-right", "#3b98b5", "info")
+
+        }(window.jQuery);
+
+</script>
+{% endif %}
+
+{% endblock %}

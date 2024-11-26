@@ -1,0 +1,367 @@
+<!-- ========== Left Sidebar Start ========== -->
+{% load custom_tag %}
+<div class="left-side-menu">
+
+    <div class="slimscroll-menu">
+
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+
+            <ul class="metismenu" id="side-menu">
+                <li class="menu-title">Navigation</li>
+
+                <li>
+                    <a href="{% url 'dashboard:admin-dashboard' %}">
+                        <i class="fe-airplay"></i>
+                        <span> Dashboard </span>
+                    </a>
+                </li>
+                
+                {%if perms.sales.view_order%}
+                <li>
+                    <a href="javascript: void(0);">
+                        <span class="menu-arrow"></span>
+                        <i class="fe-shopping-bag"></i>
+                        <span> Order</span> <span id="unconfirmed_order_text" {% if request.user|unconfirmed_order > 0 %} class="badge label-table badge-danger" {% endif %} style="padding: 4px;float: right; font-size: 0.9rem;">
+                            
+                            {% if request.user|unconfirmed_order > 0 %}
+                                {{ request.user|unconfirmed_order }}
+                            {% endif %}
+                                
+                            
+                        </span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">  
+                        <li>
+                            <a href="{% url 'sales:order-list' %}">Order</a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'sales:cancelled-order-list' %}">Cancelled Order</a>
+                        </li>
+                    </ul>
+
+                    
+                </li>
+                {%endif%}
+
+                {%if perms.sales.view_order and perms.sales.add_order and perms.sales.change_order and perms.sales.delete_order and perms.sales.view_deliveryorder and perms.sales.add_deliveryorder and perms.sales.change_deliveryorder and perms.sales.delete_deliveryorder %}
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class="fe-file-text"></i>
+                        <span> Delivery Board</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">  
+                    <li>
+                        <a href="{% url 'sales:delivery-board' day='all'%}">All</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'sales:delivery-board' day='today'%}">Today</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'sales:delivery-board' day='tomorrow'%}">Tomorrow</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'sales:delivery-board' day='this_week'%}">This Week</a>
+                    </li>
+                    <li>
+                        <a href="{%url 'sales:order-alert-list'%}">
+                            Alert Interval
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'sales:order-assign-to-delivery-boy'%}">Delivery Assigned</a>
+                    </li>
+
+                    
+                    </ul>
+                <li>
+                {%endif%} 
+
+                {%if perms.sales.view_vendor%}
+                <li>
+                    <a href="{% url 'sales:vendor-list' %}">
+                        <i class="fe-shopping-bag"></i>
+                        <span> Vendor</span> 
+                    </a>
+                    
+                </li>
+                {%endif%}
+                {%if perms.sales.view_factory%}
+                <li>
+                    <a href="{% url 'sales:factory-list' %}">
+                        <i class="fas fa-industry"></i>
+                        <span> Factory</span> 
+                    </a>
+                    
+                </li>
+                {%endif%}
+
+
+
+                {%if perms.store.view_store and perms.store.view_location%}
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class="fe-file-text"></i>
+                        <span> Catalog</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+
+                        {%if perms.store.view_store and perms.store.view_location%}
+                        <li>
+                            <a href="{% url 'store:store-list' %}">Store</a>
+                        </li>
+                        {%endif%}
+                        {%if perms.catalog.view_category%}
+                        <li>
+                            <a href="{% url 'catalog:category' %}">Categories</a>
+                        </li>
+                        {%endif%}
+                        
+                        {%if perms.catalog.view_productaddons%}
+                         <li>
+                            <a href="{% url 'catalog:addons-list' %}">Addons
+                            </a>
+                        </li>
+                        {%endif%}
+                        {%if perms.catalog.view_tags%}
+                        <li>
+                            <a href="{% url 'catalog:tags-list' %}">Tags
+                            </a>
+                        </li>
+                        {%endif%}
+                        {%if perms.catalog.view_flavour%}
+                        <li>
+                            <a href="{% url 'catalog:flavour-list' %}">Flavour
+                            </a>
+                        </li>
+                        {%endif%}
+                       <!--  <li>
+                            <a href="{% url 'catalog:attribute-list' %}">Attribute
+                            </a>
+                        </li> -->
+                    </ul>
+                </li>
+                {%endif%}
+                
+
+
+                {%if perms.store.view_location%}
+                <li>
+                    <a href="{% url 'store:locations-list' %}">
+                        <i class="fa fa-location-arrow"></i>
+                        <span> Store Locations</span>
+                    </a>
+                </li>
+                {%endif%}
+
+                {%if perms.marketing.view_cartcoupon%}
+                <li>
+                    <a href="{% url 'marketing:coupons-list' %}">
+                        <i class="fa fa-gift"></i>
+                        <span>Coupons</span>
+                    </a>
+                </li>
+                {%endif%}
+
+
+
+                {%if perms.store.view_store and perms.store.view_location%}
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class="fas fa-poll"></i>
+                        <span> Sales and Order</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+
+                        {%if perms.store.view_store and perms.store.view_location%}
+                        <li>
+                            <a href="{% url 'sales:sales-over-time' %}">Sales Over Time</a>
+                        </li>
+                        {%endif%}
+                        {%if perms.catalog.view_category%}
+                        <li>
+                            <a href="{% url 'sales:sales-by-product' %}">Sales By Products </a>
+                        </li>
+                        {%endif%}
+                        
+                        {%if perms.catalog.view_productaddons%}
+                         <li>
+                            <a href="{% url 'sales:sales-by-costumer' %}">Sales by Costumers
+                            </a>
+                        </li>
+                        {%endif%}
+                        {%if perms.catalog.view_tags%}
+                        <li>
+                            <a href="{% url 'sales:order-report' %}">Order Report
+                            </a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </li>
+                {%endif%}
+
+
+
+                {%if perms.auth.view_user%}
+                <li>
+                    <a href="{% url 'dashboard:customers' %}">
+                        <i class="fe-user"></i>
+                        <span> Customers</span>
+                    </a>
+                </li>
+                {%endif%}
+
+                <!-- <li>
+                    <a href="#">
+                        <i class="fe-user"></i>
+                        <span> Customers </span>
+                    </a>
+                </li> -->
+                {%if perms.NewsletterandContact.view_contactmessage or perms.NewsletterandContact.view_subscriptionemail%}
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class="fa fa-envelope"></i>
+                        <span>Messages</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        {%if perms.NewsletterandContact.view_subscriptionemail%}
+                        <li>
+                            <a href="{% url 'newsletter-contact:sub-emails' %}">Subscription Emails</a>
+                        </li>
+                        {%endif%}
+                        {%if perms.NewsletterandContact.view_contactmessage%}
+                        <li>
+                            <a href="{% url 'newsletter-contact:contact-message' %}">Contact</a>
+                        </li>
+                        {%endif%}
+
+
+
+                    </ul>
+                </li>
+                {%endif%}
+
+
+                {%if perms.settings.view_shippingmethod%}
+                <li>
+                    <a href="{% url 'settings:shipping-method-list' %}">
+                        <i class="fa fa-ship"></i>
+                        <span> Shipping Method </span>
+                    </a>
+                </li>
+                {%endif%}
+
+
+                {%if perms.landing and perms.store.view_location%}
+
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class="fe-file-text"></i>
+                        <span> Client Landing </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+
+                        {%if perms.landing.view_sectionone and perms.store.view_location%}
+                        <li>
+                            <a href="{%url 'landing:read-location-list'%}?next_url=section-one">Section 1</a>
+                        </li>
+                        {%endif%}
+                        {%if perms.landing.view_landingcategories and perms.store.view_location%}
+                        <li>
+                            <a href="{%url 'landing:read-location-list'%}?next_url=category-list">Categories</a>
+                        </li>
+                        {%endif%}
+
+                        {%if perms.landing.view_bestsellerssection and perms.store.view_location%}
+                        <li>
+                            <a href="{%url 'landing:read-location-list'%}?next_url=product-list">Best Seller Products</a>
+                        </li>
+                        {%endif%}
+
+                        {%if perms.landing.view_popularflavoursection and perms.store.view_location%}
+                        <li>
+                            <a href="{%url 'landing:read-location-list'%}?next_url=flavour-list">Most Popular Flavour
+                            </a>
+                        </li>
+                        {%endif%}
+
+                        {%if perms.landing.view_explorestore and perms.store.view_location%}
+                         <li>
+                            <a href="{%url 'landing:read-location-list'%}?next_url=store-list">Explore Stores
+                            </a>
+                        </li>
+                        {%endif%}
+                        {%if perms.landing.view_landingfullbanner and perms.store.view_location%}
+                        <li>
+                            <a href="{%url 'landing:read-location-list'%}?next_url=banner-list">Banners
+                            </a>
+                        </li>
+                        {%endif%}
+
+
+
+
+                    </ul>
+                </li>
+                {%endif%}
+
+
+                {%if perms.auth.view_user or perms.settings.view_settings%}
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class="fe-settings"></i>
+                        <span> Settings</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        {%if perms.settings.view_settings%}
+                        <li>
+                            <a href="{% url 'settings:settings-view' %}">Site Configuration</a>
+                        </li>
+                        {%endif%}
+
+                       
+                        <!-- <li>
+                            <a href="{% url 'payment:payment-list' %}">
+                               
+                                Payment Configuration
+                            </a>
+                        </li> -->
+
+                        {%if perms.auth.view_user%}
+                        <li>
+                            <a href="{% url 'accounts:user-list' %}?user_type=admin">Users</a>
+                        </li>
+                        {%endif%}
+
+
+                    
+
+                        <!-- <li>
+                            <a href="{% url 'settings:outlet-branch-list' %}">Outlet Branch</a>
+                        </li>
+                            -->
+                    </ul>
+                </li>
+                {%endif%}
+
+
+
+            </ul>
+
+        </div>
+        <!-- End Sidebar -->
+
+        <div class="clearfix"></div>
+
+    </div>
+    <!-- Sidebar -left -->
+
+</div>
+<!-- Left Sidebar End -->

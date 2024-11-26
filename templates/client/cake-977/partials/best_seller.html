@@ -1,0 +1,53 @@
+{%load static%}
+{%if best_seller%}
+
+<section class="best-seller">
+  <h2>Some of Our</h2>
+  <h4 class="best-seller-subtitle">Best Sellers</h4>
+  <div class="best-seller-cards">  
+  {%for i in best_seller%}                     
+    <div class="card">
+        <div class="image-box">
+          {%if i.product.image%}
+          <a href="{{i.product.get_absolute_url}}">
+          <img class="card-img-top" src="{{i.product.bestseller_thumbnail.url}}" alt="{{i.name}}">
+          </a>
+          {%else%}
+          <a href="{{i.product.get_absolute_url}}">
+          <img class="card-img-top" src="{%static 'cake-977/def_img/Cake977-255X255px-02.png'%}" alt="default image">
+          </a>
+          {%endif%}
+        </div>
+        {%if i.product.tags_card%}
+        <span class="on-sale">
+          <span> {{i.product.tags_card.name|title}}</span>
+        </span>
+        {%endif%}
+        <div class="card-body">
+          <a href="{{i.product.get_absolute_url}}" class="card-title">
+          <h5 class="card-title">{{i.product.name|title}}</h5></a>
+                  <p class="cake-price">{{currency}}. {{i.product.listing_product_varient.selling_price}}<span>{%if i.product.listing_product_varient.price %}<del>{{currency}}. {{i.product.listing_product_varient.old_price}}</del></span>
+                    <span class="cake-offer">{{i.product.listing_product_varient.discount}}% off</span>{%endif%}
+                  </p>
+            <div class="card-details">
+              <div class="card-left">
+                <p class="cake-delv-info">Get it <span>Today</span></p>
+                <a class="card-text" href="{%url 'client:store-product-list' i.product.store.slug%}">By {{i.product.store.name|title}}, {{i.product.store.store_location1|title}}</a> 
+              </div>
+              <div class="card-right">
+                <div class="rating-badge">
+                  <p>{{i.product.avg_review}} <span><i  {% if i.product.avg_review == 5.0 %}class="fas fa-star"{% else %}class="fas fa-star-half-alt"{% endif %}></i></span></p>
+                </div>
+                <div class="total-reviews">
+                  <span>{{i.product.product_review.all.count}} reviews</span>
+                </div>
+              </div>
+            </div>
+        </div> 
+    </div>
+   {%endfor%} 
+   
+  </div>
+</section>
+
+{%endif%}

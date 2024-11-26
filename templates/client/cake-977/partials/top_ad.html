@@ -1,0 +1,8 @@
+{% load custom_tag %}
+{% if request.user|get_top_text %}
+<section class="top-ad">
+      <span>
+        <a href="{{ request.user|get_top_url }}">{{ request.user|get_top_text }}</a>
+      </span>
+</section>
+{% endif %}

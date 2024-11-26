@@ -1,0 +1,24 @@
+
+{%if flavour_quick%}
+<section class="quick-filters">
+    <ul>
+
+      <li class="list-label">Flavours : </li>
+     
+           <a href="{% url 'client:price-range-product-lists'%}?page={{page}}&min_price={{min_price}}&max_price={{max_price}}" style="color:#333;">
+      <li {%if not filter_by_flavour%} class="cat-filter-list active" {%else%}class="cat-filter-list" {%endif%} >
+        <span>All Flavour</span>
+        
+      </li>
+      </a>
+           {%for i in flavour_quick%}
+      <a href="{% url 'client:price-range-product-lists'%}?page={{page}}&min_price={{min_price}}&max_price={{max_price}}&flavour_quick={{i.slug}}" style="color:#333;">
+      <li {%if filter_by_flavour == i.slug%} class="cat-filter-list active" {%else%} class="cat-filter-list" {%endif%}>
+        <span>{{i.name|title}}</span>
+        
+      </li>
+      </a>
+      {%endfor%}
+    </ul>
+  </section>
+{%endif%}

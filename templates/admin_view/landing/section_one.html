@@ -1,0 +1,376 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block title %}Section 1 | Admin{% endblock title %}
+{% block extra_css %}
+
+
+<!-- Plugins css-->
+<link href="{% static 'admin_view/assets/libs/dropzone/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css' %}" rel="stylesheet"
+   type="text/css" />
+<link href="{% static 'admin_view/assets/libs/dropify/dropify.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- App css -->
+<link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/icons.min.css' %} " rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css" />
+
+
+{% endblock %}
+{% block page_content %}
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <!-- ============================================================== -->
+   <!-- Start Page Content here -->
+   <!-- ============================================================== -->
+   <div class="content-page">
+      <div class="content">
+         <!-- Start Content-->
+         <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+               <div class="col-12">
+                  <div class="page-title-box">
+                     <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                           <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                           <li class="breadcrumb-item active">Section 1</li>
+                        </ol>
+                     </div>
+                     <div class="row">
+                        <div class="col-lg-6">
+                           <h4 class="page-title">Section 1-{{location.name|title}}</h4>
+
+                        </div>
+                        <div class="col-lg-10 mt-2">
+                           {% include 'admin_view/partials/_alerts.html' %}
+
+                        </div>
+                     </div>
+                  </div>
+
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-xl-12">
+
+
+                  <div class="row">
+                     <div class="col-xl-12">
+                        {%if form.errors %}
+                        {% for field in form %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                           <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">
+                           <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        {%if parent_error%}
+                        <div class="alert alert-danger">
+                           <strong>{{ parent_error }}</strong>
+                        </div>
+                        {%endif%}
+
+                        <div class="card-box">
+
+                           <form method="POST" action="{% url 'landing:section-one' location.slug%}" enctype="multipart/form-data">
+                              {% csrf_token %}
+                              <input style="display:none" type="checkbox" name="image_1-clear" id="image_1-clear_id">
+                              <input style="display:none" type="checkbox" name="image_2-clear" id="image_2-clear_id">
+                              <input style="display:none" type="checkbox" name="image_3-clear" id="image_3-clear_id">
+                              <input style="display:none" type="checkbox" name="image_4-clear" id="image_4-clear_id">
+                              <input style="display:none" type="checkbox" name="image_5-clear" id="image_5-clear_id">
+
+                              <div class="tab-content">
+
+                                 <div class="tab-pane active" id="image-settings">
+                                    <div class="row">
+                                       <div class="col-6">
+
+
+                                          <h5 class="mt-0 mb-3 bg-light p-2">IMAGE 1</h5>
+                                          <input style="display:none" type="checkbox" name="image-logo" id="image-logo">
+                                          {{form.image_1}}
+
+                                          <div class="form-group mt-2">
+                                             {{form.redirect_url_1}}
+                                          </div>
+
+
+
+
+                                       </div>
+
+                                       <div class="col-6">
+
+                                          <div class="row">
+                                             <div class="col-lg-6">
+                                                <h5 class="mt-0 mb-3 bg-light p-2">IMAGE 2</h5>
+                                                <input style="display:none" type="checkbox" name="image-banner"
+                                                   id="image-banner">
+
+                                                {{form.image_2}}
+                                                <div class="form-group mt-2">
+                                                   {{form.redirect_url_2}}
+                                                </div>
+                                             </div>
+                                             <div class="col-lg-6">
+
+                                                <h5 class="mt-0 mb-3 bg-light p-2">IMAGE 3
+                                                </h5>
+                                                <input style="display:none" type="checkbox" name="image-banner"
+                                                   id="image-banner">
+                                                {{form.image_3}}
+                                                <div class="form-group mt-2">
+                                                   {{form.redirect_url_3}}
+                                                </div>
+                                             </div>
+                                          </div>
+
+                                          <div class="row">
+                                             <div class="col-lg-6">
+
+                                                <h5 class="mt-0 mb-3 bg-light p-2">IMAGE 4 </h5>
+                                                <input style="display:none" type="checkbox" name="banner_image_2-clear"
+                                                   id="banner_image_2-clear_id">
+                                                {{form.image_4}}
+
+                                                <div class="form-group mt-2">
+                                                   {{form.redirect_url_4}}
+                                                </div>
+                                             </div>
+
+                                             <div class="col-lg-6">
+
+                                                <h5 class="mt-0 mb-3 bg-light p-2">IMAGE 5 </h5>
+                                                <input style="display:none" type="checkbox" name="banner_image_3-clear"
+                                                   id="banner_image_3-clear_id">
+                                                {{form.image_5}}
+
+                                                <div class="form-group mt-2">
+                                                   {{form.redirect_url_5}}
+                                                </div>
+                                             </div>
+                                          </div>
+
+
+
+
+                                       </div>
+
+                                    </div>
+
+
+                                 </div>
+
+                              </div>
+
+                              <div class="col-12 mb-5 mt-4">
+                                 <div class="mr-2" style="float: right;">
+
+                                    <button type="submit"
+                                       class="btn w-sm btn-success waves-effect waves-light">Save</button>
+
+                                 </div>
+                              </div> <!-- end col -->
+
+                           </form>
+
+                        </div>
+                        <!-- end card-box-->
+                     </div>
+                     <!-- end col -->
+                  </div>
+               </div>
+            </div>
+            <!-- end page title -->
+         </div>
+         <!-- container -->
+      </div>
+      <!-- content -->
+   </div>
+   <!-- ============================================================== -->
+   <!-- End Page content -->
+   <!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+<script>
+   $(document).ready(function () {
+      $('.slectOne').on('change', function () {
+         $('.slectOne').not(this).prop('checked', false);
+         $('#result').html($(this).data("id"));
+         if ($(this).is(":checked"))
+            $('#result').html($(this).data("id"));
+         else
+            $('#result').html('Empty...!');
+      });
+   });
+</script>
+
+<!-- App js -->
+<script src="{% static 'admin_view/assets/js/vendor.min.js' %}"></script>
+
+<script src="{% static 'admin_view/assets/libs/flatpickr/flatpickr.min.js' %}"></script>
+
+<script src="{% static 'admin_view/assets/libs/flatpickr/flatpickr.min.js' %}"></script>
+
+<script src="{% static 'admin_view/assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js' %}"></script>
+
+<!-- Init js-->
+<script src="{% static 'admin_view/assets/js/pages/form-pickers.init.js' %}"></script>
+
+<!-- Init js-->
+<script src="{% static 'admin_view/assets/js/pages/form-pickers.init.js' %}"></script>
+
+<!-- Dropzone file uploads-->
+<script src="{% static 'admin_view/assets/libs/dropzone/dropzone.min.js' %}"></script>
+
+<script src="{% static 'admin_view/assets/libs/dropify/dropify.min.js' %}"></script>
+
+
+
+<script>
+
+
+
+</script>
+
+
+
+{% if obj.image_1 %}
+<script>
+   $('#id_image_1').dropify({
+      tpl: {
+         wrap: '<div class="dropify-wrapper has-preview"></div>',
+         loader: `<div class="dropify-loader"></div>`,
+         message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop image here or click</p></div>',
+         preview: '<div class="dropify-preview" style="display: block;"><span class="dropify-render"><img src="{{obj.image_1.url}}" style="max-height: 300px;"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message"></p></div></div></div>',
+         filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner">{{obj.image_1.url}}</span></p>',
+         clearButton: `<button type="button" class="dropify-clear" onclick="remove_id('image_1-clear_id')">Remove</button>`,
+         errorLine: '<p class="dropify-error">Error</p>',
+         errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+      }
+   });
+
+</script>
+
+{% endif %}
+
+{% if obj.image_2 %}
+<script>
+   $('#id_image_2').dropify({
+      tpl: {
+         wrap: '<div class="dropify-wrapper has-preview"></div>',
+         loader: '<div class="dropify-loader"></div>',
+         message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop image here or click</p></div>',
+         preview: '<div class="dropify-preview" style="display: block;"><span class="dropify-render"><img src="{{obj.image_2.url}}" style="max-height: 300px;"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message"></p></div></div></div>',
+         filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner">{{obj.image_2.url}}</span></p>',
+         clearButton: `<button type="button" class="dropify-clear" onclick="remove_id('image_2-clear_id')">Remove</button>`,
+         errorLine: '<p class="dropify-error">Error</p>',
+         errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+      }
+   });
+
+
+</script>
+
+{% endif %}
+
+{% if obj.image_3 %}
+<script>
+
+   $('#id_image_3').dropify({
+      tpl: {
+         wrap: '<div class="dropify-wrapper has-preview"></div>',
+         loader: '<div class="dropify-loader"></div>',
+         message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop image here or click</p></div>',
+         preview: '<div class="dropify-preview" style="display: block;"><span class="dropify-render"><img src="{{obj.image_3.url}}" style="max-height: 300px;"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message"></p></div></div></div>',
+         filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner">{{obj.image_3.url}}</span></p>',
+         clearButton: `<button type="button" class="dropify-clear" onclick="remove_id('image_3-clear_id')">Remove</button>`,
+         errorLine: '<p class="dropify-error">Error</p>',
+         errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+      }
+   });
+
+
+</script>
+
+{% endif %}
+
+{% if obj.image_4 %}
+<script>
+   $('#id_image_4').dropify({
+      tpl: {
+         wrap: '<div class="dropify-wrapper has-preview"></div>',
+         loader: '<div class="dropify-loader"></div>',
+         message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop image here or click</p></div>',
+         preview: '<div class="dropify-preview" style="display: block;"><span class="dropify-render"><img src="{{obj.image_4.url}}" style="max-height: 300px;"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message"></p></div></div></div>',
+         filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner">{{obj.image_4.url}}</span></p>',
+         clearButton: `<button type="button" class="dropify-clear" onclick="remove_id('image_4-clear_id')">Remove</button>`,
+         errorLine: '<p class="dropify-error">Error</p>',
+         errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+      }
+   });
+
+
+</script>
+
+{% endif %}
+
+{% if obj.image_5 %}
+<script>
+   $('#id_image_5').dropify({
+      tpl: {
+         wrap: '<div class="dropify-wrapper has-preview"></div>',
+         loader: '<div class="dropify-loader"></div>',
+         message: '<div class="dropify-message"><span class="file-icon" /> <p>Drag and drop image here or click</p></div>',
+         preview: '<div class="dropify-preview" style="display: block;"><span class="dropify-render"><img src="{{obj.image_5.url}}" style="max-height: 300px;"></span><div class="dropify-infos"><div class="dropify-infos-inner"><p class="dropify-infos-message"></p></div></div></div>',
+         filename: '<p class="dropify-filename"><span class="file-icon"></span> <span class="dropify-filename-inner">{{obj.image_5.url}}</span></p>',
+         clearButton: `<button type="button" class="dropify-clear" onclick="remove_id('image_5-clear_id')">Remove</button>`,
+         errorLine: '<p class="dropify-error">Error</p>',
+         errorsContainer: '<div class="dropify-errors-container"><ul></ul></div>'
+      }
+   });
+
+
+</script>
+
+{% endif %}
+
+<script>
+
+   function remove_id(remove_id) {
+      document.getElementById(remove_id).checked = true;
+   }
+
+   function image_upload(remove_id) {
+      document.getElementById(remove_id).checked = false;
+   }
+
+
+</script>
+
+<!-- Init js-->
+<script src="{% static 'admin_view/assets/js/pages/form-fileuploads.init.js' %}"></script>
+
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/add-product.init.js' %}"></script>
+
+
+<script src="{% static 'admin_view/assets/libs/select2/select2.min.js' %}"></script>
+
+
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/form-advanced.init.js' %} "></script>
+
+{% endblock %}

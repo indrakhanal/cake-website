@@ -1,0 +1,51 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+    <title>{{settings.outlet_name|title}}</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+
+<div class="main-body">
+	{%include 'client/cake-977/partials/detail/shop_header.html'%}
+	{%include 'client/cake-977/partials/detail/breadcrumbs.html'%}
+	{%include 'client/cake-977/partials/detail/photo_cake_product_detail.html'%}
+	{%include 'client/cake-977/partials/detail/review.html'%}
+	{%include 'client/cake-977/partials/detail/recommend.html'%}
+	
+	
+</div>
+	  {%include 'client/cake-977/partials/payment_partner.html'%}
+
+	{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/owl.carousel.min.js'%}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/custom.js'%}"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/qty-button.js'%}"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/carousel.js'%}"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/message_length.js'%}"></script>
+    <script type="text/javascript" src="{%static 'cake-977/js/additional.js'%}"></script>
+
+
+{%endblock%}

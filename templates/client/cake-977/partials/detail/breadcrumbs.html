@@ -1,0 +1,5 @@
+<div class="breadcrumbs">
+    <a href="{%url 'client:catalog'%}">Home</a> >
+    <a href="{{product.category.all.0.get_absolute_url}}">{{product.category.all.0.name|title}}</a> >
+    <a href="{{product.get_absolute_url}}" class="active">{{product.name|title}}</a>
+</div> 

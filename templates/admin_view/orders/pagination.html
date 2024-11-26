@@ -1,0 +1,20 @@
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+  	{% if order_list.has_other_pages %}
+     {% if order_list.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ order_list.previous_page_number }}{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range_req%}&date_range={{date_range_req}}{%endif%}">Previous</a></li>
+    {%endif%}
+
+    {%for counter in order_list.paginator.page_range%}
+    {% if order_list.number == counter %}
+    <li class="page-item"><a class="page-link active primary" >{{counter}}</a></li>
+    {%else%}
+    <li class="page-item"><a class="page-link" href="?page={{ counter }}{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range_req%}&date_range={{date_range_req}}{%endif%}">{{counter}}</a></li>
+    {%endif%}
+    {%endfor%}
+    {%if order_list.has_next%}
+    <li class="page-item"><a class="page-link" href="?page={{ order_list.next_page_number }}{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range_req%}&date_range={{date_range_req}}{%endif%}">Next</a></li>
+    {%endif%}
+    {%endif%}
+  </ul>
+</nav>

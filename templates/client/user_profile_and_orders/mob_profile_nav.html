@@ -1,0 +1,53 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+{%block title%}
+<title>{{settings.outlet_name|title}}</title>
+{%endblock%}
+
+{%block page_content%}
+{%include 'client/cake-977/partials/select_location_pop_up.html'%}
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+
+{%include 'client/cake-977/partials/search_bar.html'%}
+
+ <section class="profile-main">
+        <a href="{%url 'client:client-profile'%}">
+          <div class="profile-main-list first-item">
+            <span><i class="fas fa-cog"></i></span>
+            <h6>My Account
+              <p>View your profile</p>
+            </h6>
+          </div>
+        </a>
+        <a href="{%url 'client:client-orders'%}">
+          <div class="profile-main-list">
+            <span><i class="fas fa-box"></i></span>
+            <h6>My Orders
+              <p>Check your order status</p>
+            </h6>
+          </div>
+        </a>
+        <a href="{%url 'client:track-order'%}">
+          <div class="profile-main-list">
+            <span><i class="fas fa-truck"></i></span>
+            <h6>Track Orders
+              <p>Track your order</p>
+            </h6>
+          </div>
+        </a>
+    </section>
+
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+
+{%include 'client/cake-977/partials/footer.html'%}
+
+
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+
+
+{%endblock%}

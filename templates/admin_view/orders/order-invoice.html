@@ -1,0 +1,82 @@
+{% extends "admin_view/base.html" %} 
+{% load static %}
+{% block title %}Order -{{order.order_number}} | Admin{% endblock title %}
+
+{% block page_content %}
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %} 
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <!-- ============================================================== -->
+   <!-- Start Page Content here -->
+   <!-- ============================================================== -->
+   <div class="content-page">
+      <div class="content">
+         <!-- Start Content-->
+         <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+               <div class="col-12">
+                  <div class="page-title-box">
+                     <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                           <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                           <li class="breadcrumb-item active"><a href="javascript: void(0);">Orders</a></li>
+                           <li class="breadcrumb-item active">{{order.order_number}}</a>
+                        </ol>
+                     </div>
+                     <h4 class="page-title">Order Detail</h4>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+              
+               <div class="col-xl-12">
+                 
+
+                  <div class="row">
+                     <div class="col-xl-12">
+                      {% include 'admin_view/partials/_alerts.html' %}
+                        <div class="card-box">
+                        <div class="row mb-3 ml-1">
+                           <div class="col-xl-10">
+                           
+                              <h5 class="page-title">Order ID: {{order.order_number}}</h5>
+                              <!-- <p>Placed On: {{order.placed_on}}</p> -->
+
+                           </div>
+
+                           <div class="col-xl-2">
+                              <h5 class="page-title">Placed on:  {{order.placed_on}}</h5>
+                           
+                           </div>
+
+                        </div>
+
+                           <div class="tab-content">
+                              <div>
+                                 {% include 'admin_view/partials/orders/invoice.html' %}
+                              </div>
+                            
+                           </div>
+                        </div>
+                        <!-- end card-box-->
+                     </div>
+                     <!-- end col -->
+                  </div>
+               </div>
+            </div>
+            <!-- end page title --> 
+         </div>
+         <!-- container -->
+      </div>
+      <!-- content -->
+   </div>
+   <!-- ============================================================== -->
+   <!-- End Page content -->
+   <!-- ============================================================== -->
+</div>
+
+
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}

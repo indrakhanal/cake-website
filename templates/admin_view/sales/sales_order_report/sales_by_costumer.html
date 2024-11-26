@@ -1,0 +1,323 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% load humanize %}
+{% load custom_tag %}
+{% block title %}Sales Report | Admin{% endblock title %}
+
+{% block extra_css %}
+
+<!-- Footable css -->
+<link href="{% static 'admin_view/assets/libs/footable/footable.core.min.css' %}" rel="stylesheet" type="text/css" />
+
+
+
+<!-- Plugins css -->
+<link href="{% static 'admin_view/assets/libs/flatpickr/flatpickr.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css' %}" rel="stylesheet"
+    type="text/css" />
+<link href="{% static 'admin_view/assets/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+
+<link href="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+
+
+
+<link href="{% static 'admin_view/assets/libs/footable/footable.core.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Custom box css -->
+<link href="{% static 'admin_view/assets/libs/custombox/custombox.min.css' %}" rel="stylesheet">
+<link href="{% static 'admin_view/assets/libs/dropify/dropify.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- App css -->
+<link href="{%static 'admin_view/assets/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/icons.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/app.min.css'%}" rel="stylesheet" type="text/css" />
+
+
+{% endblock %}
+
+
+{% block page_content %}
+    <div id="wrapper">
+        {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+        {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+        <div class="content-page">
+            <div class="content">
+            
+
+                <!-- Start Content-->
+                <div class="container-fluid">
+
+
+
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                                        <li class="breadcrumb-item active">Sales By Customers</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">Sales By Customers</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+                    <div class="row">
+                        
+
+                        <div class="col-12">
+                            {% include 'admin_view/partials/_alerts.html' %}
+                            <div class="card-box">
+                                            
+                                    <form method="get">
+                                        <div class="row">
+                                            <div class="col-lg-2" >
+                                                <input class="form-control" placeholder="contact or Name" 
+                                                {% if order_keyword %}
+                                                    value = "{{order_keyword}}"
+                                                {% endif %}
+                                                    name='order_keyword'>
+                                            </div>
+
+                                        
+                                            <div class="col-lg-2">
+                                                <input 
+                                                {% if date_range_req %}
+                                                    value = {{date_range_req}}
+                                                {% endif %}
+                                                    type="date" id="range-datepicker" class="form-control"
+                                                    placeholder="DATE RANGE" name='date_range' required>
+                                            </div>
+
+                                        <div class="col-lg-2">
+                                            <button type="submit"
+                                            class="btn btn-dark waves-effect waves-light ml-2">Search
+                                        </button>
+                                        </div>
+                                    </form>
+
+
+                                <div class="table-responsive" style="margin-top: 15px;overflow-x: unset!important;">
+                                    <form method="get" action="{%url 'sales:export-csv-costumer'%}" style="float: right">
+                                       <input type="submit" class="btn btn-dark" value="export CSV">
+                                    </form>
+                                
+                                    <table id="demo-foo-filtering" class="table toggle-circle mb-0"
+                                        data-page-size="20" style=" table-layout: fixed; word-wrap: break-word;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Costumer Name</th>
+                                                <th class="text-center">Contact No.</th>
+                                                <th class="text-center">Placed On</th>
+                                                <th class="text-center">Quantity</th>
+                                                <th class="text-center" >Customer Status</th>
+                                                <!-- <th class="text-center">Gross Sales</th> -->
+                                                <th class="text-center">Discounts</th>
+                                                <th class="text-center">Paid</th>
+                                                <th class="text-center">Unpaid</th>
+
+                                                <th class="text-center">Shipping</th>
+                                                <th class="text-center">Total sales</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                    {%if qs%}
+                                                    {{qs.object_list}}
+                                                        {% for order in qs %}
+                                                        <tr>
+                                                            <td class="text-center">
+                                                            {{order.delivery_address.receiver_fullname|title}}<br>
+                                                            </td>
+                                                            
+                                                            <td>{{order.delivery_address.contact_number|title}}</td>
+                                                            <td class="text-center">{{order.created_on|naturaltime}}</td>
+                                                            
+                                                            <td class="text-center">{{order.get_order_products_quantity}}</td>
+                                                            <td class="text-center">-</td>
+                                                            <td class="text-center">{{order.discount}}</td>
+                                                            <td class="text-center">
+                                                                {% if order.payment_status == "Paid" %}
+                                                                {{request.user|currency_symbol}}. {{order.total}}
+                                                            {%else%}
+                                                            {{request.user|currency_symbol}}. 0
+                                                            {%endif%}
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {% if order.payment_status == "Awaiting Pament" %}
+                                                                {{request.user|currency_symbol}}. {{order.total}}
+                                                            {%else%}
+                                                            {{request.user|currency_symbol}}. 0
+                                                            {%endif%}
+                                                            </td>
+                                                            
+                                                        <td class="text-center"> {{request.user|currency_symbol}}. {{order.shipping_cost}}</td>
+                                                            
+                                                            <td class="text-center">
+                                                            {% if order.payment_status == "Paid" %}
+                                                                {{request.user|currency_symbol}}. {{order.get_total_with_shipping_cost}}
+                                                            {%else%}
+                                                            {{order.payment_status}}
+                                                            {%endif%}
+                                                            </td>
+                                                            
+                                                        </tr>
+                                                        {% endfor %}
+                                                    {%endif%}
+
+                                                        {%if costumer_detail%}
+                                                        {%for order in costumer_detail%}
+                                                        <td class="text-center">
+                                                            {{order.name}}<br>
+                                                            </td>
+                                                            <td>{{order.mobile|title}}</td>
+                                                            <td class="text-center">{{order.placed_on.placed_on}}</td>
+                                                            
+                                                            <td class="text-center">{{order.quantity}}</td>
+                                                            <td class="text-center">
+                                                                {%if order.orders < 2%}
+                                                                New
+                                                                {%else%}
+                                                                Regular
+                                                                {%endif%}
+                                                            </td>
+                                                            
+                                                            <td class="text-center"> {{request.user|currency_symbol}}. {{ order.discount }}</td>
+                                                            
+                                                            <td class="text-center" style="width:50%">
+                                                                {{request.user|currency_symbol}}. {{order.total_paid}}
+                                                        </td>
+                                                        <td class="text-center" style="width:50%">
+                                                            {{request.user|currency_symbol}}. {{order.total_unpaid}}
+                                                            </td>
+                                                            
+                                                        <td class="text-center"> {{request.user|currency_symbol}}. {{order.shipping_cost}}</td>
+                                                            
+                                                            <td class="text-center">
+                                                            
+                                                                {{request.user|currency_symbol}}. {{order.total_value}}
+                                                         
+                                                            </td>
+                                                            
+                                                        </tr>
+                                                        {%endfor%}
+                                                        {%endif%}
+                                                   
+
+                                        </tbody>
+                                     
+                                    </table>
+                                    <!-- <tfoot>
+                                        <tr class="active">
+                                            <td colspan="11">
+                                                <div class="text-right">
+                                                    <ul
+                                                        class="pagination pagination-rounded justify-content-end footable-pagination m-t-10 mb-0">
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot> -->
+                                    {%if page_obj%}
+                                    <div class="paginations d-flex justify-content-end">
+                                        <ul>
+                                            {%if page_obj.number == 1 %}
+                                            <li class="paginationbtn btn-prev"><i class="fa fa-angle-left"></i></li>
+                                            <li class="numb" {%if page_number == page_obj.number %} style="background-color:#FFA500;"{%endif%} ><a style="color:white;" href="?page=1{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}">1</a></li>
+                                            {% if page_obj.has_next %}
+                                            <li class="numb"><a href="?page=2{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}">2</a></li>
+                                            {%endif%}
+                                        
+                                            {% elif page_obj.has_previous %}
+                                            <li class="paginationbtn btn-prev"><a href="?page={{ page_obj.previous_page_number }}{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}"><i class="fa fa-angle-left"></i></a></li>
+                                            <li class="numb"><a href="?page=1{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}">1</a></li>
+                                            {%if page_obj.number > 2 %}
+                                            <li class="dots">...</li>
+                                            {%endif%}
+                                            <li class="numb" {%if page_number == page_obj.number %}style="background-color:#FFA500;"{%endif%}><a style="color:white;" href="?page={{page_obj.number}}{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}">{{page_obj.number}}</a></li>
+                                            {%if page_obj.number != page_obj.paginator.num_pages%}
+                                            <li class="numb" ><a  href="?page={{page_obj.number |add:1 }}{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}">{{page_obj.number| add:1 }}</a></li>
+                                            {%endif%}
+                                            {% endif %}
+                                        
+                                            <li class="dots">...</li>
+                                            {%if page_obj.number == page_obj.paginator.num_pages%}
+                                            <li class="numb" ><a  href="?page={{ page_obj.paginator.num_pages }}{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}">{{ page_obj.paginator.num_pages }}</a></li>
+                                            <li class="paginationbtn btn-next"><i class="fa fa-angle-right"></i></li>
+                                            
+                                            {% elif page_obj.has_next %}
+                                            <li class="numb"><a href="?page={{ page_obj.paginator.num_pages }}{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}">{{ page_obj.paginator.num_pages }}</a></li>
+                                            <li class="paginationbtn btn-next"><a style="color:white;" href="?page={{ page_obj.next_page_number }}{%if order_keyword%}&order_keyword={{order_keyword}}{%endif%}{%if date_range%}&date_range={{date_range}}{%endif%}"> <i class="fa fa-angle-right"></i></a></li>
+                                            {% endif %}
+    
+                                        </ul>
+                                    </div>
+                                    {%endif%}
+                                </div> <!-- end .table -->
+                                    
+                             
+                            </div> <!-- end card-box -->
+                            
+                        </div> <!-- end col -->
+                        
+                    </div>
+                    <!-- end row -->
+
+
+
+                </div> <!-- container -->
+
+            </div> <!-- content -->
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+        </div>
+    </div>
+  
+ 
+      
+
+   
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+
+
+<!-- Plugins js-->
+<script src="{% static 'admin_view/assets/libs/flatpickr/flatpickr.min.js' %}"></script>
+<script src="{% static 'admin_view/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+
+
+<script src="{% static 'admin_view/assets/js/pages/form-pickers.init.js' %}"></script>
+
+
+
+<script src="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.js' %}"></script>
+
+<!-- <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>     -->
+
+<script src="   https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script>
+
+
+<script src="{% static 'admin_view/assets/libs/footable/footable.all.min.js' %}"></script>
+
+<!-- Init js -->
+<script src="{% static 'admin_view/assets/js/pages/foo-tables.init.js' %}"></script>
+
+
+ <!-- Tost-->
+ <script src="{% static 'admin_view/assets/libs/jquery-toast/jquery.toast.min.js' %}"></script>
+  <!-- toastr init js-->
+<script src="{% static 'admin_view/assets/js/pages/toastr.init.js' %}"></script>
+
+
+{% endblock %}
+

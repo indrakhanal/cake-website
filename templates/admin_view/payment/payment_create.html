@@ -1,0 +1,256 @@
+{% extends "admin_view/base.html" %} 
+{% load static %}
+{% block title %}Payment Configuration | Admin{% endblock title %}
+{% block extra_css %}
+
+ 
+ <!-- Plugins css-->
+  <link href="{% static 'admin_view/assets/libs/select2/select2.min.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'admin_view/assets/libs/multiselect/multi-select.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'admin_view/assets/libs/summernote/summernote-bs4.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'admin_view/assets/libs/dropzone/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
+
+   <!-- App css -->
+    <link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'admin_view/assets/css/icons.min.css' %} " rel="stylesheet" type="text/css" />
+    <link href="{% static 'admin_view/assets/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+
+
+{% endblock %}
+{% block page_content %}
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %} 
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <!-- ============================================================== -->
+   <!-- Start Page Content here -->
+   <!-- ============================================================== -->
+   <div class="content-page">
+    <div class="content">
+
+        <!-- Start Content-->
+        <div class="container-fluid">
+          
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">Settings</a></li>
+                                <li class="breadcrumb-item active">Payment Configuration</li>
+                            </ol>
+                        </div>
+                        <h4 class="page-title">Edit Payment Configuration</h4>
+                    </div>
+                </div>
+            </div>     
+            <!-- end page title --> 
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-box">
+                        <h5 class="text-uppercase bg-light p-2 mt-0 mb-3">KHALTI</h5>
+                        
+                        
+                        {%if form1.errors %} 
+                        {% for field in form1 %} 
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %} 
+                        {% endfor %} 
+                        {% for error in form1.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %} 
+                        {% endif %}
+                        
+                        <form method="POST" action="{%url 'payment:payment-create'%}" id="payment"> 
+                           {%csrf_token%} 
+                           <div class="form-group mb-3">
+                              <label for="product-name">Public Key <span class="text-danger">*</span></label>
+                              {{form1.public_key}}
+                           </div>
+
+                           <div class="form-group mb-3">
+                              <label for="product-name">Secret Key <span class="text-danger">*</span></label>
+                              {{form1.secret_key}}
+                           </div>
+                           {%if khalti.is_active%}
+                           <div class="form-group mb-3">
+                              <label class="mb-2">Is Active <span class="text-danger">*</span></label>
+                              <br/>
+
+                              <div class="radio form-check-inline">
+                                 <input type="radio" id="inlineRadio1" value="True" name="khalti" checked="checked">
+                                 <label for="inlineRadio1">  Active </label>
+                              </div>
+                              <div class="radio form-check-inline">
+                                 <input type="radio" id="inlineRadio2" value="False" name="khalti">
+                                 <label for="inlineRadio2"> Inactive </label>
+                              </div>
+                           
+                           </div>
+                           {%else%}
+                           <div class="form-group mb-3">
+                              <label class="mb-2">Is Active <span class="text-danger">*</span></label>
+                              <br/>
+
+                              <div class="radio form-check-inline">
+                                 <input type="radio" id="inlineRadio1" value="True" name="khalti" >
+                                 <label for="inlineRadio1">  Active </label>
+                              </div>
+                              <div class="radio form-check-inline">
+                                 <input type="radio" id="inlineRadio2" value="False" name="khalti" checked="checked">
+                                 <label for="inlineRadio2"> Inactive </label>
+                              </div>
+                           
+                           </div>
+                           {%endif%}
+                   
+                        
+
+
+                        <h5 class="text-uppercase bg-light p-2 mt-0 mb-3">ESEWA</h5>
+                        
+                        
+                        {%if form2.errors %} 
+                        {% for field in form2 %} 
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %} 
+                        {% endfor %} 
+                        {% for error in form2.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %} 
+                        {% endif %}
+                        
+                       
+                           <div class="form-group mb-3">
+                              <label for="product-name">Service Code <span class="text-danger">*</span></label>
+                              {{form2.service_code}}
+                           </div>
+
+                           {%if esewa.is_active%}
+                           <div class="form-group mb-3">
+                              <label class="mb-2">Is Active <span class="text-danger">*</span></label>
+                              <br/>
+
+                              <div class="radio form-check-inline">
+                                 <input type="radio" id="inlineRadio1" value="True" name="esewa" checked="checked">
+                                 <label for="inlineRadio1">  Active </label>
+                              </div>
+                              <div class="radio form-check-inline">
+                                 <input type="radio" id="inlineRadio2" value="False" name="esewa">
+                                 <label for="inlineRadio2"> Inactive </label>
+                              </div>
+                           
+                           </div>
+                           {%else%}
+                           <div class="form-group mb-3">
+                              <label class="mb-2">Is Active <span class="text-danger">*</span></label>
+                              <br/>
+
+                              <div class="radio form-check-inline">
+                                 <input type="radio" id="inlineRadio1" value="True" name="esewa">
+                                 <label for="inlineRadio1">  Active </label>
+                              </div>
+                              <div class="radio form-check-inline">
+                                 <input type="radio" id="inlineRadio2" value="False" name="esewa" checked="checked">
+                                 <label for="inlineRadio2"> Inactive </label>
+                              </div>
+                           
+                           </div>
+                           {%endif%}
+                        </form>
+               
+
+
+                    </div> <!-- end card-box -->
+                </div> <!-- end col -->
+
+            </div>
+            <!-- end row -->
+
+            <div class="row" style="float:right; margin-right:20px;">
+                <div class="col-12">
+                    <div class="text-center mb-3">
+                        <button type="button" class="btn w-sm btn-light waves-effect"><a href="{%url 'payment:payment-list'%}">Cancel</a></button>
+                        
+                        <button type="submit" class="btn w-sm btn-success waves-effect waves-light" onclick="save()";>Save</button>
+                       
+                    </div>
+                </div> <!-- end col -->
+            </div>
+            <!-- end row -->
+       
+            
+        </div> <!-- container -->
+
+    </div> <!-- content -->
+
+    <!-- Footer Start -->
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    2015 - 2019 &copy; UBold theme by <a href="">Coderthemes</a> 
+                </div>
+                <div class="col-md-6">
+                    <div class="text-md-right footer-links d-none d-sm-block">
+                        <a href="javascript:void(0);">About Us</a>
+                        <a href="javascript:void(0);">Help</a>
+                        <a href="javascript:void(0);">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end Footer -->
+
+</div>
+</div>
+
+   <!-- ============================================================== -->
+   <!-- End Page content -->
+   <!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+<script type="text/javascript">
+    
+function save(){
+   $("#payment").submit();
+ 
+}
+</script>
+   <!-- App js -->
+    <script src="{% static 'admin_view/assets/js/vendor.min.js' %}"></script>
+
+    <script src="{% static 'admin_view/assets/libs/multiselect/jquery.multi-select.js' %}"></script>
+
+  <!-- Summernote js -->
+  <script src="{% static 'admin_view/assets/libs/summernote/summernote-bs4.min.js' %}"></script>
+  <!-- Select2 js-->
+  <script src="{% static 'admin_view/assets/libs/select2/select2.min.js' %}"></script>
+  <!-- Dropzone file uploads-->
+  <script src="{% static 'admin_view/assets/libs/dropzone/dropzone.min.js' %}"></script>
+
+  <!-- Init js -->
+  <script src="{% static 'admin_view/assets/js/pages/form-advanced.init.js' %} "></script>
+
+
+  <!-- Init js -->
+  <script src="{% static 'admin_view/assets/js/pages/add-product.init.js' %}"></script>
+
+{% endblock %}

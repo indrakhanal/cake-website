@@ -1,0 +1,27 @@
+{%load custom_tag%}
+{%if request|location_pop_up_show%}
+<!-- On load -->
+    <div id="css-only-modals" class="bakeryModalcustom">
+      <input id="modal1" class="css-only-modal-check" type="checkbox" checked/>
+      <div class="css-only-modal">
+      <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Select your city.</h4>
+        </div>
+
+        <div class="fields">
+          {%for i in store_locations%}
+          <form method="get" action="{%url 'client:catalog'%}">
+       		<div class="fields__one">
+            <input type="radio" class="radio_item" value="{{i.slug}}" name="store_locations" id="radio6-{{i.id}}" onchange="this.form.submit()">
+            <label class="label_item" for="radio6-{{i.id}}">{{i.name|title}}</label>
+          </div>
+          </form>	
+          {%endfor%}
+
+        </div> 
+      </div>
+    <div id="screen-shade"></div>
+    </div>
+    <!-- On load ends -->
+{%endif%}

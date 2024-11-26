@@ -1,0 +1,103 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>{% block title %} | Powered by OrderSathi{% endblock title %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+  <meta content="Coderthemes" name="author" />
+
+  <link rel="icon" href="{% static 'images/favicon.ico' %}">
+
+  {% block css %}
+    <!-- Your stuff: Third-party CSS libraries go here -->
+    <!-- This file stores project-specific CSS -->
+    <!-- inline style to handle loading of various element-->
+    <link href="{% static 'admin_view/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css"  />
+    <link href="{% static 'admin_view/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'admin_view/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'admin_view/css/pagination.css' %}" rel="stylesheet" type="text/css" />
+
+      <!-- Jquery Toast css -->
+    <link href="{% static 'admin_view/assets/libs/jquery-toast/jquery.toast.min.css' %}" rel="stylesheet" type="text/css" />
+      <style>
+      .django-ckeditor-widget{
+        width: 100%;
+      }
+    </style>
+  {% endblock %}
+
+  {% block extra_css %}
+  {% endblock %}
+</head>
+
+<body {% block body_extra %}{% endblock %} >
+
+  {% block page_content %}{% endblock %}
+
+  <!-- Le javascript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  {% block javascript %}
+    <!-- bundle -->
+    <script src="{% static 'admin_view/js/app.min.js' %}"></script>
+
+    <!-- Tost-->
+    <script src="{% static 'admin_view/assets/libs/jquery-toast/jquery.toast.min.js' %}"></script>
+    <!-- toastr init js-->
+    <script src="{% static 'admin_view/assets/js/pages/toastr.init.js' %}"></script>
+
+
+      
+  {% endblock javascript %}
+
+  {% block extra_javascript %}{% endblock %}
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/0.0.11/push.min.js"></script>
+<script>
+    setInterval(refreshPage,60000); //Request after 1 min
+
+    function refreshPage(){
+            var current_total=parseInt(document.getElementById('unconfirmed_order_text').innerHTML)
+            $.ajax({
+            method:'GET',
+            url: '{%url 'sales:latest-order'%}',
+            data: {
+                'current_total': current_total,
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data['status'] === 'success'){
+                    if(data['new_item_count'] >= 1){
+                    document.getElementById('unconfirmed_order_text').innerHTML=data['total_unconfirmed'];
+                    
+                     Push.create('Hi there!', {
+                      body: 'New order has been placed. Please cheeck check the delivery board.',
+                      icon: 'icon.png',
+                      timeout: 3000000,               // Timeout before notification closes automatically.
+                      vibrate: [100, 100, 100],    // An array of vibration pulses for mobile devices.
+                      onClick: function() {
+                          // Callback for when the notification is clicked. 
+                          console.log(this);
+                      }  
+                  });
+
+
+
+                }
+               
+                    
+                }
+            }
+        });
+                
+            }
+  
+</script>
+
+</body>
+</html>
+ 

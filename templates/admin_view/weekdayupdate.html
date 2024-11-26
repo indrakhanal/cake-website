@@ -1,0 +1,149 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block title %}Opening Hours | Admin{% endblock title %}
+
+{% block extra_css %}
+<link href="{% static 'admin_view/assets/libs/footable/footable.core.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- Custom box css -->
+<link href="{% static 'admin_view/assets/libs/custombox/custombox.min.css' %}" rel="stylesheet">
+<link href="{% static 'admin_view/assets/libs/dropify/dropify.min.css' %}" rel="stylesheet" type="text/css" />
+
+<link href="{% static 'admin_view/assets/libs/bootstrap-select/bootstrap-select.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin_view/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- App css -->
+<link href="{%static 'admin_view/assets/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/icons.min.css'%}" rel="stylesheet" type="text/css" />
+<link href="{%static 'admin_view/assets/css/app.min.css'%}" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+
+{% block page_content %}
+<div id="wrapper">
+    {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+    {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start Content-->
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                                    <li class="breadcrumb-item active">Opening Hours</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Opening Hours</h4>
+                            {% include 'admin_view/partials/_alerts.html' %}
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-12">
+                        {% for dict in formset.errors %}
+                            {% for error in dict.values %}
+                               <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %}
+                    {% endfor %}
+                        <div class="card-box">
+
+                            <div class="mb-3">
+								
+
+                            </div>
+                          <form method="post" action="{%url 'settings:time-config-update'%}">
+                            <div class="table-responsive">
+                                <table id="demo-foo-filtering" class="table  toggle-circle mb-0" data-page-size="20" style=" table-layout: fixed; word-wrap: break-word;">
+                                    <thead>
+                                        <tr>
+                                        
+                                            <th class="text-center">Day</th>
+                                            <th class="text-center">Opening Time</th>
+                                            <th class="text-center">Closing Time</th>
+                                            <th class="text-center">Is Closed</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                       {{ formset.management_form }}
+                                       {% csrf_token %} 
+
+                                    	{%for i in formset%}
+                                      
+                                        <tr>
+
+                                           
+                                            <td class="text-center">{{i.day}}</td>
+                                            <td class="text-center">{{i.opening_time}}</td>
+                                           <td class="text-center">{{i.closing_time}}</td>
+                                           <td class="text-center">{{i.is_closed}}</td>
+                                           
+                                            
+                                        </tr>
+                                        {%endfor%}
+
+
+                                    </tbody>
+
+                                </table>
+                            </div> <!-- end .table-responsive-->
+                               <div class="mb-1 mt-2">
+                                <form method="get" action="{% url 'settings:time-config-update' %}">
+                                <div class="row">
+                                
+                                        <div style="float:right;" class="ml-auto mr-2">
+                                            <button type="submit" class="btn btn-danger waves-effect waves-light">Update Configuration</a>
+
+
+                                        </div>    
+                                     </form>
+                                </div>
+
+                            </div>
+                          
+                        </form>
+                        </div> <!-- end card-box -->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+
+            </div> <!-- container -->
+
+        </div> <!-- content -->
+
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- END wrapper -->
+
+
+
+    {% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+    {% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+    {% block extra_javascript %}
+
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+        <script src="{% static 'admin_view/assets/libs/footable/footable.all.min.js' %}"></script>
+        
+        <script src="{% static 'admin_view/custom.js' %}"></script>
+            <!-- Init js -->
+        <script src="{% static 'admin_view/assets/js/pages/foo-tables.init.js' %}"></script>
+
+
+
+    {% endblock %}

@@ -1,0 +1,43 @@
+<!-- Newsletter -->
+    <section class="Newsletter">
+      <h4>Be the first one to learn about deals and offers</h4>
+      <span class="sign-up-text">Sign up for our newsletter</span>
+      <form class="newsletter-form" id="subscription">
+      	{%csrf_token%}
+        {{subscriptionform.email}}
+        <button type="button" onclick="subscribe('subscription')">Sign Up</button>
+        <span id="error" style="color: red;"></span>
+      </form> 
+      
+      <h4 id="subscribe-email"></h4>
+    </section>
+
+
+
+      <script type="text/javascript">
+    function subscribe(n){
+
+      var queryString = $('#'+n).serialize();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'client:subscribe' %}",
+                data: queryString,
+                success: function (data) {
+                    
+                    if(data['status']=='success'){
+                      document.getElementById('subscription').remove();
+                        document.getElementById('subscribe-email').innerHTML="Subscribed";
+                    }
+                    if(data['err']){
+                      console.log(data['err'])
+                       for(var i=0; i<data['err']['email'].length; i++){
+                        document.getElementById('error').innerHTML=data['err']['email'][i];
+
+                       }
+                    }
+                }
+            });
+
+    }
+    
+  </script>

@@ -1,0 +1,87 @@
+@media screen and (max-width: 576px) and (min-width: 310px) and (-webkit-min-device-pixel-ratio: 1){
+    header{
+        width: 100%;
+        height: 70px;
+        padding: 10px; 
+    }
+    header,
+    .order-list{
+        padding: 10px; 
+    }
+    header h3{
+        font-size: 18px;
+    }
+    .notification{
+        font-size: 18px;
+    }
+    .order-status img{
+        height: 20px;
+        width: 20px;
+    }
+    .order-details p{
+        font-size: 16px;
+    }
+    .order-datetime{
+        font-size: 12px;
+    }
+    .order-details{
+        padding-left: 10px;
+        font-size: 12px;
+    }
+    .order-info{
+        padding: 20px 10px;
+        height: 150px;
+    }
+    .badge-notify{
+        left: 10px;
+        top: 0px;
+    }
+    .modal-mid-section{
+        display: inline;
+    }
+    .left-modal img,
+    .left-modal-db img{
+        width: 100%;
+    }
+    .right-modal p,
+    .right-modal-db p{
+        text-align: left;
+    }
+    .left-modal-db,
+    .right-modal-db{
+        padding: 0 20px;
+    }
+    .panel-group{
+        padding: 0;
+    }
+    .panel-body{
+        font-size: 13px;
+    }
+    .delivery-app-popup .nav-tabs{
+        margin: 20px 15px 10px 15px;
+    }
+    .panel-default{
+        padding: 10px;
+    }
+    .addon-info{
+        margin: 0 0 10px 20px;
+    }
+    .switch{
+        width: 50px;
+        height: 20px;
+    }
+    .slider:before{
+        bottom: 1px;
+    }
+    .btn-status{
+        width: 100%;
+        margin: 10px 0;
+    }
+    .addons-added{
+        margin: 10px 16px 10px 0;
+    }
+    .select-store{
+        padding: 15px 12px 6px 0;
+    }
+  
+}

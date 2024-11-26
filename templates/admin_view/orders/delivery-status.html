@@ -1,0 +1,730 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% load humanize %}
+{% load custom_tag %}
+{% block title %}Orders | Admin{% endblock title %}
+{% block extra_css %}
+{% endblock %}
+{% block page_content %}
+
+<div id="wrapper">
+   {% block topbar %} {% include 'admin_view/partials/topbar.html' %} {% endblock %}
+   {% block sidebar %} {% include 'admin_view/partials/sidebar.html' %} {% endblock %}
+   <div class="content-page">
+      <div class="content">
+         <!-- Start Content-->
+         <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+               <div class="col-12">
+                  <div class="page-title-box">
+                     <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                           <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
+                           <li class="breadcrumb-item active">Delivery Board</li>
+                        </ol>
+                     </div>
+                     <h4 class="page-title">Delivery Board{% if day == 'this_week' %} of this Week{% elif day == 'tomorrow' %} of Tomorrow{%else%} of Today{%endif%}</h4>
+                  </div>
+               </div>
+            </div>
+            <!-- end page title --> 
+            <!-- start page title -->
+            <div class="row">
+               <div class="col-12">
+                  <div class="card-box">
+                     <div class="row justify-content-between">
+                        <div class="col-lg-2">
+                           <form class="form-inline" method="get" action="{%url 'sales:delivery-board' day=day%}">
+                              <div class="form-group mx-sm-3">
+                                 <!-- <label for="status-select" class="mr-2">Select Store</label> -->
+                                 <select class="custom-select" id="status-select" name="store" onchange="this.form.submit()">
+                                 <option {%if not selected_store_slug%}selected{%endif%}>All Stores</option>
+                                 {%for i in available_store%}
+                                 <option value="{{i.slug}}" {% if selected_store_slug == i.slug %} selected {%endif%}>{{i.name|title}}</option>
+                                 {%endfor%} 
+                                 </select>
+                              </div>
+                              <input type="hidden" {%if date_filter_order%}value="{{date_filter_order}}"{%endif%} name="date_filter_order">
+                           </form>
+                        </div>
+                        {%if day == 'all'%}
+                        <div class="col-lg-3">
+                         <form>
+                            <input type="date" class="form-control" {%if date_filter_order%}value="{{date_filter_order}}"{%endif%} name="date_filter_order" onchange="this.form.submit()">
+                            <input type="hidden" name="store" value="{{selected_store_slug}}">
+                         </form>
+                        </div>
+                        {%endif%}
+                        <div class="col-lg-3" style="float:right!important;">
+                          <h6 style="color: red;"><span id="timer"></span></h6>
+                        </div>
+                        <div class="col-lg-2" style="float:right!important;">
+                           {%for i in factory_list%}
+                           <span >{{i.factory_name|title}}: {{i.order_count}}</span><br>
+                           {%endfor%}
+                         </div>
+                     </div>
+                     <!-- end row -->
+                  </div>
+                  <!-- end card-box -->
+               </div>
+               <!-- end col-->
+               {%if not day == 'all'%}
+                  {%for i in order_alert_data%}
+                  <div class="card col-md-2" {% if i.alert %} style="height:5rem;  background-color:#ffcccb; margin-left: 10px;" {%else%}  style="height:5rem;background-color:#90ee90;margin-left: 10px;"{%endif%}>
+                    <div style="line-height:5px; margin:8px; font-size:13px;">
+                      <h6>{{i.start_time}}-{{i.end_time}}</h6>
+                      <p>Threshold: {{i.threshold}}</p>
+                      <p>Total-delivery: {{i.delivery_count}}</p>
+                    </div>
+                  </div>
+                  {%endfor%}
+               {%endif%}
+            </div>
+            <!-- end page title --> 
+            <div class="container" id='kanban-kan' style=" width: 100%;height: 100%;display: flex;overflow-x: auto;">
+               <div class="col-lg-3">
+                  <div class="card-box">
+                     <h4 class="header-title">Unconfirmed</h4>
+                     <p class="sub-header">
+                        Total New: <span id="unconfirmed-total">{{pending_order_items.total_pending_items}}</span>
+                     </p>
+                    
+                     <ul class="sortable-list taskList list-unstyled" id="unconfirmed">
+                      
+                        {%for item in pending_order_items.morning_delivery.items%}
+
+                        <li id="{{item.order_number}}" style="height: 130px;">
+                           <!-- <span class="float-right"><span><a onclick="seeDetail({{item.id}})" class="action-icon"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span> -->
+                            <span class="float-right"><span><a href="{% url 'sales:view-order' item.id %}" class="action-icon" target="_blank"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span>
+                           <span class="float-right" style="display: none" id="show_icon-{{item.order_number}}"><a onclick="assignDeliveryBoyForm({{item.id}});" class="action-icon"> <i class="fas fa-user" title="Assign Delivery Boy" {%if item.delivery_order%} style="color:green;" {%endif%} id="pro-fa-user-{{item.order_number}}" style=" "></i></a></span></span> 
+                           <h6 class="mt-0"><a href="javascript: void(0);" class="text-dark"> {{item.delivery_address.receiver_fullname|title}}</a>
+                            {{item.delivery_address.receiver_contact_number1}}
+                           </h6>
+                           <span>{%if item.vendor%}<span style="color:red;">Vendor Order</span><span style="font-size:14px;">       ({{item.vendor.name|title}})</span>{%else%}Order NO. {%endif%} {{item.order_number|title}}</span><br>
+                           <span>{{item.delivery_address.receiver_delivery_address}}</span>
+                        </li>
+                        {%endfor%}
+                      
+                     </ul>
+                  </div>
+               </div>
+               <!-- end col -->
+               <div class="col-lg-3">
+                  <div class="card-box">
+                     <h4 class="header-title">Confirmed</h4>
+                     <p class="sub-header">
+                        Total Confirmed: <span id="confirmed-total">{{confirmed_order_items.total_confirmed_items}}</span>
+                     </p>
+                     
+                        
+                     <ul class="sortable-list taskList list-unstyled" id="confirmed">
+                      
+                        {%for item in confirmed_order_items.morning_delivery.items%}
+                        <li id="{{item.order_number}}" style="height: 130px;">
+                           <!-- <span class="float-right"><span><a onclick="seeDetail({{item.id}})" class="action-icon"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span> -->
+                            <span class="float-right"><span><a href="{% url 'sales:view-order' item.id %}" class="action-icon" target="_blank"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span>
+                           <span class="float-right" style="display: ;" id="show_icon-{{item.order_number}}"><a onclick="assignDeliveryBoyForm({{item.id}});" class="action-icon"> <i class="fas fa-user" title="Assign Delivery Boy" {%if item.delivery_order%} style="color:green;" {%endif%} style=" " id="pro-fa-user-{{item.order_number}}"></i></a></span></span> 
+                           <h6 class="mt-0"><a href="javascript: void(0);" class="text-dark">{{item.delivery_address.receiver_fullname|title}}</a>
+                            {{item.delivery_address.receiver_contact_number1}}</h6>
+                           <span><span>{%if item.vendor%}<span style="color:red;">Vendor Order</span><span style="font-size:14px;">       ({{item.vendor.name|title}})</span>{%else%}Order NO. {%endif%} {{item.order_number|title}}</span><br>
+                           <span>{{item.delivery_address.receiver_delivery_address}}</span>
+                        </li>
+                        {%endfor%}
+                       
+                     </ul>
+                  </div>
+               </div>
+               <!-- end col -->
+               <div class="col-lg-3">
+                  <div class="card-box">
+                     <h4 class="header-title">Processing</h4>
+                     <p class="sub-header">
+                        Total Processing: <span id="processing-total">{{processing_order_items.total_procesing_items}}</span>
+                     </p>
+                     
+                     <ul class="sortable-list taskList list-unstyled" id="processing">
+
+                        {%for item in processing_order_items.morning_delivery.items%}
+                        <li id="{{item.order_number}}" style="height: 130px;">
+                           <!-- <span class="float-right"><span><a onclick="seeDetail({{item.id}})" class="action-icon"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span> -->
+                            <span class="float-right"><span><a href="{% url 'sales:view-order' item.id %}" class="action-icon" target="_blank"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span>
+                           <span class="float-right" style="display: ;" id="show_icon-{{item.order_number}}"><a onclick="assignDeliveryBoyForm({{item.id}});" class="action-icon"> <i class="fas fa-user" title="Assign Delivery Boy" {%if item.delivery_order%} style="color:green;" {%endif%} id="pro-fa-user-{{item.order_number}}" style=" "></i></a></span></span> 
+                           <h6 class="mt-0"><a href="javascript: void(0);" class="text-dark">{{item.delivery_address.receiver_fullname|title}}</a>
+                            {{item.delivery_address.receiver_contact_number1}}</h6>
+                           <span><span>{%if item.vendor%}<span style="color:red;">Vendor Order</span><span style="font-size:14px;">       ({{item.vendor.name|title}})</span>{%else%}Order NO. {%endif%} {{item.order_number|title}}</span><br>
+                           <span>{{item.delivery_address.receiver_delivery_address}}</span>
+                        </li>
+                        {%endfor%}
+
+                     </ul>
+                  </div>
+               </div>
+               <!-- end col -->
+                <div class="col-lg-3">
+                  <div class="card-box">
+                     <h4 class="header-title">Ready To Dispatch</h4>
+                     <p class="sub-header">
+                        Total Dispatched: <span id="dispatched-total">{{dispatched_order_items.total_dispatched_items}}</span>
+                     </p>
+                     
+                     <ul class="sortable-list taskList list-unstyled" id="dispatched">
+
+                        {%for item in dispatched_order_items.morning_delivery.items%}
+                        <li id="{{item.order_number}}" style="height: 130px;">
+                           <!-- <span class="float-right"><span><a onclick="seeDetail({{item.id}})" class="action-icon"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span> -->
+                            <span class="float-right"><span><a href="{% url 'sales:view-order' item.id %}" class="action-icon" target="_blank"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span>
+                           <span class="float-right" style="display: ;" id="show_icon-{{item.order_number}}"><a onclick="assignDeliveryBoyForm({{item.id}});" class="action-icon"> <i class="fas fa-user" title="Assign Delivery Boy" {%if item.delivery_order%} style="color:green;" {%endif%} id="pro-fa-user-{{item.order_number}}" style=" "></i></a></span></span> 
+                           <h6 class="mt-0"><a href="javascript: void(0);" class="text-dark">{{item.delivery_address.receiver_fullname|title}}</a>
+                            {{item.delivery_address.receiver_contact_number1}}</h6>
+                           <span><span>{%if item.vendor%}<span style="color:red;">Vendor Order</span><span style="font-size:14px;">       ({{item.vendor.name|title}})</span>{%else%}Order NO. {%endif%} {{item.order_number|title}}</span><br>
+                           <span>{{item.delivery_address.receiver_delivery_address}}</span>
+                        </li>
+                        {%endfor%}
+
+                     </ul>
+                  </div>
+               </div>
+               <!-- end col -->
+               <div class="col-lg-3">
+                  <div class="card-box">
+                     <h4 class="header-title">Complete</h4>
+                     <p class="sub-header">
+                        Total Complete: <span id="complete-total">{{complete_order_items.total_complete_items}}</span>
+                     </p>
+                     
+                     
+                     <ul class="sortable-list taskList list-unstyled" id="complete">
+                      
+                     
+                        {%for item in complete_order_items.morning_delivery.items%}
+                        <li id="{{item.order_number}}" style="height: 130px;">
+                           <!-- <span class="float-right"><span><a onclick="seeDetail({{item.id}})" class="action-icon"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span> -->
+                            <span class="float-right"><span><a href="{% url 'sales:view-order' item.id %}" class="action-icon" target="_blank"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span>
+                           <span class="float-right" style="display: none" id="show_icon-{{item.order_number}}"><a onclick="assignDeliveryBoyForm({{item.id}});" class="action-icon"> <i class="fas fa-user" title="Assign Delivery Boy" {%if item.delivery_order%} style="color:green;" {%endif%} id="pro-fa-user-{{item.order_number}}" style=" "></i></a></span></span> 
+                           <h6 class="mt-0"><a href="javascript: void(0);" class="text-dark">{{item.delivery_address.receiver_fullname|title}}</a>
+                            {{item.delivery_address.receiver_contact_number1}}</h6>
+                           <span><span>{%if item.vendor%}<span style="color:red;">Vendor Order</span><span style="font-size:14px;">       ({{item.vendor.name|title}})</span>{%else%}Order NO. {%endif%} {{item.order_number|title}}</span><br>
+                           <span>{{item.delivery_address.receiver_delivery_address}}</span>
+                        </li>
+                        {%endfor%}
+                        
+                     </ul>
+                  </div>
+               </div>
+               <!-- end col -->
+
+
+               <!-- end col -->
+               <div class="col-lg-3">
+                  <div class="card-box">
+                     <h4 class="header-title">Cancelled</h4>
+                     <p class="sub-header">
+                        Total Cancelled: <span id="cancelled-total">{{cancelled_order_items.total_cancelled_items}}</span>
+                     </p>
+                     
+                        
+                     <ul class="sortable-list taskList list-unstyled" id="cancelled">
+                      
+                        {%for item in cancelled_order_items.morning_delivery.items%}
+                        <li id="{{item.order_number}}" style="height: 130px;">
+                           <!-- <span class="float-right"><span><a onclick="seeDetail({{item.id}})" class="action-icon"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span> -->
+                            <span class="float-right"><span><a href="{% url 'sales:view-order' item.id %}" class="action-icon" target="_blank"> <i class="mdi mdi-open-in-new" title="See order item detail"></i></a></span>
+                           <span class="float-right" style="display: none" id="show_icon-{{item.order_number}}"><a onclick="assignDeliveryBoyForm({{item.id}});" class="action-icon"> <i class="fas fa-user" title="Assign Delivery Boy" {%if item.delivery_order%} style="color:green;" {%endif%} style=" " id="pro-fa-user-{{item.order_number}}"></i></a></span></span> 
+                           <h6 class="mt-0"><a href="javascript: void(0);" class="text-dark">{{item.delivery_address.receiver_fullname|title}}</a>
+                            {{item.delivery_address.receiver_contact_number1}}</h6>
+                           <span><span>{%if item.vendor%}<span style="color:red;">Vendor Order</span><span style="font-size:14px;">       ({{item.vendor.name|title}})</span>{%else%}Order NO. {%endif%} {{item.order_number|title}}</span><br>
+                           <span>{{item.delivery_address.receiver_delivery_address}}</span>
+                        </li>
+                        {%endfor%}
+                       
+                     </ul>
+                  </div>
+               </div>
+            </div>
+            <!-- end row -->
+         </div>
+         <!-- container -->
+      </div>
+      <!-- content -->
+   </div>
+</div>
+<div id="assign-delivery-boy" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+   aria-hidden="true" style="display: none;">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Assign Pickup time date and delivery boy</h4>
+         </div>
+         <form method="post" action="{% url 'sales:ajax-assign-delivery-boy' %}" id="delivery-boy">
+            {% csrf_token %}
+            <div class="modal-body p-4">
+               <div class="form-group" id="delivery_person">
+                  <label for="name">Select Delivery Person</label>
+                  {{delivery_form.user}}
+               </div>
+               <div class="form-group" id="factory">
+                  <label for="factory">Factory</label>
+                  {{delivery_form.factory}}
+               </div>
+               <div class="form-group" id="pickup_date">
+                  <label for="date">Select Pickup Date</label>
+                  <input type="date" name="pickup_date" class="form-control" id="pickup_date_val">
+               </div>
+               <div class="form-group" id="pickup_time">
+                  <label for="date">Select Pickup Time</label>
+                  <input type="time" name="pickup_time" class="form-control" id="pickup_time_val">
+               </div>
+               <div class="form-group" id="expected_delivery_time">
+                  <label for="date">Expected Delivery Time</label>
+                  <input type="time" name="expected_delivery_time" class="form-control" id="expected_delivery_time_val">
+               </div>
+               <div>
+                 <h6>Customer Delivery Date</h6>
+                 <span>Delivery Date: <span id="customer_delivery_date"></span></span><br>
+                 <span>Delivery Time: <span id="customer_delivery_time"></span></span><br>
+               </div>
+               <input type="hidden" name="order" id="order_id">
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-success waves-effect waves-light" onclick="assignDeliveryBoy()">Save</button>
+               <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+
+
+<!-- Long Content Scroll Modal -->
+<div class="modal fade" id="orderItemDetail" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">Order  Summary</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h6>Order</h6>
+                  <span>Order Number: <span id="order__number"></span></span><br>
+                  <span>Refrence Number: <span id="order_reference"></span></span><br>
+                  <span>Delivery Date: <span id="delivery_date"></span></span><br>
+                  <span>Delivery Time: <span id="time_from"></span> <span id="time_to"></span></span> <br>
+                  <h6>Status</h6>
+                  <span>Delivery Status: <span id="delivery__status"></span></span><br>
+                  <span>Order Status: <span id="order__status"></span></span> <br>
+                  <span>Payment Status: <span id="payment__status"></span></span><br>
+                  <span>Payment Method: <span id="payment_method"></span></span><br>
+                </div>
+                <div class="col-md-6">
+                  <h6>Delivery Address</h6>
+                  <span>Receiver Name: <span id="receiver_name"></span></span><br>
+                  <span>Receiver Email: <span id="receiver_email"></span></span><br>
+                  <span>Receiver Contact: <span id="receiver_contact"></span></span><br>
+                  <span>Receiver Address: <span id="receiver_address"></span></span><br>
+                  
+                </div>
+                
+              </div>
+              <div class="row">
+               <div class="col-md-12">
+                  <h6>Order Items</h6>
+                  <table border="1px;">
+                     <thead>
+                        <th>Varient</th>
+                        <th>Quantity</th>
+                        <th>Pounds</th>
+                        <th>Eggless</th>
+                        <th>Sugarless</th>
+                        <th>Message</th>
+                        
+                     </thead>
+                     <tbody id="order-items">
+                        
+                     </tbody>
+                  </table>
+               </div>
+               <div class="col-md-12">
+                  <h6>Addons</h6>
+                  <span id="addons_items"></span><br>
+                  
+               </div>
+               
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a type="button" href="" class="btn btn-primary" id="order-item-detail-href" target="_blank">Detail Page</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- END wrapper -->
+{% block footer %} {% include 'admin_view/partials/footer.html' %} {% endblock %}
+{% block right_sidebar %} {% include 'admin_view/partials/right-sidebar.html' %} {% endblock %} {% endblock %}
+{% block extra_javascript %}
+
+<script src="{%static 'admin_view/assets/libs/jquery-ui/jquery-ui.min.js'%}" id="ui-js"></script>
+<script type="text/javascript">
+   ! function(e) {
+     "use strict";
+     var o = function() {
+         this.$body = e("body")
+     };
+     var count=0
+     var origin_target='';
+     var order_item_number='';
+     var status='';
+     var if_count_total_one=0
+     e("#unconfirmed, #confirmed, #processing, #dispatched, #complete, #cancelled").sortable({
+         connectWith: ".taskList",
+         placeholder: "task-placeholder",
+         forcePlaceholderSize: !0,
+         update: function(o, t) {
+          
+          count++
+          if_count_total_one++
+
+          if(count===1){
+             origin_target=o.target.id;
+             order_item_number = t.item[0].id;
+             status = o.target.id;
+   
+          }
+          if(count===2){
+            order_item_number = t.item[0].id;
+            status = o.target.id
+            count =0
+            updateOrderItemStatus(status,order_item_number,origin_target)
+            
+          }
+
+          if(if_count_total_one===1 && !count===2){
+            if_count_total_one=0
+            updateOrderItemStatus(status,order_item_number,origin_target)
+          } 
+
+             e("#unconfirmed").sortable("toArray"), e("#confirmed").sortable("toArray"), e("#processing").sortable("toArray"),e("#dispatched").sortable("toArray"),e("#complete").sortable("toArray"),e("#cancelled").sortable("toArray")
+         },
+
+     }).disableSelection(), o.prototype.init = function() {}, e.KanbanBoard = new o, e.KanbanBoard.Constructor = o
+
+   }(window.jQuery),
+   function(o) {
+     "use strict";
+     window.jQuery.KanbanBoard.init()
+   }();
+</script>
+<script type="text/javascript">
+   function assignDeliveryBoyForm(id){
+       $.ajax({
+         method:'GET',
+         url: '{%url 'sales:check-order-status'%}',
+         data: {
+         'order_id':id,
+       },
+       dataType: 'json',
+       success:function(data){
+       $("#customer_delivery_date").html(data['customer_delivery_date'])
+       $("#customer_delivery_time").empty()
+       $("#customer_delivery_time").append(`<span>${data['time_from']}-${data['time_to']}</span>`)
+       $("#pickup_date_val").val(data['pickup_date'])
+       $("#pickup_time_val").val(data['pickup_time'])
+       $("#expected_delivery_time_val").val(data['expected_delivery_time'])
+       $("#order_id").val(id);
+
+       $("#id_factory").val(data['factory']);
+       var option=document.getElementById('id_factory').getElementsByTagName('option');
+       var opLen=option.length;
+       for(var i=0; i<opLen; i++){
+        if(option[i].value === data['factory']){
+          option[i].selected='selected';
+        }
+       }
+       
+       if (data['order_status'] == 'Confirmed'){
+         $('#delivery_person').hide();
+         $('#assign-delivery-boy').modal('show');
+
+       }else if(data['order_status']=='Processing' || data['order_status'] == 'Dispatched'){
+           $('#delivery_person').show();
+           $("#id_user").val(data['delivery_boy']);
+           var option=document.getElementById('id_user').getElementsByTagName('option');
+           var opLen=option.length;
+           for(var i=0; i<opLen; i++){
+            if(option[i].value === data['delivery_boy']){
+              option[i].selected='selected';
+            }
+           }
+          $('#assign-delivery-boy').modal('show');
+          }
+       else{
+         console.log('')
+       }
+        }
+       });
+   
+       
+   }
+   
+</script>
+<script type="text/javascript">
+  function updateOrderItemStatus(status,order_number,origin_target){
+    $.ajax({
+         method:'GET',
+         url: '{%url 'sales:order-status-update-deliveryboard'%}',
+         data: {
+         'status':status,
+         'order_number':order_number
+       },
+       dataType: 'json',
+       success:function(data){
+
+        if(status == 'unconfirmed' && origin_target !== 'unconfirmed'){
+          alert(origin_target)
+        var totl_unconfirmed=parseInt(document.getElementById('unconfirmed_order_text').innerHTML)+1;
+               
+          $('#unconfirmed_order_text').html(totl_unconfirmed);
+        }
+        if(status !== 'unconfirmed' && origin_target == 'unconfirmed' ){
+          var tot_unconfirmed=parseInt(document.getElementById('unconfirmed_order_text').innerHTML-1);
+          $('#unconfirmed_order_text').html(tot_unconfirmed);
+        }
+
+        var styleId ='show_icon-'+data['order_id'];
+        
+        
+        if(data['order_status']==='Confirmed'){
+
+          if(origin_target === 'confirmed'){
+            console.log('---')
+          }else{
+          
+          document.getElementById(styleId).style.display='';
+          
+          
+          var total = parseInt(document.getElementById('confirmed-total').innerHTML)+1;
+          $('#confirmed-total').html(total);
+          var origin_total = parseInt(document.getElementById(origin_target+'-total').innerHTML)-1;
+          
+          origin_id=origin_target+"-total";
+          $(`#${origin_id}`).html(origin_total);
+          }
+        }else if(data['order_status']==='Unconfirmed'){
+          if(origin_target === 'unconfirmed'){
+            console.log('---')
+          }else{
+          document.getElementById(styleId).style.display='none';
+          
+          var total = parseInt(document.getElementById('unconfirmed-total').innerHTML)+1;
+          $('#unconfirmed-total').html(total);
+          var origin_total = parseInt(document.getElementById(origin_target+'-total').innerHTML)-1;
+          
+          origin_id=origin_target+"-total";
+          $(`#${origin_id}`).html(origin_total);
+        }
+        }else if(data['order_status']==='Processing'){
+          if(origin_target === 'processing'){
+            console.log('---')
+          }else{
+            document.getElementById(styleId).style.display='';
+            
+          var total = parseInt(document.getElementById('processing-total').innerHTML)+1;
+          $('#processing-total').html(total);
+          var origin_total = parseInt(document.getElementById(origin_target+'-total').innerHTML)-1;
+          
+          origin_id=origin_target+"-total";
+          $(`#${origin_id}`).html(origin_total);
+          }
+        }
+        else if(data['order_status']==='Complete'){
+          if(origin_target === 'complete'){
+            console.log('---')
+          }else{
+            document.getElementById(styleId).style.display='none';
+            
+          var total = parseInt(document.getElementById('complete-total').innerHTML)+1;
+          $('#complete-total').html(total);
+          var origin_total = parseInt(document.getElementById(origin_target+'-total').innerHTML)-1;
+          
+          origin_id=origin_target+"-total";
+          $(`#${origin_id}`).html(origin_total);
+        }
+        }
+        if(data['order_status']==='Dispatched'){
+
+          if(origin_target === 'dispatched'){
+            console.log('---')
+          }else{
+          
+          document.getElementById(styleId).style.display='';
+          
+          
+          var total = parseInt(document.getElementById('dispatched-total').innerHTML)+1;
+          $('#dispatched-total').html(total);
+          var origin_total = parseInt(document.getElementById(origin_target+'-total').innerHTML)-1;
+          
+          origin_id=origin_target+"-total";
+          $(`#${origin_id}`).html(origin_total);
+          }
+        }
+        else{
+          console.log('')
+        }
+
+        if(data['order_status']==='Cancelled'){
+
+          if(origin_target === 'cancelled'){
+            console.log('---')
+          }else{
+          
+            document.getElementById(styleId).style.display='none';
+          
+          
+          var total = parseInt(document.getElementById('cancelled-total').innerHTML)+1;
+          $('#cancelled-total').html(total);
+          var origin_total = parseInt(document.getElementById(origin_target+'-total').innerHTML)-1;
+          
+          origin_id=origin_target+"-total";
+          $(`#${origin_id}`).html(origin_total);
+          }
+        }
+        else{
+          console.log('')
+        }
+
+
+
+       }
+    });
+  }
+
+</script>
+<script>
+   function assignDeliveryBoy(){ 
+     var form=$('#delivery-boy').serialize();
+     $.ajax({
+       url:'{%url 'sales:ajax-assign-delivery-boy'%}',
+       method:'POST',
+       data:form,
+     success:function(data){
+       if(data['status']===200){
+         $('#assign-delivery-boy').modal('hide');
+         var pro_fa_user_id='pro-fa-user-'+data['order_number'];
+         document.getElementById(pro_fa_user_id).style.color='green';
+         (window.jQuery),
+            function (i) {
+               "use strict";
+               i.NotificationApp.send("Update !", `Updated`, "top-right", "#5ba035;", "success")
+
+            }(window.jQuery);
+       }
+       if(data['error']){
+         alert(data['error'])
+       }
+     }
+     });
+   }
+</script>
+<script type="text/javascript">
+  function seeDetail(item){
+    $.ajax({
+      url:'{%url 'sales:get-item-detail'%}',
+      method:'GET',
+      data:{'order_id':item},
+      success: function(data){
+        var item=data[0]
+        console.log(item)
+        $('#order__number').html(item.order_number);
+        $('#order_reference').html(item.reference);
+        $('#receiver_name').html(item.delivery_address.receiver_fullname);
+        $('#receiver_email').html(item.delivery_address.receiver_email);
+        $('#receiver_contact').html(item.delivery_address.receiver_contact_number1);
+        $('#receiver_address').html(item.delivery_address.receiver_delivery_address);
+        $('#delivery__status').html(item.delivery_status);
+        $('#payment__status').html(item.payment_status);
+        $('#order__status').html(item.order_status);
+        $('#payment_method').html(item.payment_method);
+        
+        $('#delivery_date').html(item.date);
+        $('#time_from').html(item.time.time_from);
+        $('#time_to').html(item.time.time_to);
+        $('#order-items').empty()
+        for(var i=0; i< item.items.length; i++){
+         if(item.items[i].is_sugerless===true){
+            var sugarless='Yes'
+         }else{
+            var sugarless='No'
+         }
+         if(item.items[i].is_eggless===true){
+            var eggless='Yes'
+         }else{
+            var eggless='No'
+         }
+         if(item.items[i].special_instruction){
+            var special_instruction=item.items[i].special_instruction;
+         }else{
+            var special_instruction='No Message'
+         }
+         
+        $('#order-items').append(`<tr>
+         <td class="text-center">${item.items[i].product_varient_name}</td>
+         <td class="text-center">${item.items[i].quantity}</td>
+         <td class="text-center">${item.items[i].pound}</td>
+         <td class="text-center">${sugarless}</td>
+         <td class="text-center">${eggless}</td>
+         <td class="text-center">${special_instruction}</td>
+         
+         </tr>`)
+        $('#addons_items').empty()
+         for(var a=0; a< item.items[i].orderitem_addons.length; a++){
+            $('#addons_items').append(`<span>${item.items[i].orderitem_addons[a].addons.name} X ${item.items[i].orderitem_addons[a].quantity}</span><br>`)
+            
+         }
+        
+        }
+        document.getElementById('order-item-detail-href').href = `/order/update/${item.id}`;
+        $('#orderItemDetail').modal('show');
+      }
+    });
+  }
+</script>
+<script>
+    function checklength(i) {
+    'use strict';
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+}
+
+var minutes, seconds, count, counter, timer;
+count = 300; //seconds
+counter = setInterval(timer, 1000);
+
+function timer() {
+    'use strict';
+    count = count - 1;
+    minutes = checklength(Math.floor(count / 60));
+    seconds = checklength(count - minutes * 60);
+    if (count < 0) {
+        clearInterval(counter);
+        return;
+    }
+    document.getElementById("timer").innerHTML = 'Next refresh in ' + minutes + ':' + seconds + ' sec';
+    if (count === 0) {
+        location.reload();
+    }
+}
+</script>
+{% endblock extra_javascript %}
+

@@ -1,0 +1,73 @@
+{% extends "admin_view/base.html" %} 
+{% load static %}
+{% block title %}Login | Admin{% endblock title %}
+{% block body_extra %}class = "authentication-bg authentication-bg-pattern" {% endblock %} 
+{% block page_content %}
+
+<div class="account-pages mt-5 mb-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 col-xl-5">
+                <div class="card bg-pattern">
+
+                    <div class="card-body p-4">
+                        
+                        <div class="text-center w-75 m-auto">
+                            <a href="">
+                            
+                                <span><img src="{% static 'cake-977/ohologo.png' %}" alt="OrderSathi" height="140"></span>
+                                
+                            </a>
+                            <p class="text-muted mb-4 mt-3">Enter your email address and password to access admin panel.</p>
+                        </div>
+                        {% include "admin_view/partials/_alerts.html" %}
+                        {%if form.errors %} 
+                        {% for field in form %} 
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %} 
+                        {% endfor %} 
+                        {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                        {% endfor %} 
+                        {% endif %}
+                        <form action="{%url 'accounts:admin-login'%}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <label for="emailaddress">Email address</label>
+                                {{form.login}}
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="password">Password</label>
+                                {{form.password}}
+                            </div>
+
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-primary btn-block" type="submit"> Log In </button>
+                            </div>
+
+                        </form>
+
+                    </div> <!-- end card-body -->
+                </div>
+                <!-- end card -->
+
+               
+
+            </div> <!-- end col -->
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container -->
+</div>
+
+
+{% endblock page_content %}
+
+
+

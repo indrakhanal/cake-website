@@ -1,0 +1,265 @@
+{%extends 'client/cake-977/base.html'%}
+{%load static%}
+
+
+{%block title%}
+<title>My Profile</title>
+{%endblock%}
+
+{%block page_content%}
+
+{%include 'client/cake-977/partials/top_ad.html'%}
+{%include 'client/cake-977/partials/mob_navigation.html'%}
+{%include 'client/cake-977/partials/desktop_navigation.html'%}
+{%include 'client/cake-977/partials/search_bar.html'%}
+{%include 'client/cake-977/partials/mob_category.html'%}
+{%include 'client/cake-977/partials/tab_category.html'%}
+{%include 'client/cake-977/partials/badge_menu.html'%}
+{%include 'client/cake-977/partials/mobile_fixed_footer.html'%}
+
+ <main>
+     <section class="user__detail">
+    {%include 'client/user_profile_and_orders/partials/sidebar.html'%}
+    <div class="user__detail-status">
+      <h4>My Account</h4>
+      <p style="font-size: 16px; font-weight: 500; margin-bottom: 15px;">Account Details</p>
+      <div class="user__detail-info">
+        <div class="user-info-form">
+          <p class="user-info-title">Name</p>
+          <p class="user-info-text">{{user.first_name}}&nbsp{{user.last_name}}&nbsp;&nbsp;&nbsp;&nbsp;<span><a href="#" data-toggle="modal" data-target="#nameEdit">Edit Name</a></span></p>
+          
+        </div>
+        <div class="user-info-form">
+          <p class="user-info-title">Email</p>
+          <p class="user-info-text">{{user.email}}</p> 
+        </div>  
+        <div class="user-info-form">
+          <p class="user-info-title">Phone</p>
+          <p class="user-info-text"  data-toggle="modal" data-target="#changePhone"><a href="#">{{user.profile.phone_number}}&nbsp;&nbsp;&nbsp;&nbsp;<span><a href="#">Change Phone Number</a></span></p>
+        </div>        
+        
+        <p class="Password-change"><a href="{% url 'account_change_password' %}">Change Password</a></p>
+        <!-- Button trigger modal -->
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          
+          <div class="modal-dialog" role="document">
+             <form method="POST" action="{% url 'accounts:change-password-user' user.id%}" id="change_password">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+             
+              <div class="modal-body">
+              
+                {%csrf_token%}
+
+                <div class="form-group" style="padding: 10px;">
+                <label for="oldpassword">Old Password</label>
+                {{form.oldpassword}}
+            </div>
+               
+                <div class="form-group" style="padding: 10px;">
+                <label for="password">New Password</label>
+                {{form.password1}}
+            </div>
+            <div class="form-group" style="padding: 10px;">
+                <label for="password2">Confirm Password (Again)</label>
+                {{form.password2}}
+            </div>
+                  
+              
+              </div>
+             
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" onclick="changePassword()" class="btn btn-danger">Change Password</button>
+              </div>
+            </div>
+             </form>
+          </div>
+        
+        </div>
+
+        <!-- model end -->
+
+
+      </div>
+      
+    </div>
+  </section>
+    </main>
+  
+
+
+{%include 'client/cake-977/partials/newsletter.html'%}
+{%include 'client/cake-977/partials/footer.html'%}
+
+<!-- Modal -->
+        <div class="modal fade" id="nameEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          
+          <div class="modal-dialog" role="document">
+             <form method="POST" action="{% url 'accounts:change-name-user' user.id%}" id="update-name">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Change Name</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+             
+              <div class="modal-body">
+              
+                {%csrf_token%}
+               
+                <div class="form-group" style="padding: 10px;">
+                <label for="first_name">First Name</label>
+                <input type="text" placeholder="Enter your first name" class="form-control" name="first_name" required>
+            </div>
+            <div class="form-group" style="padding: 10px;">
+                <label for="last_name">Last Name</label>
+                <input type="text" class="form-control" placeholder="Enter your last name" name="last_name" required>
+            </div>
+                  
+              
+              </div>
+             
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" onclick="changeName()" class="btn btn-danger">Update</button>
+              </div>
+            </div>
+             </form>
+          </div>
+        
+        </div>
+
+        <!-- model end -->
+
+
+
+<!-- Modal -->
+        <div class="modal fade" id="changePhone" tabindex="-1" role="dialog" aria-labelledby="changePhone" aria-hidden="true">
+          
+          <div class="modal-dialog" role="document">
+             <form method="POST" action="{% url 'accounts:change-phone-user' user.id%}" id="update-phone">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Change Phone Number</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+             
+              <div class="modal-body">
+              
+                {%csrf_token%}
+               
+                <div class="form-group" style="padding: 10px;">
+                <label for="phone_number">Phone Number</label>
+                <input type="number" placeholder="Enter phone number" class="form-control" name="phonenumber" required>
+            </div>
+            
+                  
+              
+              </div>
+             
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" onclick="changePhone()" class="btn btn-danger">Update</button>
+              </div>
+            </div>
+             </form>
+          </div>
+        
+        </div>
+
+        <!-- model end -->
+{%endblock%}
+
+{%block js%}
+{{block.super}}
+<script type="text/javascript">
+
+  function changePassword(){
+
+  var frm = $('#change_password');
+
+   $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            data: frm.serialize(),
+            success: function (data) {
+                if (data['status'] === 'success') {
+                    location.reload();
+                }
+                else {
+
+                    alert(Object.values(data['errors']))
+                }
+            }
+            }); 
+  }
+</script>
+
+<script type="text/javascript">
+
+  function changeName(){
+  var frm = $('#update-name');
+
+   $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            data: frm.serialize(),
+            success: function (data) {
+                if (data['status'] === 'success') {
+                    location.reload();
+                }
+                else {
+
+                    alert(data['errors']);
+                }
+            }
+            }); 
+  }
+
+
+
+    
+
+</script>
+
+
+<script type="text/javascript">
+
+  function changePhone(){
+  var frm = $('#update-phone');
+
+   $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            data: frm.serialize(),
+            success: function (data) {
+                if (data['status'] === 'success') {
+                    location.reload();
+                }
+                else {
+
+                    alert(data['errors']);
+                }
+            }
+            }); 
+  }
+
+
+
+    
+
+</script>
+ <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+{%endblock%}

@@ -1,0 +1,273 @@
+{%load static%}
+<nav class="navbar sticky-top navbar-expand-lg navbar-light ">
+    
+      <a class="navbar-brand" href="#">
+        {%if settings.outlet_logo%}
+        <div class="logo">
+          <a href="{%url 'client:catalog'%}"><img src="{{settings.outlet_logo.url}}"></a>
+        </div>
+        {%endif%}
+      </a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="#" id="navbarDropdown" role="button">
+              Cake
+            </a>
+            <div class="dropdown-menu cake-dropdown" aria-labelledby="navbarDropdown">
+              <div class="row">
+                {%if flavour%}
+                <div class="col-md-3 dropdown-col">
+                  <span class="category-title">
+                    <a href="list.html">By Flavour</a>
+                  </span>
+                  {%for i in flavour%}
+                  <a class="dropdown-item" href="{{i.get_absolute_url}}">{{i.name|title}}</a>
+                  {%endfor%}
+                </div>
+                {%endif%}
+              <div class="col-md-4 dropdown-col">
+                  <span class="category-title">
+                    <a href="list.html">By Price</a>
+                  </span>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=0&max_price=977">Under 977</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=0&max_price=500">Under 500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=978&max_price=1500">978 - 1500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=1500&max_price=2500">1500 - 2500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=2500&max_price=3500">2500 - 3500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=3500&max_price=4500">3500 - 4500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=4500&max_price=45000">Above 4500</a>
+                </div>
+                {%if category%}
+                <div class="col-md-4 dropdown-col-last">
+                  <span class="category-title">
+                    <a href="list.html">By Type</a>
+                  </span>
+                  {%for i in category%}
+                  <a class="dropdown-item" href="{{i.get_absolute_url}}">{{i.name|title}}</a>
+                  {%endfor%}
+                </div>
+               {%endif%}
+              </div>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Occasions
+            <!-- <span class="cake-chevron"><i class="fas fa-chevron-down"></i></span> -->
+          </a>
+          <div class="dropdown-menu desktop-dropdown-container" aria-labelledby="navbarDropdown">
+            <ul>
+              {%for i in occasion.get_children%}
+                {%if i.is_available%}
+                  {%if i.get_children%}
+              <li>
+                <span class="category-title">
+                  <a href="{{i.get_absolute_url}}">{{i.name}}</a>
+                </span>
+              </li>
+              {%for children in i.get_children%}
+                      {%if children.is_available%}
+                            <li><a class="dropdown-item" href="{{children.get_absolute_url}}">{{children.name|title}}</a></li>
+                      {%endif%}
+                    {%endfor%}
+                  {%else%}
+              <li>
+                <span class="category-title">
+                  <a href="{{i.get_absolute_url}}">{{i.name|title}}</a>
+                </span>
+              </li>
+              {%endif%}
+              {%endif%}
+              {%endfor%}
+            </ul>
+          </div>
+        </li>
+        {%endif%}
+          <li>
+            <a class="nav-link" href="{%url 'client:stores-list-client'%}">
+              Bakeries
+            </a>
+          </li>
+        </ul>
+        <div class="right_head">          
+          <ul class="rightmost">
+            <li>
+              <div class="shop-cart">
+                <a href="{%url 'client:client-cart'%}"><span><i class="fas fa-shopping-cart"></i>&nbsp;&nbsp;</span><span>Cart</span></a>
+                <span class="badge badge-warning">{{cart_count}}</span>
+              </div>     
+            </li>
+            {%if user.is_authenticated%}
+            <li>
+              <div class="login">
+                <a href="{%url 'client:client-profile'%}"><span><i class="fas fa-user"></i>&nbsp;&nbsp;</span><span>MY PROFILE</span></a>
+              </div>
+            </li>  
+            <li>
+              <form id="logout" action="{% url 'account_logout' %}" method="post">
+                   {% csrf_token %}
+             <div class="login">
+               <a href="javascript:{};" onclick="document.getElementById('logout').submit();">
+                   <span class="mr-2"><i class="fas fa-sign-out-alt"></i></span>Logout
+               </a>
+             </div>
+               <input type="hidden" name="next" value="/login/" /> 
+           </form>
+           </li> 
+          
+            {%else%}
+            <li>
+              <div class="login">
+                <a href="{%url 'accounts:login'%}"><span><i class="fas fa-user"></i>&nbsp;&nbsp;</span><span>Login / Sign Up</span></a>
+              </div>
+            </li>  
+            {%endif%}                  
+          </ul>
+        </div>
+    </nav>
+
+
+{%load static%}
+  <nav class="navbar sticky-top navbar-expand-lg navbar-light ">
+    
+      <a class="navbar-brand" href="#">
+        {%if settings.outlet_logo%}
+        <div class="logo">
+          <a href="{%url 'client:catalog'%}"><img src="{{settings.outlet_logo.url}}"></a>
+        </div>
+
+        {%endif%}
+      </a>
+      <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button> -->
+  
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="#" id="navbarDropdown" role="button">
+              Cake
+              <!-- <span class="cake-chevron"><i class="fas fa-chevron-down"></i></span> -->
+            </a>
+            <div class="dropdown-menu cake-dropdown" aria-labelledby="navbarDropdown">
+              <div class="row">
+                {%if flavour%}
+                <div class="col-md-4 dropdown-col">
+                  <span class="category-title">
+                    <a href="#">By Flavour</a>
+                  </span>
+                  {%for i in flavour%}
+                  <a class="dropdown-item" href="{{i.get_absolute_url}}">{{i.name|title}}</a>
+                  {%endfor%}
+                </div>
+                {%endif%}
+                <div class="col-md-4 dropdown-col">
+                  <span class="category-title">
+                    <a href="list.html">By Price</a>
+                  </span>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=0&max_price=977">Under 977</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=0&max_price=500">Under 500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=978&max_price=1500">978 - 1500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=1500&max_price=2500">1500 - 2500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=2500&max_price=3500">2500 - 3500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=3500&max_price=4500">3500 - 4500</a>
+                  <a class="dropdown-item" href="{%url 'client:price-range-product-lists'%}?min_price=4500&max_price=45000">Above 4500</a>
+                </div>
+                {%if category%}
+                <div class="col-md-4 dropdown-col-last">
+                  <span class="category-title">
+                    <a href="list.html">By Type</a>
+                  </span>
+                  {%for i in category%}
+                  <a class="dropdown-item" href="{{i.get_absolute_url}}">{{i.name|title}}</a>
+                  {%endfor%}
+                </div>
+                {%endif%}
+              </div>
+            </div>
+          </li>
+         
+          {%if occasion%}
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Occasions
+            <!-- <span class="cake-chevron"><i class="fas fa-chevron-down"></i></span> -->
+          </a>
+          <div class="dropdown-menu desktop-dropdown-container" aria-labelledby="navbarDropdown">
+            <ul>
+              {%for i in occasion.get_children%}
+                {%if i.is_available%}
+                  {%if i.get_children%}
+
+                    <li>
+                      <span class="category-title">
+                        <a href="{{i.get_absolute_url}}">{{i.name}}</a>
+                      </span>
+                    </li>
+                    {%for children in i.get_children%}
+                      {%if children.is_available%}
+                            <li><a class="dropdown-item" href="{{children.get_absolute_url}}">{{children.name|title}}</a></li>
+                      {%endif%}
+                    {%endfor%}
+                  {%else%}
+                    <li>
+                      <span class="category-title">
+                        <a href="{{i.get_absolute_url}}">{{i.name|title}}</a>
+                      </span>
+                    </li>
+                  {%endif%}
+              {%endif%}
+              {%endfor%}
+          </ul>
+          </div>
+        </li>
+        {%endif%}
+            
+            <a class="nav-link" href="{%url 'client:stores-list-client'%}">
+              Bakeries
+            </a>
+          </li>
+        </ul>
+        <div class="right_head">          
+          <ul class="rightmost">
+            <li>
+              <div class="shop-cart">
+                <a href="{%url 'client:client-cart'%}"><span><i class="fas fa-shopping-cart"></i>&nbsp;&nbsp;</span><span>Cart</span></a>
+                <span class="badge badge-warning" id="cart_count_desktop">{{cart_count}}</span>
+              </div>     
+            </li>
+            {%if user.is_authenticated%}
+            <li>
+              <div class="login">
+                <a href="{%url 'client:client-profile'%}" title="profile">
+                    <span><i class="fas fa-user mr-1"></i></span> MY PROFILE
+                </a>
+              </div>
+            </li>
+           
+           
+
+            <li>
+              <form id="logout" action="{% url 'account_logout' %}" method="post">
+                   {% csrf_token %}
+             <div class="login">
+               <a href="javascript:{};" onclick="document.getElementById('logout').submit();">
+                   <span class="mr-2"><i class="fas fa-sign-out-alt"></i></span>Logout
+               </a>
+             </div>
+               <input type="hidden" name="next" value="/login/" /> 
+           </form>
+           </li> 
+          
+            {%else%}
+            <li>
+              <div class="login">
+                <a href="{%url 'accounts:login'%}"><span><i class="fas fa-user"></i>&nbsp;&nbsp;</span><span>Login / Sign Up</span></a>
+              </div>
+            </li>  
+            {%endif%}               
+          </ul>
+        </div>
+</nav>
+    

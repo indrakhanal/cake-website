@@ -1,0 +1,119 @@
+<!--  
+{%if flavour_quick%}
+ 
+        <div class="product_categories_mob">
+          <h6>Flavours:&nbsp;&nbsp;</h6>
+          <div class="owl-carousel slider">
+            {%if category_%}
+          	 {%for i in flavour_quick%}
+            <a href="{{ctegory_.get_absolute_url}}?flavour_quick={{i.slug}}">
+              <div class="box product_one">
+                <div class="product_name">
+                  <h4 class="card-title">{{i.name|title}}</h4>
+                </div>
+              </div>
+            </a>
+            {%endfor%}
+            {%endif%}
+             {%if occasion_%}
+             {%for i in flavour_quick%}
+            <a href="{{occasion_.get_absolute_url}}?flavour_quick={{i.slug}}&page={{page}}">
+              <div class="box product_one">
+                <div class="product_name">
+                  <h4 class="card-title">{{i.name|title}}</h4>
+                </div>
+              </div>
+            </a>
+            {%endfor%}
+            {%endif%}
+            {%if store%}
+             {%for i in flavour_quick%}
+            <a href="{{store.get_absolute_url}}?flavour_quick={{i.slug}}&page={{page}}">
+              <div class="box product_one">
+                <div class="product_name">
+                  <h4 class="card-title">{{i.name|title}}</h4>
+                </div>
+              </div>
+            </a>
+            {%endfor%}
+            {%endif%}
+            {%if keywords%}
+             {%for i in flavour_quick%}
+            <a href="{%url 'client:product-search'%}?flavour_quick={{i.slug}}&page={{page}}&keywords={{keywords}}">
+              <div class="box product_one">
+                <div class="product_name">
+                  <h4 class="card-title">{{i.name|title}}</h4>
+                </div>
+              </div>
+            </a>
+            {%endfor%}
+            {%endif%}
+          </div>
+        </div>
+{%endif%} -->
+
+
+<div class="mob-quick-filter">
+          Quick Filters :
+            <ul class="mob-filter">
+              {%if flavour_quick%}
+                <li>
+                  <form>
+                <select onchange="this.form.submit()" name="flavour_quick">
+                  <option value="">By All Flavour</option>
+                    {%for i in flavour_quick%}
+                    <option value="{{i.slug}}" {%if filter_by_flavour == i.slug%}selected{%endif%}>{{i.name|title}}</option>
+                    {%endfor%}
+                </select>
+                <input type="hidden" name="page" value="{{page}}">
+                    {%if keywords%}
+                  <input type="hidden" name="keywords" value="{{keywords}}">
+                  {%endif%}
+                  <input type="hidden" name="tags_quick" {%if filter_by_tags%}value="{{filter_by_tags}}"{%endif%}>
+                 <input type="hidden" name="occasion_quick" {%if filter_by_occasion%}value="{{filter_by_occasion}}"{%endif%}>
+                <form>
+              </li>
+              {%endif%}
+
+              {%if tags_quick%}
+              <li>
+                <form>
+                <select name="tags_quick" onchange="this.form.submit()">
+              <option value="">All Tags</option>
+              {%for i in tags_quick%}
+              <option value="{{i.name}}" {%if filter_by_tags == i.name%} selected {%endif%}>{{i.name|title}}</option>
+              {%endfor%}
+              
+            </select>
+                 <input type="hidden" name="page" value="{{page}}">
+              {%if keywords%}
+              <input type="hidden" name="keywords" value="{{keywords}}">
+              {%endif%}
+            <input type="hidden" name="flavour_quick" {%if filter_by_flavour%}value="{{filter_by_flavour}}"{%endif%}>
+            <input type="hidden" name="occasion_quick" {%if filter_by_occasion%}value="{{filter_by_occasion}}"{%endif%}>
+              </form>
+              </li>
+              {%endif%}
+
+              <li>
+                {%if occasion_quick%}
+                  <form>
+                  <select name="occasion_quick" onchange="this.form.submit()">
+
+                    <option value="">All Occasion</option>
+                    {%for i in occasion_quick%}
+                    <option value="{{i.slug}}" {%if filter_by_occasion == i.slug%}selected{%endif%}>{{i.name|title}}</option>
+                    {%endfor%}
+                  </select>
+                  <input type="hidden" name="page" value="{{page}}">
+                    {%if keywords%}
+                    <input type="hidden" name="keywords" value="{{keywords}}">
+                    {%endif%}
+                     <input type="hidden" name="flavour_quick" {%if filter_by_flavour%}value="{{filter_by_flavour}}"{%endif%}>
+                    <input type="hidden" name="tags_quick" {%if filter_by_tags%}value="{{filter_by_tags}}"{%endif%}>
+                  </form>
+                {%endif%}
+              </li>
+              
+            </ul>
+        </div>
